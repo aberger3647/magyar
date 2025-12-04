@@ -1,3 +1,3 @@
 export const Home = () => {
-  return <p>home page</p>;
+  return <p className="text-3xl">home page</p>;
 };
