@@ -4,36 +4,31 @@ import {
   Routes,
   Outlet,
 } from "react-router-dom";
-import {
-  Home
-} from "./components"
-import './App.css'
+import { Nav, Home, Conjugator } from "./components";
+import "./App.css";
 
 function Layout() {
   return (
     <>
-      {/* <Nav /> */}
+      <Nav />
       <Outlet />
-      {/* <Footer /> */}
     </>
   );
 }
 
 function App() {
-  
-
   return (
     <>
       <Router>
         <Routes>
           <Route path="/" element={<Layout />}>
             <Route path="/" element={<Home />} />
-            {/* <Route path="/footer" element={<Footer />} /> */}
+            <Route path="/conjugator" element={<Conjugator />} />
           </Route>
         </Routes>
       </Router>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
