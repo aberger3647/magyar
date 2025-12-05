@@ -1,0 +1,42 @@
+[
+  {
+    "translation": "to see",
+    "infinitive": "látni",
+    "present": {
+      "indefinite": {
+        "én": "látom",
+        "te": "látod",
+        "ö": "látja",
+        "mi": "látjuk",
+        "ti": "látjátok",
+        "ök": "látnák"
+      },
+      "definite": {
+        "én": "látok",
+        "te": "látsz",
+        "ö": "lát",
+        "mi": "látunk",
+        "ti": "láttok",
+        "ök": "látjak"
+      }
+    },
+    "past": {
+      "indefinite": {
+        "én": "láttam",
+        "te": "láttál",
+        "ö": "látott",
+        "mi": "láttunk",
+        "ti": "láttatok",
+        "ök": "láttak"
+      },
+      "definite": {
+        "én": "láttam",
+        "te": "láttad",
+        "ö": "látta",
+        "mi": "láttuk",
+        "ti": "láttátok",
+        "ök": "látták"
+      }
+    }
+  }
+]
