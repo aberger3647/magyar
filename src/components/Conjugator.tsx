@@ -6,7 +6,6 @@ import { Checkbox } from "@/components/ui/checkbox";
 
 import {
   Field,
-  FieldDescription,
   FieldError,
   FieldGroup,
   FieldLabel,
@@ -16,6 +15,17 @@ import {
 } from "@/components/ui/field";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
+const PRONOUN_KEYS = ["én", "te", "ő", "mi", "ti", "ők"] as const;
+import * as z from "zod";
+
+const formSchema = z.object({
+  én: z.string().nonempty("This field is required"),
+  te: z.string().nonempty("This field is required"),
+  ő: z.string().nonempty("This field is required"),
+  mi: z.string().nonempty("This field is required"),
+  ti: z.string().nonempty("This field is required"),
+  ők: z.string().nonempty("This field is required"),
+});
 
 function FieldCheckbox() {
   return (
@@ -77,9 +87,9 @@ export const Conjugator = () => {
       ti: "",
       ők: "",
     },
-    // validators: {
-    //   onSubmit: formSchema,
-    // },
+    validators: {
+      onSubmit: formSchema,
+    },
     onSubmit: async ({ value }) => {
       toast.success("Form submitted successfully");
       console.log(value);
@@ -102,67 +112,34 @@ export const Conjugator = () => {
         }}
       >
         <FieldGroup>
-          <FieldSet>
-            <FieldLegend variant="label">
-              {conjugations[0].infinitive} | {conjugations[0].translation}
-            </FieldLegend>
-
-            {Object.keys(conjugations[0].present.indefinite).map((key, idx) => {
-              const inputId = `answer-present-indefinite-${idx}`;
-              return (
-                <FieldGroup key={`${key}-${idx}`} className="gap-3">
-                  <Field orientation="horizontal">
-                    <FieldLabel
-                      htmlFor={inputId}
-                      className="font-normal"
-                      defaultChecked
-                    >
-                      {key}
-                    </FieldLabel>
-                    <Input id={inputId} />
-                    <FieldError>err</FieldError>
-                  </Field>
-                </FieldGroup>
-              );
-            })}
-          </FieldSet>
-        </FieldGroup>
-        <Button className="mt-4">Submit Answers</Button>
-      </form>
-
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          form.handleSubmit();
-        }}
-      >
-        <FieldGroup>
-          {Object.keys(conjugations[0].present.indefinite).map((key, idx) => (
-            <form.Field
-              name={key}
-              children={(field) => {
-                const isInvalid =
-                  field.state.meta.isTouched && !field.state.meta.isValid;
-                return (
-                  <Field data-invalid={isInvalid}>
-                    <FieldLabel htmlFor={field.name}>{key}</FieldLabel>
-                    <Input
-                      id={field.name}
-                      name={field.name}
-                      value={field.state.value}
-                      onBlur={field.handleBlur}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                      aria-invalid={isInvalid}
-                      autoComplete="off"
-                    />
-                    {isInvalid && (
-                      <FieldError errors={field.state.meta.errors} />
-                    )}
-                  </Field>
-                );
-              }}
-            />
-          ))}
+          {PRONOUN_KEYS.map((pronoun) => {
+            return (
+              <form.Field
+                name={pronoun}
+                children={(field) => {
+                  const isInvalid =
+                    field.state.meta.isTouched && !field.state.meta.isValid;
+                  return (
+                    <Field data-invalid={isInvalid} orientation="horizontal">
+                      <FieldLabel htmlFor={field.name}>{pronoun}</FieldLabel>
+                      <Input
+                        id={field.name}
+                        name={field.name}
+                        value={field.state.value}
+                        onBlur={field.handleBlur}
+                        onChange={(e) => field.handleChange(e.target.value)}
+                        aria-invalid={isInvalid}
+                        autoComplete="off"
+                      />
+                      {isInvalid && (
+                        <FieldError errors={field.state.meta.errors} />
+                      )}
+                    </Field>
+                  );
+                }}
+              />
+            );
+          })}
         </FieldGroup>
         <Button type="submit">Submit</Button>
       </form>

@@ -6,36 +6,36 @@
       "indefinite": {
         "én": "látom",
         "te": "látod",
-        "ö": "látja",
+        "ő": "látja",
         "mi": "látjuk",
         "ti": "látjátok",
-        "ök": "látnák"
+        "ők": "látnák"
       },
       "definite": {
         "én": "látok",
         "te": "látsz",
-        "ö": "lát",
+        "ő": "lát",
         "mi": "látunk",
         "ti": "láttok",
-        "ök": "látjak"
+        "ők": "látjak"
       }
     },
     "past": {
       "indefinite": {
         "én": "láttam",
         "te": "láttál",
-        "ö": "látott",
+        "ő": "látott",
         "mi": "láttunk",
         "ti": "láttatok",
-        "ök": "láttak"
+        "ők": "láttak"
       },
       "definite": {
         "én": "láttam",
         "te": "láttad",
-        "ö": "látta",
+        "ő": "látta",
         "mi": "láttuk",
         "ti": "láttátok",
-        "ök": "látták"
+        "ők": "látták"
       }
     }
   }
