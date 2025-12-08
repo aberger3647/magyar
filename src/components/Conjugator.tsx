@@ -1,9 +1,13 @@
 import conjugations from "../assets/conjugations.json";
-
+import { useForm } from "@tanstack/react-form";
+import { toast } from "sonner";
+import { Toaster } from "sonner";
 import { Checkbox } from "@/components/ui/checkbox";
 
 import {
   Field,
+  FieldDescription,
+  FieldError,
   FieldGroup,
   FieldLabel,
   FieldLegend,
@@ -64,6 +68,23 @@ function FieldCheckbox() {
 }
 
 export const Conjugator = () => {
+  const form = useForm({
+    defaultValues: {
+      én: "",
+      te: "",
+      ő: "",
+      mi: "",
+      ti: "",
+      ők: "",
+    },
+    // validators: {
+    //   onSubmit: formSchema,
+    // },
+    onSubmit: async ({ value }) => {
+      toast.success("Form submitted successfully");
+      console.log(value);
+    },
+  });
   console.log(conjugations);
   return (
     <main className="flex flex-col items-center pb-4">
@@ -73,7 +94,13 @@ export const Conjugator = () => {
         <Button className="mt-4">Start Quiz</Button>
       </form>
 
-      <form className="flex flex-col items-center justify-center w-full max-w-md">
+      <form
+        className="flex flex-col items-center justify-center w-full max-w-md"
+        onSubmit={(e) => {
+          e.preventDefault();
+          form.handleSubmit();
+        }}
+      >
         <FieldGroup>
           <FieldSet>
             <FieldLegend variant="label">
@@ -93,6 +120,7 @@ export const Conjugator = () => {
                       {key}
                     </FieldLabel>
                     <Input id={inputId} />
+                    <FieldError>err</FieldError>
                   </Field>
                 </FieldGroup>
               );
@@ -101,6 +129,44 @@ export const Conjugator = () => {
         </FieldGroup>
         <Button className="mt-4">Submit Answers</Button>
       </form>
+
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          form.handleSubmit();
+        }}
+      >
+        <FieldGroup>
+          {Object.keys(conjugations[0].present.indefinite).map((key, idx) => (
+            <form.Field
+              name={key}
+              children={(field) => {
+                const isInvalid =
+                  field.state.meta.isTouched && !field.state.meta.isValid;
+                return (
+                  <Field data-invalid={isInvalid}>
+                    <FieldLabel htmlFor={field.name}>{key}</FieldLabel>
+                    <Input
+                      id={field.name}
+                      name={field.name}
+                      value={field.state.value}
+                      onBlur={field.handleBlur}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      aria-invalid={isInvalid}
+                      autoComplete="off"
+                    />
+                    {isInvalid && (
+                      <FieldError errors={field.state.meta.errors} />
+                    )}
+                  </Field>
+                );
+              }}
+            />
+          ))}
+        </FieldGroup>
+        <Button type="submit">Submit</Button>
+      </form>
+      <Toaster />
     </main>
   );
 };
