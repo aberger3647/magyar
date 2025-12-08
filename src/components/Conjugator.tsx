@@ -20,9 +20,9 @@ function FieldCheckbox() {
         <FieldLegend variant="label">Past or Present</FieldLegend>
         <FieldGroup className="gap-3">
           <Field orientation="horizontal">
-            <Checkbox id="finder-pref-9k2-hard-disks-ljj" />
+            <Checkbox id="tense-present" />
             <FieldLabel
-              htmlFor="finder-pref-9k2-hard-disks-ljj"
+              htmlFor="tense-present"
               className="font-normal"
               defaultChecked
             >
@@ -30,11 +30,8 @@ function FieldCheckbox() {
             </FieldLabel>
           </Field>
           <Field orientation="horizontal">
-            <Checkbox id="finder-pref-9k2-external-disks-1yg" />
-            <FieldLabel
-              htmlFor="finder-pref-9k2-external-disks-1yg"
-              className="font-normal"
-            >
+            <Checkbox id="tense-past" />
+            <FieldLabel htmlFor="tense-past" className="font-normal">
               Past
             </FieldLabel>
           </Field>
@@ -45,9 +42,9 @@ function FieldCheckbox() {
         <FieldLegend variant="label">Definite or Indefinite</FieldLegend>
         <FieldGroup className="gap-3">
           <Field orientation="horizontal">
-            <Checkbox id="finder-pref-9k2-hard-disks-ljj" />
+            <Checkbox id="voice-definite" />
             <FieldLabel
-              htmlFor="finder-pref-9k2-hard-disks-ljj"
+              htmlFor="voice-definite"
               className="font-normal"
               defaultChecked
             >
@@ -55,11 +52,8 @@ function FieldCheckbox() {
             </FieldLabel>
           </Field>
           <Field orientation="horizontal">
-            <Checkbox id="finder-pref-9k2-external-disks-1yg" />
-            <FieldLabel
-              htmlFor="finder-pref-9k2-external-disks-1yg"
-              className="font-normal"
-            >
+            <Checkbox id="voice-indefinite" />
+            <FieldLabel htmlFor="voice-indefinite" className="font-normal">
               Indefinite
             </FieldLabel>
           </Field>
@@ -86,25 +80,27 @@ export const Conjugator = () => {
               {conjugations[0].infinitive} | {conjugations[0].translation}
             </FieldLegend>
 
-            {Object.keys(conjugations[0].present.indefinite).map((key) => (
-              <FieldGroup className="gap-3">
-                <Field orientation="horizontal">
-                  <FieldLabel
-                    htmlFor="finder-pref-9k2-hard-disks-ljj"
-                    className="font-normal"
-                    defaultChecked
-                  >
-                    {key}
-                  </FieldLabel>
-                  <Input id="finder-pref-9k2-hard-disks-ljj" />
-                </Field>
-              </FieldGroup>
-            ))}
+            {Object.keys(conjugations[0].present.indefinite).map((key, idx) => {
+              const inputId = `answer-present-indefinite-${idx}`;
+              return (
+                <FieldGroup key={`${key}-${idx}`} className="gap-3">
+                  <Field orientation="horizontal">
+                    <FieldLabel
+                      htmlFor={inputId}
+                      className="font-normal"
+                      defaultChecked
+                    >
+                      {key}
+                    </FieldLabel>
+                    <Input id={inputId} />
+                  </Field>
+                </FieldGroup>
+              );
+            })}
           </FieldSet>
         </FieldGroup>
-      <Button className="mt-4">Submit Answers</Button>
+        <Button className="mt-4">Submit Answers</Button>
       </form>
-
     </main>
   );
 };
