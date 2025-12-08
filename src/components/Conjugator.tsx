@@ -1,45 +1,110 @@
 import conjugations from "../assets/conjugations.json";
 
+import { Checkbox } from "@/components/ui/checkbox";
+
+import {
+  Field,
+  FieldGroup,
+  FieldLabel,
+  FieldLegend,
+  FieldSeparator,
+  FieldSet,
+} from "@/components/ui/field";
+import { Button } from "./ui/button";
+import { Input } from "./ui/input";
+
+function FieldCheckbox() {
+  return (
+    <FieldGroup>
+      <FieldSet>
+        <FieldLegend variant="label">Past or Present</FieldLegend>
+        <FieldGroup className="gap-3">
+          <Field orientation="horizontal">
+            <Checkbox id="finder-pref-9k2-hard-disks-ljj" />
+            <FieldLabel
+              htmlFor="finder-pref-9k2-hard-disks-ljj"
+              className="font-normal"
+              defaultChecked
+            >
+              Present
+            </FieldLabel>
+          </Field>
+          <Field orientation="horizontal">
+            <Checkbox id="finder-pref-9k2-external-disks-1yg" />
+            <FieldLabel
+              htmlFor="finder-pref-9k2-external-disks-1yg"
+              className="font-normal"
+            >
+              Past
+            </FieldLabel>
+          </Field>
+        </FieldGroup>
+      </FieldSet>
+      <FieldSeparator />
+      <FieldSet>
+        <FieldLegend variant="label">Definite or Indefinite</FieldLegend>
+        <FieldGroup className="gap-3">
+          <Field orientation="horizontal">
+            <Checkbox id="finder-pref-9k2-hard-disks-ljj" />
+            <FieldLabel
+              htmlFor="finder-pref-9k2-hard-disks-ljj"
+              className="font-normal"
+              defaultChecked
+            >
+              Definite
+            </FieldLabel>
+          </Field>
+          <Field orientation="horizontal">
+            <Checkbox id="finder-pref-9k2-external-disks-1yg" />
+            <FieldLabel
+              htmlFor="finder-pref-9k2-external-disks-1yg"
+              className="font-normal"
+            >
+              Indefinite
+            </FieldLabel>
+          </Field>
+        </FieldGroup>
+      </FieldSet>
+    </FieldGroup>
+  );
+}
+
 export const Conjugator = () => {
   console.log(conjugations);
   return (
     <main className="flex flex-col items-center pb-4">
-      <h1 className="text-xl mb-5">Conjugator Quiz</h1>
-      <form className="flex flex-col gap-5">
-        <fieldset className="flex gap-2">
-          <legend>Past and/or Present</legend>
-          <input type="checkbox" name="tense" value="present" id="present" />
-          <label htmlFor="present">Present</label>
-          <input type="checkbox" name="tense" value="past" id="past" />
-          <label htmlFor="past">Past</label>
-        </fieldset>
-
-        <fieldset className="flex gap-2">
-          <legend>Definite and/or Indefinite</legend>
-          <input type="checkbox" name="def" value="definite" id="definite" />
-          <label htmlFor="definite">Definite</label>
-          <input
-            type="checkbox"
-            name="def"
-            value="indefinite"
-            id="indefinite"
-          />
-          <label htmlFor="indefinite">Indefinite</label>
-        </fieldset>
-
-        <button type="submit" className="border p-2">
-          Start Quiz
-        </button>
+      <h1 className="mb-5 text-xl">Conjugator Quiz</h1>
+      <form className="flex flex-col items-center justify-center w-full max-w-md">
+        <FieldCheckbox />
+        <Button className="mt-4">Start Quiz</Button>
       </form>
 
-      <p>{conjugations[0].infinitive}</p>
-      <p>{conjugations[0].translation}</p>
-      {Object.keys(conjugations[0].present.indefinite).map((key) => (
-        <p className="p-2">
-          {key} <input className="border" />
-        </p>
-      ))}
-      <button className="border p-2">Submit</button>
+      <form className="flex flex-col items-center justify-center w-full max-w-md">
+        <FieldGroup>
+          <FieldSet>
+            <FieldLegend variant="label">
+              {conjugations[0].infinitive} | {conjugations[0].translation}
+            </FieldLegend>
+
+            {Object.keys(conjugations[0].present.indefinite).map((key) => (
+              <FieldGroup className="gap-3">
+                <Field orientation="horizontal">
+                  <FieldLabel
+                    htmlFor="finder-pref-9k2-hard-disks-ljj"
+                    className="font-normal"
+                    defaultChecked
+                  >
+                    {key}
+                  </FieldLabel>
+                  <Input id="finder-pref-9k2-hard-disks-ljj" />
+                </Field>
+              </FieldGroup>
+            ))}
+          </FieldSet>
+        </FieldGroup>
+      <Button className="mt-4">Submit Answers</Button>
+      </form>
+
     </main>
   );
 };
