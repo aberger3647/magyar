@@ -24,6 +24,8 @@ import {
   CardDescription,
   CardContent,
 } from "./ui/card";
+import type { VerbConjugation } from "./VerbConjugation";
+import type { Pronouns } from "./Pronouns";
 
 const formSchema = z.object({
   én: z.string().nonempty("This field is required"),
@@ -85,6 +87,10 @@ function FieldCheckbox() {
 }
 
 export const Conjugator = () => {
+  const randomWord = conjugations[0];
+  const infinitive = randomWord.infinitive;
+  const translation = randomWord.translation;
+
   const form = useForm({
     defaultValues: {
       én: "",
@@ -97,13 +103,34 @@ export const Conjugator = () => {
     validators: {
       onSubmit: formSchema,
     },
-    onSubmit: async ({ value }) => {
+    onSubmit: async ({ value: userAnswers }) => {
+      console.log("VALUE", userAnswers);
+
+      const incorrectSubmissions = getIncorrectSubmissions(
+        userAnswers,
+        randomWord
+      );
+
+      if (incorrectSubmissions.length) {
+        // 2. Identify WHICH field is problematic (example: highlighting "te")
+        // You could also loop through values to find exactly which ones are duplicates
+        incorrectSubmissions.forEach((pronoun) => {
+          form.setFieldMeta(pronoun, (prev) => ({
+            ...prev,
+            errorMap: {
+              onSubmit: "This conjugation is a duplicate of another field.",
+            },
+          }));
+        });
+
+        toast.error("It's wrong");
+        return; // Prevent the actual API call
+      }
+
       toast.success("Form submitted successfully");
-      console.log(value);
     },
   });
-  const infinitive = conjugations[0].infinitive;
-  const translation = conjugations[0].translation;
+
   console.log(conjugations);
   return (
     <main className="flex flex-col items-center gap-4 pb-4">
@@ -170,6 +197,19 @@ export const Conjugator = () => {
   );
 };
 
+function getIncorrectSubmissions(
+  userAnswers: Pronouns,
+  randomWord: VerbConjugation
+) {
+  return PRONOUN_KEYS.flatMap((pronoun) => {
+    const correctWord = randomWord.present.definite[pronoun];
+    const userWord = userAnswers[pronoun];
+    if (correctWord != userWord) {
+      return pronoun;
+    }
+    return [];
+  });
+}
 // select past or present
 // select definite or indefinite
 // display translation
