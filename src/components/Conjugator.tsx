@@ -17,6 +17,13 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 const PRONOUN_KEYS = ["én", "te", "ő", "mi", "ti", "ők"] as const;
 import * as z from "zod";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+} from "./ui/card";
 
 const formSchema = z.object({
   én: z.string().nonempty("This field is required"),
@@ -95,54 +102,69 @@ export const Conjugator = () => {
       console.log(value);
     },
   });
+  const infinitive = conjugations[0].infinitive;
+  const translation = conjugations[0].translation;
   console.log(conjugations);
   return (
-    <main className="flex flex-col items-center pb-4">
+    <main className="flex flex-col items-center gap-4 pb-4">
       <h1 className="mb-5 text-xl">Conjugator Quiz</h1>
       <form className="flex flex-col items-center justify-center w-full max-w-md">
         <FieldCheckbox />
         <Button className="mt-4">Start Quiz</Button>
       </form>
 
-      <form
-        className="flex flex-col items-center justify-center w-full max-w-md"
-        onSubmit={(e) => {
-          e.preventDefault();
-          form.handleSubmit();
-        }}
-      >
-        <FieldGroup>
-          {PRONOUN_KEYS.map((pronoun) => {
-            return (
-              <form.Field
-                name={pronoun}
-                children={(field) => {
-                  const isInvalid =
-                    field.state.meta.isTouched && !field.state.meta.isValid;
-                  return (
-                    <Field data-invalid={isInvalid} orientation="horizontal">
-                      <FieldLabel htmlFor={field.name}>{pronoun}</FieldLabel>
-                      <Input
-                        id={field.name}
-                        name={field.name}
-                        value={field.state.value}
-                        onBlur={field.handleBlur}
-                        onChange={(e) => field.handleChange(e.target.value)}
-                        aria-invalid={isInvalid}
-                        autoComplete="off"
-                      />
-                      {isInvalid && (
-                        <FieldError errors={field.state.meta.errors} />
-                      )}
-                    </Field>
-                  );
-                }}
-              />
-            );
-          })}
-        </FieldGroup>
-        <Button type="submit">Submit</Button>
-      </form>
+      <Card className="w-full sm:max-w-md">
+        <CardHeader>
+          <CardTitle>{infinitive}</CardTitle>
+          <CardDescription>{translation}</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form
+            className="flex flex-col items-center justify-center w-full max-w-md gap-4"
+            onSubmit={(e) => {
+              e.preventDefault();
+              form.handleSubmit();
+            }}
+          >
+            <FieldGroup>
+              {PRONOUN_KEYS.map((pronoun) => {
+                return (
+                  <form.Field
+                    name={pronoun}
+                    children={(field) => {
+                      const isInvalid =
+                        field.state.meta.isTouched && !field.state.meta.isValid;
+                      return (
+                        <Field
+                          data-invalid={isInvalid}
+                          orientation="horizontal"
+                        >
+                          <FieldLabel htmlFor={field.name}>
+                            {pronoun}
+                          </FieldLabel>
+                          <Input
+                            id={field.name}
+                            name={field.name}
+                            value={field.state.value}
+                            onBlur={field.handleBlur}
+                            onChange={(e) => field.handleChange(e.target.value)}
+                            aria-invalid={isInvalid}
+                            autoComplete="off"
+                          />
+                          {isInvalid && (
+                            <FieldError errors={field.state.meta.errors} />
+                          )}
+                        </Field>
+                      );
+                    }}
+                  />
+                );
+              })}
+            </FieldGroup>
+            <Button type="submit">Submit</Button>
+          </form>
+        </CardContent>
+      </Card>
       <Toaster />
     </main>
   );
