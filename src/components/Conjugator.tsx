@@ -36,53 +36,150 @@ const formSchema = z.object({
   ők: z.string().nonempty("This field is required"),
 });
 
+// const checkboxFormSchema = z.object({
+//   tense: z.array,
+//   voice:
+// })
+
 function FieldCheckbox() {
+  const form = useForm({
+    defaultValues: {
+      tense: "",
+      voice: "",
+    },
+    // validators: {
+    //   onSubmit: checkboxFormSchema,
+    // },
+    onSubmit: async ({ value: quizPrefs }) => {
+      console.log(quizPrefs);
+    },
+  });
   return (
-    <FieldGroup>
-      <FieldSet>
-        <FieldLegend variant="label">Past or Present</FieldLegend>
-        <FieldGroup className="gap-3">
-          <Field orientation="horizontal">
-            <Checkbox id="tense-present" />
-            <FieldLabel
-              htmlFor="tense-present"
-              className="font-normal"
-              defaultChecked
-            >
-              Present
-            </FieldLabel>
-          </Field>
-          <Field orientation="horizontal">
-            <Checkbox id="tense-past" />
-            <FieldLabel htmlFor="tense-past" className="font-normal">
-              Past
-            </FieldLabel>
-          </Field>
+    <form
+      className="flex flex-col items-center justify-center w-full max-w-md gap-4"
+      onSubmit={(e) => {
+        e.preventDefault();
+        form.setErrorMap({
+          onSubmit: {
+            fields: {},
+          },
+        });
+
+        form.handleSubmit();
+      }}
+    >
+      <FieldGroup>
+        <FieldSet>
+          <FieldLegend variant="label">Tense</FieldLegend>
+          <FieldGroup className="gap-3">
+            <form.Field
+              name="tense"
+              children={(field) => {
+                const isInvalid =
+                  field.state.meta.isTouched && !field.state.meta.isValid;
+
+                return (
+                  <Field orientation="horizontal" data-invalid={isInvalid}>
+                    <Checkbox
+                      id="tense-present"
+                      name="tense"
+                      value="present"
+                      aria-invalid={isInvalid}
+                    />
+                    <FieldLabel
+                      htmlFor="tense-present"
+                      className="font-normal"
+                      defaultChecked
+                    >
+                      Present
+                    </FieldLabel>
+                  </Field>
+                );
+              }}
+            />
+            <form.Field
+              name="tense"
+              children={(field) => {
+                const isInvalid =
+                  field.state.meta.isTouched && !field.state.meta.isValid;
+
+                return (
+                  <Field orientation="horizontal">
+                    <Checkbox
+                      id="tense-past"
+                      name="tense"
+                      value="past"
+                      aria-invalid={isInvalid}
+                    />
+                    <FieldLabel htmlFor="tense-past" className="font-normal">
+                      Past
+                    </FieldLabel>
+                  </Field>
+                );
+              }}
+            />
+          </FieldGroup>
+        </FieldSet>
+        <FieldSeparator />
+        <FieldGroup>
+          <FieldSet>
+            <FieldLegend variant="label">Voice</FieldLegend>
+            <FieldGroup className="gap-3">
+              <form.Field
+                name="voice"
+                children={(field) => {
+                  const isInvalid =
+                    field.state.meta.isTouched && !field.state.meta.isValid;
+
+                  return (
+                    <Field orientation="horizontal" data-invalid={isInvalid}>
+                      <Checkbox
+                        id="voice-indefinite"
+                        name="voice"
+                        value="indefinite"
+                        aria-invalid={isInvalid}
+                      />
+                      <FieldLabel
+                        htmlFor="voice-indefinite"
+                        className="font-normal"
+                        defaultChecked
+                      >
+                        Indefinite
+                      </FieldLabel>
+                    </Field>
+                  );
+                }}
+              />
+              <form.Field
+                name="voice"
+                children={(field) => {
+                  const isInvalid =
+                    field.state.meta.isTouched && !field.state.meta.isValid;
+
+                  return (
+                    <Field orientation="horizontal">
+                      <Checkbox
+                        id="voice-definite"
+                        name="voice"
+                        value="definite"
+                        aria-invalid={isInvalid}
+                      />
+                      <FieldLabel
+                        htmlFor="voice-definite"
+                        className="font-normal"
+                      >
+                        Definite
+                      </FieldLabel>
+                    </Field>
+                  );
+                }}
+              />
+            </FieldGroup>
+          </FieldSet>
         </FieldGroup>
-      </FieldSet>
-      <FieldSeparator />
-      <FieldSet>
-        <FieldLegend variant="label">Definite or Indefinite</FieldLegend>
-        <FieldGroup className="gap-3">
-          <Field orientation="horizontal">
-            <Checkbox id="voice-definite" />
-            <FieldLabel
-              htmlFor="voice-definite"
-              className="font-normal"
-              defaultChecked
-            >
-              Definite
-            </FieldLabel>
-          </Field>
-          <Field orientation="horizontal">
-            <Checkbox id="voice-indefinite" />
-            <FieldLabel htmlFor="voice-indefinite" className="font-normal">
-              Indefinite
-            </FieldLabel>
-          </Field>
-        </FieldGroup>
-      </FieldSet>
-    </FieldGroup>
+      </FieldGroup>
+      <Button className="mt-4">Start Quiz</Button>
+    </form>
   );
 }
 
@@ -104,8 +201,6 @@ export const Conjugator = () => {
       onSubmit: formSchema,
     },
     onSubmit: async ({ value: userAnswers }) => {
-      console.log("VALUE", userAnswers);
-
       const incorrectSubmissions = getIncorrectSubmissions(
         userAnswers,
         randomWord
@@ -118,7 +213,9 @@ export const Conjugator = () => {
           form.setFieldMeta(pronoun, (prev) => ({
             ...prev,
             errorMap: {
-              onSubmit: "This conjugation is a duplicate of another field.",
+              onSubmit: {
+                message: "Wrong",
+              },
             },
           }));
         });
@@ -131,14 +228,10 @@ export const Conjugator = () => {
     },
   });
 
-  console.log(conjugations);
   return (
     <main className="flex flex-col items-center gap-4 pb-4">
       <h1 className="mb-5 text-xl">Conjugator Quiz</h1>
-      <form className="flex flex-col items-center justify-center w-full max-w-md">
-        <FieldCheckbox />
-        <Button className="mt-4">Start Quiz</Button>
-      </form>
+      <FieldCheckbox />
 
       <Card className="w-full sm:max-w-md">
         <CardHeader>
@@ -150,6 +243,12 @@ export const Conjugator = () => {
             className="flex flex-col items-center justify-center w-full max-w-md gap-4"
             onSubmit={(e) => {
               e.preventDefault();
+              form.setErrorMap({
+                onSubmit: {
+                  fields: {},
+                },
+              });
+
               form.handleSubmit();
             }}
           >
@@ -161,6 +260,7 @@ export const Conjugator = () => {
                     children={(field) => {
                       const isInvalid =
                         field.state.meta.isTouched && !field.state.meta.isValid;
+
                       return (
                         <Field
                           data-invalid={isInvalid}
@@ -210,9 +310,3 @@ function getIncorrectSubmissions(
     return [];
   });
 }
-// select past or present
-// select definite or indefinite
-// display translation
-// display infinitive
-// get a random pronoun from the key
-// the answer is the value
