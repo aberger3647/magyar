@@ -16,6 +16,7 @@ import {
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 const PRONOUN_KEYS = ["én", "te", "ő", "mi", "ti", "ők"] as const;
+type PronounKey = typeof PRONOUN_KEYS[number];
 import * as z from "zod";
 import {
   Card,
@@ -44,8 +45,8 @@ const formSchema = z.object({
 function FieldCheckbox() {
   const form = useForm({
     defaultValues: {
-      tense: "",
-      voice: "",
+      tense: "present",
+      voice: "indefinite",
     },
     // validators: {
     //   onSubmit: checkboxFormSchema,
@@ -84,6 +85,11 @@ function FieldCheckbox() {
                       id="tense-present"
                       name="tense"
                       value="present"
+                      checked={field.state.value === "present"}
+                      onCheckedChange={(checked) =>
+                        field.handleChange(checked ? "present" : "")
+                      }
+                      onBlur={field.handleBlur}
                       aria-invalid={isInvalid}
                     />
                     <FieldLabel
@@ -109,6 +115,11 @@ function FieldCheckbox() {
                       id="tense-past"
                       name="tense"
                       value="past"
+                      checked={field.state.value === "past"}
+                      onCheckedChange={(checked) =>
+                        field.handleChange(checked ? "past" : "")
+                      }
+                      onBlur={field.handleBlur}
                       aria-invalid={isInvalid}
                     />
                     <FieldLabel htmlFor="tense-past" className="font-normal">
@@ -137,6 +148,11 @@ function FieldCheckbox() {
                         id="voice-indefinite"
                         name="voice"
                         value="indefinite"
+                        checked={field.state.value === "indefinite"}
+                        onCheckedChange={(checked) =>
+                          field.handleChange(checked ? "indefinite" : "")
+                        }
+                        onBlur={field.handleBlur}
                         aria-invalid={isInvalid}
                       />
                       <FieldLabel
@@ -162,6 +178,11 @@ function FieldCheckbox() {
                         id="voice-definite"
                         name="voice"
                         value="definite"
+                        checked={field.state.value === "definite"}
+                        onCheckedChange={(checked) =>
+                          field.handleChange(checked ? "definite" : "")
+                        }
+                        onBlur={field.handleBlur}
                         aria-invalid={isInvalid}
                       />
                       <FieldLabel
@@ -253,11 +274,12 @@ export const Conjugator = () => {
             }}
           >
             <FieldGroup>
-              {PRONOUN_KEYS.map((pronoun) => {
-                return (
-                  <form.Field
-                    name={pronoun}
-                    children={(field) => {
+              {PRONOUN_KEYS.map((pronoun: PronounKey) => {
+                  return (
+                    <form.Field
+                      key={pronoun}
+                      name={pronoun}
+                      children={(field) => {
                       const isInvalid =
                         field.state.meta.isTouched && !field.state.meta.isValid;
 
@@ -300,12 +322,12 @@ export const Conjugator = () => {
 function getIncorrectSubmissions(
   userAnswers: Pronouns,
   randomWord: VerbConjugation
-) {
-  return PRONOUN_KEYS.flatMap((pronoun) => {
+): PronounKey[] {
+  return PRONOUN_KEYS.flatMap((pronoun: PronounKey) => {
     const correctWord = randomWord.present.definite[pronoun];
     const userWord = userAnswers[pronoun];
     if (correctWord != userWord) {
-      return pronoun;
+      return [pronoun];
     }
     return [];
   });
