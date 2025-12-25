@@ -2,15 +2,11 @@ import conjugations from "../assets/conjugations.json";
 import { useForm } from "@tanstack/react-form";
 import { toast } from "sonner";
 import { Toaster } from "sonner";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   Field,
   FieldError,
   FieldGroup,
   FieldLabel,
-  FieldLegend,
-  FieldSeparator,
-  FieldSet,
 } from "@/components/ui/field";
 import * as z from "zod";
 import { Button } from "./ui/button";
@@ -24,8 +20,8 @@ import {
 } from "./ui/card";
 import type { VerbConjugation } from "./VerbConjugation";
 import type { Pronouns } from "./Pronouns";
-
-import { useState, type Dispatch, type SetStateAction } from "react";
+import type { VoiceType } from "./types";
+import type { TenseType } from "./types";
 
 const PRONOUN_KEYS = ["én", "te", "ő", "mi", "ti", "ők"] as const;
 type PronounKey = (typeof PRONOUN_KEYS)[number];
@@ -39,184 +35,13 @@ const formSchema = z.object({
   ők: z.string().nonempty("This field is required"),
 });
 
-// const checkboxFormSchema = z.object({
-//   tense: z.array,
-//   voice:
-// })
-
-function FieldCheckbox({
-  setTense,
-  setVoice,
+export const Conjugator = ({
+  tense,
+  voice,
 }: {
-  setTense: Dispatch<SetStateAction<"present" | "past">>;
-  setVoice: Dispatch<SetStateAction<"definite" | "indefinite">>;
-}) {
-  const form = useForm({
-    defaultValues: {
-      tense: "present",
-      voice: "indefinite",
-    },
-    // validators: {
-    //   onSubmit: checkboxFormSchema,
-    // },
-    onSubmit: async ({ value: quizPrefs }) => {
-      setTense(quizPrefs.tense);
-      setVoice(quizPrefs.voice);
-      console.log(quizPrefs);
-    },
-  });
-  return (
-    <form
-      className="flex flex-col items-center justify-center w-full max-w-md gap-4"
-      onSubmit={(e) => {
-        e.preventDefault();
-        form.setErrorMap({
-          onSubmit: {
-            fields: {},
-          },
-        });
-
-        form.handleSubmit();
-      }}
-    >
-      <FieldGroup>
-        <FieldSet>
-          <FieldLegend variant="label">Tense</FieldLegend>
-          <FieldGroup className="gap-3">
-            <form.Field
-              name="tense"
-              children={(field) => {
-                const isInvalid =
-                  field.state.meta.isTouched && !field.state.meta.isValid;
-
-                return (
-                  <Field orientation="horizontal" data-invalid={isInvalid}>
-                    <Checkbox
-                      id="tense-present"
-                      name="tense"
-                      value="present"
-                      checked={field.state.value === "present"}
-                      onCheckedChange={(checked) =>
-                        field.handleChange(checked ? "present" : "")
-                      }
-                      onBlur={field.handleBlur}
-                      aria-invalid={isInvalid}
-                    />
-                    <FieldLabel
-                      htmlFor="tense-present"
-                      className="font-normal"
-                      defaultChecked
-                    >
-                      Present
-                    </FieldLabel>
-                  </Field>
-                );
-              }}
-            />
-            <form.Field
-              name="tense"
-              children={(field) => {
-                const isInvalid =
-                  field.state.meta.isTouched && !field.state.meta.isValid;
-
-                return (
-                  <Field orientation="horizontal">
-                    <Checkbox
-                      id="tense-past"
-                      name="tense"
-                      value="past"
-                      checked={field.state.value === "past"}
-                      onCheckedChange={(checked) =>
-                        field.handleChange(checked ? "past" : "")
-                      }
-                      onBlur={field.handleBlur}
-                      aria-invalid={isInvalid}
-                    />
-                    <FieldLabel htmlFor="tense-past" className="font-normal">
-                      Past
-                    </FieldLabel>
-                  </Field>
-                );
-              }}
-            />
-          </FieldGroup>
-        </FieldSet>
-        <FieldSeparator />
-        <FieldGroup>
-          <FieldSet>
-            <FieldLegend variant="label">Voice</FieldLegend>
-            <FieldGroup className="gap-3">
-              <form.Field
-                name="voice"
-                children={(field) => {
-                  const isInvalid =
-                    field.state.meta.isTouched && !field.state.meta.isValid;
-
-                  return (
-                    <Field orientation="horizontal" data-invalid={isInvalid}>
-                      <Checkbox
-                        id="voice-indefinite"
-                        name="voice"
-                        value="indefinite"
-                        checked={field.state.value === "indefinite"}
-                        onCheckedChange={(checked) =>
-                          field.handleChange(checked ? "indefinite" : "")
-                        }
-                        onBlur={field.handleBlur}
-                        aria-invalid={isInvalid}
-                      />
-                      <FieldLabel
-                        htmlFor="voice-indefinite"
-                        className="font-normal"
-                        defaultChecked
-                      >
-                        Indefinite
-                      </FieldLabel>
-                    </Field>
-                  );
-                }}
-              />
-              <form.Field
-                name="voice"
-                children={(field) => {
-                  const isInvalid =
-                    field.state.meta.isTouched && !field.state.meta.isValid;
-
-                  return (
-                    <Field orientation="horizontal">
-                      <Checkbox
-                        id="voice-definite"
-                        name="voice"
-                        value="definite"
-                        checked={field.state.value === "definite"}
-                        onCheckedChange={(checked) =>
-                          field.handleChange(checked ? "definite" : "")
-                        }
-                        onBlur={field.handleBlur}
-                        aria-invalid={isInvalid}
-                      />
-                      <FieldLabel
-                        htmlFor="voice-definite"
-                        className="font-normal"
-                      >
-                        Definite
-                      </FieldLabel>
-                    </Field>
-                  );
-                }}
-              />
-            </FieldGroup>
-          </FieldSet>
-        </FieldGroup>
-      </FieldGroup>
-      <Button className="mt-4">Start Quiz</Button>
-    </form>
-  );
-}
-
-export const Conjugator = () => {
-  const [tense, setTense] = useState<"present" | "past">("present");
-  const [voice, setVoice] = useState<"definite" | "indefinite">("definite");
+  tense: TenseType;
+  voice: VoiceType;
+}) => {
   const randomWord = conjugations[0];
   const infinitive = randomWord.infinitive;
   const translation = randomWord.translation;
@@ -264,12 +89,15 @@ export const Conjugator = () => {
   return (
     <main className="flex flex-col items-center gap-4 pb-4">
       <h1 className="mb-5 text-xl">Conjugator Quiz</h1>
-      <FieldCheckbox setTense={setTense} setVoice={setVoice} />
 
       <Card className="w-full sm:max-w-md">
         <CardHeader>
-          <CardTitle>{infinitive}</CardTitle>
-          <CardDescription>{translation}</CardDescription>
+          <CardTitle>
+            {infinitive} - {translation}
+          </CardTitle>
+          <CardDescription>
+            {tense} - {voice}
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <form
@@ -334,8 +162,8 @@ export const Conjugator = () => {
 function getIncorrectSubmissions(
   userAnswers: Pronouns,
   randomWord: VerbConjugation,
-  tense: "present" | "past",
-  voice: "indefinite" | "definite"
+  tense: TenseType,
+  voice: VoiceType
 ): PronounKey[] {
   return PRONOUN_KEYS.flatMap((pronoun: PronounKey) => {
     const correctWord = randomWord[tense][voice][pronoun];
