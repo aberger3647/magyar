@@ -12,19 +12,15 @@ import { Button } from "./ui/button";
 import { type Dispatch, type SetStateAction } from "react";
 import type { TenseType } from "./types";
 import type { VoiceType } from "./types";
+import { useLocation, useNavigate, useRoutes } from "react-router-dom";
 
 // const checkboxFormSchema = z.object({
 //   tense: z.array,
 //   voice:
 // })
 
-export const QuizPrefsForm = ({
-  setTense,
-  setVoice,
-}: {
-  setTense: Dispatch<SetStateAction<TenseType>>;
-  setVoice: Dispatch<SetStateAction<VoiceType>>;
-}) => {
+export const QuizPrefsForm = () => {
+const navigate = useNavigate()
   const form = useForm({
     defaultValues: {
       tense: "present",
@@ -34,9 +30,7 @@ export const QuizPrefsForm = ({
     //   onSubmit: checkboxFormSchema,
     // },
     onSubmit: async ({ value: quizPrefs }) => {
-      setTense(quizPrefs.tense);
-      setVoice(quizPrefs.voice);
-      console.log(quizPrefs);
+navigate(`/conjugator/${quizPrefs.tense}/${quizPrefs.voice}`);
     },
   });
   return (

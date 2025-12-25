@@ -22,6 +22,7 @@ import type { VerbConjugation } from "./VerbConjugation";
 import type { Pronouns } from "./Pronouns";
 import type { VoiceType } from "./types";
 import type { TenseType } from "./types";
+import { useParams } from "react-router-dom";
 
 const PRONOUN_KEYS = ["én", "te", "ő", "mi", "ti", "ők"] as const;
 type PronounKey = (typeof PRONOUN_KEYS)[number];
@@ -35,16 +36,15 @@ const formSchema = z.object({
   ők: z.string().nonempty("This field is required"),
 });
 
-export const Conjugator = ({
-  tense,
-  voice,
-}: {
-  tense: TenseType;
-  voice: VoiceType;
-}) => {
+export const Conjugator = () => {
   const randomWord = conjugations[0];
   const infinitive = randomWord.infinitive;
   const translation = randomWord.translation;
+
+  const { tense, voice } = useParams<{
+    tense: TenseType;
+    voice: VoiceType;
+  }>();
 
   const form = useForm({
     defaultValues: {
