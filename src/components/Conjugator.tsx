@@ -3,7 +3,6 @@ import { useForm } from "@tanstack/react-form";
 import { toast } from "sonner";
 import { Toaster } from "sonner";
 import { Checkbox } from "@/components/ui/checkbox";
-
 import {
   Field,
   FieldError,
@@ -13,11 +12,9 @@ import {
   FieldSeparator,
   FieldSet,
 } from "@/components/ui/field";
+import * as z from "zod";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
-const PRONOUN_KEYS = ["én", "te", "ő", "mi", "ti", "ők"] as const;
-type PronounKey = typeof PRONOUN_KEYS[number];
-import * as z from "zod";
 import {
   Card,
   CardHeader,
@@ -27,6 +24,11 @@ import {
 } from "./ui/card";
 import type { VerbConjugation } from "./VerbConjugation";
 import type { Pronouns } from "./Pronouns";
+
+import { useState, type Dispatch, type SetStateAction } from "react";
+
+const PRONOUN_KEYS = ["én", "te", "ő", "mi", "ti", "ők"] as const;
+type PronounKey = (typeof PRONOUN_KEYS)[number];
 
 const formSchema = z.object({
   én: z.string().nonempty("This field is required"),
@@ -42,7 +44,13 @@ const formSchema = z.object({
 //   voice:
 // })
 
-function FieldCheckbox() {
+function FieldCheckbox({
+  setTense,
+  setVoice,
+}: {
+  setTense: Dispatch<SetStateAction<"present" | "past">>;
+  setVoice: Dispatch<SetStateAction<"definite" | "indefinite">>;
+}) {
   const form = useForm({
     defaultValues: {
       tense: "present",
@@ -52,6 +60,8 @@ function FieldCheckbox() {
     //   onSubmit: checkboxFormSchema,
     // },
     onSubmit: async ({ value: quizPrefs }) => {
+      setTense(quizPrefs.tense);
+      setVoice(quizPrefs.voice);
       console.log(quizPrefs);
     },
   });
@@ -205,6 +215,8 @@ function FieldCheckbox() {
 }
 
 export const Conjugator = () => {
+  const [tense, setTense] = useState<"present" | "past">("present");
+  const [voice, setVoice] = useState<"definite" | "indefinite">("definite");
   const randomWord = conjugations[0];
   const infinitive = randomWord.infinitive;
   const translation = randomWord.translation;
@@ -224,12 +236,12 @@ export const Conjugator = () => {
     onSubmit: async ({ value: userAnswers }) => {
       const incorrectSubmissions = getIncorrectSubmissions(
         userAnswers,
-        randomWord
+        randomWord,
+        tense,
+        voice
       );
 
       if (incorrectSubmissions.length) {
-        // 2. Identify WHICH field is problematic (example: highlighting "te")
-        // You could also loop through values to find exactly which ones are duplicates
         incorrectSubmissions.forEach((pronoun) => {
           form.setFieldMeta(pronoun, (prev) => ({
             ...prev,
@@ -252,7 +264,7 @@ export const Conjugator = () => {
   return (
     <main className="flex flex-col items-center gap-4 pb-4">
       <h1 className="mb-5 text-xl">Conjugator Quiz</h1>
-      <FieldCheckbox />
+      <FieldCheckbox setTense={setTense} setVoice={setVoice} />
 
       <Card className="w-full sm:max-w-md">
         <CardHeader>
@@ -275,11 +287,11 @@ export const Conjugator = () => {
           >
             <FieldGroup>
               {PRONOUN_KEYS.map((pronoun: PronounKey) => {
-                  return (
-                    <form.Field
-                      key={pronoun}
-                      name={pronoun}
-                      children={(field) => {
+                return (
+                  <form.Field
+                    key={pronoun}
+                    name={pronoun}
+                    children={(field) => {
                       const isInvalid =
                         field.state.meta.isTouched && !field.state.meta.isValid;
 
@@ -321,10 +333,12 @@ export const Conjugator = () => {
 
 function getIncorrectSubmissions(
   userAnswers: Pronouns,
-  randomWord: VerbConjugation
+  randomWord: VerbConjugation,
+  tense: "present" | "past",
+  voice: "indefinite" | "definite"
 ): PronounKey[] {
   return PRONOUN_KEYS.flatMap((pronoun: PronounKey) => {
-    const correctWord = randomWord.present.definite[pronoun];
+    const correctWord = randomWord[tense][voice][pronoun];
     const userWord = userAnswers[pronoun];
     if (correctWord != userWord) {
       return [pronoun];
