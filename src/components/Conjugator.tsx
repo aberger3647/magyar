@@ -72,13 +72,13 @@ export const Conjugator = () => {
             ...prev,
             errorMap: {
               onSubmit: {
-                message: "Wrong",
+                message: "Incorrect",
               },
             },
           }));
         });
 
-        toast.error("It's wrong");
+        toast.error("Check your answers and try again.");
         return; // Prevent the actual API call
       }
 
@@ -87,9 +87,7 @@ export const Conjugator = () => {
   });
 
   return (
-    <main className="flex flex-col items-center gap-4 pb-4">
-      <h1 className="mb-5 text-xl">Conjugator Quiz</h1>
-
+    <>
       <Card className="w-full sm:max-w-md">
         <CardHeader>
           <CardTitle>
@@ -155,7 +153,7 @@ export const Conjugator = () => {
         </CardContent>
       </Card>
       <Toaster />
-    </main>
+      </>
   );
 };
 
