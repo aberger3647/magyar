@@ -23,6 +23,7 @@ import type { Pronouns } from "./Pronouns";
 import type { VoiceType } from "./types";
 import type { TenseType } from "./types";
 import { useParams } from "react-router-dom";
+import { Badge } from "./ui/badge";
 
 const PRONOUN_KEYS = ["én", "te", "ő", "mi", "ti", "ők"] as const;
 type PronounKey = (typeof PRONOUN_KEYS)[number];
@@ -38,14 +39,15 @@ const formSchema = z.object({
 
 const getRandomWord = () => {
   const numOfWords = conjugations.length;
-  const randomNum = Math.floor(Math.random() * (0 - numOfWords) + numOfWords)
+  const randomNum = Math.floor(Math.random() * (0 - numOfWords) + numOfWords);
   return conjugations[randomNum];
-}
+};
 
 export const Conjugator = () => {
-  const randomWord = getRandomWord()
+  const randomWord = getRandomWord();
   const infinitive = randomWord.infinitive;
   const translation = randomWord.translation;
+  const lemma = randomWord.present.indefinite.ő;
 
   const { tense, voice } = useParams<{
     tense: TenseType;
@@ -96,11 +98,16 @@ export const Conjugator = () => {
     <>
       <Card className="w-full sm:max-w-md">
         <CardHeader>
-          <CardTitle>
-            {infinitive} - {translation}
-          </CardTitle>
+          <CardTitle>{lemma}</CardTitle>
           <CardDescription>
-            {tense} - {voice}
+            <div className="flex justify-between">
+              <p>{infinitive}</p>
+              <p>{translation}</p>
+            </div>
+          </CardDescription>
+<CardDescription>
+            <Badge variant="outline" className="mr-2">{tense}</Badge>
+            <Badge variant="outline">{voice}</Badge>
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -159,7 +166,7 @@ export const Conjugator = () => {
         </CardContent>
       </Card>
       <Toaster />
-      </>
+    </>
   );
 };
 
