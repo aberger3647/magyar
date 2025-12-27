@@ -36,8 +36,14 @@ const formSchema = z.object({
   ők: z.string().nonempty("This field is required"),
 });
 
+const getRandomWord = () => {
+  const numOfWords = conjugations.length;
+  const randomNum = Math.floor(Math.random() * (0 - numOfWords) + numOfWords)
+  return conjugations[randomNum];
+}
+
 export const Conjugator = () => {
-  const randomWord = conjugations[0];
+  const randomWord = getRandomWord()
   const infinitive = randomWord.infinitive;
   const translation = randomWord.translation;
 
