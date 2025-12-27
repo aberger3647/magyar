@@ -24,6 +24,7 @@ import type { VoiceType } from "./types";
 import type { TenseType } from "./types";
 import { useParams } from "react-router-dom";
 import { Badge } from "./ui/badge";
+// import { createIcons, circleCheck } from "lucide-react"
 
 const PRONOUN_KEYS = ["én", "te", "ő", "mi", "ti", "ők"] as const;
 type PronounKey = (typeof PRONOUN_KEYS)[number];
@@ -74,6 +75,23 @@ export const Conjugator = () => {
         voice
       );
 
+      const correctSubmissions = getCorrectSubmissions(
+        userAnswers,
+        randomWord,
+        tense,
+        voice
+      );
+
+      console.log(correctSubmissions)
+      if (correctSubmissions.length) {
+        correctSubmissions.forEach((pronoun) => {
+          form.setFieldMeta(pronoun, (prev) => ({
+            ...prev,
+            isCorrect: true,
+          }));
+        });
+      }
+      
       if (incorrectSubmissions.length) {
         incorrectSubmissions.forEach((pronoun) => {
           form.setFieldMeta(pronoun, (prev) => ({
@@ -85,10 +103,10 @@ export const Conjugator = () => {
             },
           }));
         });
-
         toast.error("Check your answers and try again.");
         return; // Prevent the actual API call
       }
+
 
       toast.success("Form submitted successfully");
     },
@@ -105,8 +123,10 @@ export const Conjugator = () => {
               <p>{translation}</p>
             </div>
           </CardDescription>
-<CardDescription>
-            <Badge variant="outline" className="mr-2">{tense}</Badge>
+          <CardDescription>
+            <Badge variant="outline" className="mr-2">
+              {tense}
+            </Badge>
             <Badge variant="outline">{voice}</Badge>
           </CardDescription>
         </CardHeader>
@@ -131,6 +151,7 @@ export const Conjugator = () => {
                     key={pronoun}
                     name={pronoun}
                     children={(field) => {
+                      console.log(field.getMeta());
                       const isInvalid =
                         field.state.meta.isTouched && !field.state.meta.isValid;
 
@@ -151,6 +172,7 @@ export const Conjugator = () => {
                             aria-invalid={isInvalid}
                             autoComplete="off"
                           />
+                           {field.state.meta.isCorrect && 'yes'}
                           {isInvalid && (
                             <FieldError errors={field.state.meta.errors} />
                           )}
@@ -180,6 +202,22 @@ function getIncorrectSubmissions(
     const correctWord = randomWord[tense][voice][pronoun];
     const userWord = userAnswers[pronoun];
     if (correctWord != userWord) {
+      return [pronoun];
+    }
+    return [];
+  });
+}
+
+function getCorrectSubmissions(
+  userAnswers: Pronouns,
+  randomWord: VerbConjugation,
+  tense: TenseType,
+  voice: VoiceType
+): PronounKey[] {
+  return PRONOUN_KEYS.flatMap((pronoun: PronounKey) => {
+    const correctWord = randomWord[tense][voice][pronoun];
+    const userWord = userAnswers[pronoun];
+    if (correctWord === userWord) {
       return [pronoun];
     }
     return [];

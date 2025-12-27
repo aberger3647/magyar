@@ -38,45 +38,5 @@
         "ők": "látták"
       }
     }
-  },
-  {
-    "translation": "to read",
-    "infinitive": "olvasni",
-    "present": {
-      "indefinite": {
-        "én": "olvasok",
-        "te": "olvasol",
-        "ő": "olvas",
-        "mi": "olvasunk",
-        "ti": "olvastok",
-        "ők": "olvasnak"
-      },
-      "definite": {
-        "én": "olvasom",
-        "te": "olvasod",
-        "ő": "olvassa",
-        "mi": "olvassuk",
-        "ti": "olvassátok",
-        "ők": "olvassák"
-      }
-    },
-    "past": {
-      "indefinite": {
-        "én": "olvastam",
-        "te": "olvastál",
-        "ő": "olvasott",
-        "mi": "olvastunk",
-        "ti": "olvastatok",
-        "ők": "olvastak"
-      },
-      "definite": {
-        "én": "olvastam",
-        "te": "olvastad",
-        "ő": "olvasta",
-        "mi": "olvastuk",
-        "ti": "olvastátok",
-        "ők": "olvassák"
-      }
-    }
   }
 ]
