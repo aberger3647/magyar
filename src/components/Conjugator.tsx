@@ -4,7 +4,6 @@ import { toast } from "sonner";
 import { Toaster } from "sonner";
 import {
   Field,
-  FieldError,
   FieldGroup,
   FieldLabel,
 } from "@/components/ui/field";
@@ -41,7 +40,7 @@ const formSchema = z.object({
 
 const getRandomWord = () => {
   const numOfWords = conjugations.length;
-  const randomNum = Math.floor(Math.random() * (0 - numOfWords) + numOfWords);
+  const randomNum = Math.floor(Math.random() * numOfWords);
   return conjugations[randomNum];
 };
 
@@ -72,8 +71,8 @@ export const Conjugator = () => {
       const correctSubmissions = getCorrectSubmissions(
         userAnswers,
         randomWord,
-        tense,
-        voice
+        tense ?? "present",
+        voice ?? "indefinite"
       );
 
       const correctPronouns: PronounKey[] = correctSubmissions;
@@ -92,6 +91,8 @@ export const Conjugator = () => {
       toast.success("Form submitted successfully");
     },
   });
+
+  const FormField = form.Field;
 
   return (
     <>
@@ -128,12 +129,13 @@ export const Conjugator = () => {
             <FieldGroup>
               {PRONOUN_KEYS.map((pronoun: PronounKey) => {
                 return (
-                  <form.Field
+                  <FormField
                     key={pronoun}
                     name={pronoun}
                     children={(field) => {
-                      const isCorrect = (field.state.meta as any).isCorrect;
-                      const isInvalid = field.state.meta.errors.length > 0;
+                      const meta = field.state.meta as unknown as { isCorrect?: boolean; errors?: unknown[] };
+                      const isCorrect = !!meta.isCorrect;
+                      const isInvalid = (meta.errors || []).length > 0;
 
                       return (
                         <Field
@@ -180,21 +182,6 @@ export const Conjugator = () => {
   );
 };
 
-function getIncorrectSubmissions(
-  userAnswers: Pronouns,
-  randomWord: VerbConjugation,
-  tense: TenseType,
-  voice: VoiceType
-): PronounKey[] {
-  return PRONOUN_KEYS.flatMap((pronoun: PronounKey) => {
-    const correctWord = randomWord[tense][voice][pronoun];
-    const userWord = userAnswers[pronoun];
-    if (correctWord != userWord) {
-      return [pronoun];
-    }
-    return [];
-  });
-}
 
 function getCorrectSubmissions(
   userAnswers: Pronouns,
@@ -203,7 +190,8 @@ function getCorrectSubmissions(
   voice: VoiceType
 ): PronounKey[] {
   return PRONOUN_KEYS.flatMap((pronoun: PronounKey) => {
-    const correctWord = randomWord[tense][voice][pronoun];
+    const voiceGroup = randomWord[tense][voice];
+    const correctWord = voiceGroup ? voiceGroup[pronoun] : undefined;
     const userWord = userAnswers[pronoun];
     if (correctWord === userWord) {
       return [pronoun];

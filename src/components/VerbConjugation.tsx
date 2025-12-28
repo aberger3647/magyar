@@ -17,7 +17,7 @@ export type VerbConjugation = {
       mi: string;
       ti: string;
       ők: string;
-    };
+    } | null;
   };
   past: {
     indefinite: {
@@ -35,6 +35,6 @@ export type VerbConjugation = {
       mi: string;
       ti: string;
       ők: string;
-    };
+    } | null;
   };
 };

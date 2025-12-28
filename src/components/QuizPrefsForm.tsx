@@ -29,6 +29,9 @@ export const QuizPrefsForm = () => {
       navigate(`/conjugator/${quizPrefs.tense}/${quizPrefs.voice}`);
     },
   });
+
+  const FormField = form.Field;
+
   return (
     <>
       <h1 className="mb-5 text-xl">Conjugator Quiz</h1>
@@ -55,7 +58,7 @@ export const QuizPrefsForm = () => {
               <FieldSet>
                 <FieldLegend variant="label">Tense</FieldLegend>
                 <FieldGroup className="gap-3">
-                  <form.Field
+                  <FormField
                     name="tense"
                     children={(field) => {
                       const isInvalid =
@@ -88,7 +91,7 @@ export const QuizPrefsForm = () => {
                       );
                     }}
                   />
-                  <form.Field
+                  <FormField
                     name="tense"
                     children={(field) => {
                       const isInvalid =
@@ -124,7 +127,7 @@ export const QuizPrefsForm = () => {
                 <FieldSet>
                   <FieldLegend variant="label">Voice</FieldLegend>
                   <FieldGroup className="gap-3">
-                    <form.Field
+                    <FormField
                       name="voice"
                       children={(field) => {
                         const isInvalid =
@@ -158,7 +161,7 @@ export const QuizPrefsForm = () => {
                         );
                       }}
                     />
-                    <form.Field
+                    <FormField
                       name="voice"
                       children={(field) => {
                         const isInvalid =
