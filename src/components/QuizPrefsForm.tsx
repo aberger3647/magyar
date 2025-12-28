@@ -18,11 +18,6 @@ import {
   CardContent,
 } from "./ui/card";
 
-// const checkboxFormSchema = z.object({
-//   tense: z.array,
-//   voice:
-// })
-
 export const QuizPrefsForm = () => {
   const navigate = useNavigate();
   const form = useForm({
@@ -30,9 +25,6 @@ export const QuizPrefsForm = () => {
       tense: "present",
       voice: "indefinite",
     },
-    // validators: {
-    //   onSubmit: checkboxFormSchema,
-    // },
     onSubmit: async ({ value: quizPrefs }) => {
       navigate(`/conjugator/${quizPrefs.tense}/${quizPrefs.voice}`);
     },

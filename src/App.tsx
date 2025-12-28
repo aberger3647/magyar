@@ -11,7 +11,7 @@ function Layout() {
   return (
     <>
       <Nav />
-        <main className="flex flex-col items-center gap-4 pb-4">
+        <main className="flex flex-col items-center gap-4 p-4">
       <Outlet />
       </main>
     </>
