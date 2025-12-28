@@ -1,7 +1,9 @@
 [
   {
     "translation": "to see",
+    "lemma": "lát",
     "infinitive": "látni",
+    "type": "back-vowel",
     "present": {
       "indefinite": {
         "én": "látok",
@@ -9,15 +11,15 @@
         "ő": "lát",
         "mi": "látunk",
         "ti": "láttok",
-        "ők": "látjak"
+        "ők": "látnak"
       },
       "definite": {
-         "én": "látom",
+        "én": "látom",
         "te": "látod",
         "ő": "látja",
         "mi": "látjuk",
         "ti": "látjátok",
-        "ők": "látnák"
+        "ők": "látják"
       }
     },
     "past": {
@@ -37,6 +39,1546 @@
         "ti": "láttátok",
         "ők": "látták"
       }
+    }
+  },
+  {
+    "translation": "to work",
+    "lemma": "dolgozik",
+    "infinitive": "dolgozni",
+    "type": "ik-verb",
+    "present": {
+      "indefinite": {
+        "én": "dolgozom",
+        "te": "dolgozol",
+        "ő": "dolgozik",
+        "mi": "dolgozunk",
+        "ti": "dolgoztok",
+        "ők": "dolgoznak"
+      },
+      "definite": {
+        "én": "dolgozom",
+        "te": "dolgozod",
+        "ő": "dolgozza",
+        "mi": "dolgozzuk",
+        "ti": "dolgozzátok",
+        "ők": "dolgozzák"
+      }
+    },
+    "past": {
+      "indefinite": {
+        "én": "dolgoztam",
+        "te": "dolgoztál",
+        "ő": "dolgozott",
+        "mi": "dolgoztunk",
+        "ti": "dolgoztatok",
+        "ők": "dolgoztak"
+      },
+      "definite": {
+        "én": "dolgoztam",
+        "te": "dolgoztad",
+        "ő": "dolgozta",
+        "mi": "dolgoztuk",
+        "ti": "dolgozták",
+        "ők": "dolgozták"
+      }
+    }
+  },
+  {
+    "translation": "to go",
+    "lemma": "megy",
+    "infinitive": "menni",
+    "type": "irregular/intransitive",
+    "present": {
+      "indefinite": {
+        "én": "megyek",
+        "te": "mész",
+        "ő": "megy",
+        "mi": "megyünk",
+        "ti": "mentek",
+        "ők": "mennek"
+      },
+      "definite": null
+    },
+    "past": {
+      "indefinite": {
+        "én": "mentem",
+        "te": "mentél",
+        "ő": "ment",
+        "mi": "mentünk",
+        "ti": "mentetek",
+        "ők": "mentek"
+      },
+      "definite": null
+    }
+  },
+  {
+    "translation": "to speak",
+    "lemma": "beszél",
+    "infinitive": "beszélni",
+    "type": "front-vowel",
+    "present": {
+      "indefinite": {
+        "én": "beszélek",
+        "te": "beszélsz",
+        "ő": "beszél",
+        "mi": "beszélünk",
+        "ti": "beszéltek",
+        "ők": "beszélnek"
+      },
+      "definite": {
+        "én": "beszélem",
+        "te": "beszéled",
+        "ő": "beszéli",
+        "mi": "beszéljük",
+        "ti": "beszélitek",
+        "ők": "beszélik"
+      }
+    },
+    "past": {
+      "indefinite": {
+        "én": "beszéltem",
+        "te": "beszéltél",
+        "ő": "beszélt",
+        "mi": "beszéltünk",
+        "ti": "beszéltetek",
+        "ők": "beszéltek"
+      },
+      "definite": {
+        "én": "beszéltem",
+        "te": "beszélted",
+        "ő": "beszélte",
+        "mi": "beszéltük",
+        "ti": "beszéltétek",
+        "ők": "beszélték"
+      }
+    }
+  },
+  {
+     "translation": "to be",
+    "lemma": "van",
+    "infinitive": "lenni",
+    "type": "irregular/intransitive",
+    "present": {
+      "indefinite": {
+        "én": "vagyok",
+        "te": "vagy",
+        "ő": "van",
+        "mi": "vagyunk",
+        "ti": "vagytok",
+        "ők": "vannak"
+      },
+      "definite": null
+    },
+    "past": {
+      "indefinite": {
+        "én": "voltam",
+        "te": "voltál",
+        "ő": "volt",
+        "mi": "voltunk",
+        "ti": "voltatok",
+        "ők": "voltak"
+      },
+      "definite": null
+    }
+  },
+  {
+    "translation": "to come",
+    "lemma": "jön",
+    "infinitive": "jönni",
+    "type": "irregular/intransitive",
+    "present": {
+      "indefinite": {
+        "én": "jövök",
+        "te": "jössz",
+        "ő": "jön",
+        "mi": "jövünk",
+        "ti": "jöttök",
+        "ők": "jönnek"
+      },
+      "definite": null
+    },
+    "past": {
+      "indefinite": {
+        "én": "jöttem",
+        "te": "jöttél",
+        "ő": "jött",
+        "mi": "jöttünk",
+        "ti": "jöttetek",
+        "ők": "jöttek"
+      },
+      "definite": null
+    }
+  },
+  {
+    "translation": "to do / to make",
+    "lemma": "csinál",
+    "infinitive": "csinálni",
+    "type": "back-vowel",
+    "present": {
+      "indefinite": {
+        "én": "csinálok",
+        "te": "csinálsz",
+        "ő": "csinál",
+        "mi": "csinálunk",
+        "ti": "csináltok",
+        "ők": "csinálnak"
+      },
+      "definite": {
+        "én": "csinálom",
+        "te": "csinálod",
+        "ő": "csinálja",
+        "mi": "csináljuk",
+        "ti": "csináljátok",
+        "ők": "csinálják"
+      }
+    },
+    "past": {
+      "indefinite": {
+        "én": "csináltam",
+        "te": "csináltál",
+        "ő": "csinált",
+        "mi": "csináltunk",
+        "ti": "csináltatok",
+        "ők": "csináltak"
+      },
+      "definite": {
+        "én": "csináltam",
+        "te": "csináltad",
+        "ő": "csinálta",
+        "mi": "csináltuk",
+        "ti": "csináltátok",
+        "ők": "csinálták"
+      }
+    }
+  },
+  {
+    "translation": "to say / to tell",
+    "lemma": "mond",
+    "infinitive": "mondani",
+    "type": "back-vowel",
+    "present": {
+      "indefinite": {
+        "én": "mondok",
+        "te": "mondasz",
+        "ő": "mond",
+        "mi": "mondunk",
+        "ti": "mondtok",
+        "ők": "mondanak"
+      },
+      "definite": {
+        "én": "mondom",
+        "te": "mondod",
+        "ő": "mondja",
+        "mi": "mondjuk",
+        "ti": "mondjátok",
+        "ők": "mondják"
+      }
+    },
+    "past": {
+      "indefinite": {
+        "én": "mondtam",
+        "te": "mondtál",
+        "ő": "mondott",
+        "mi": "mondtunk",
+        "ti": "mondtatok",
+        "ők": "mondtak"
+      },
+      "definite": {
+        "én": "mondtam",
+        "te": "mondtad",
+        "ő": "mondta",
+        "mi": "mondtuk",
+        "ti": "mondtátok",
+        "ők": "mondták"
+      }
+    }
+  },
+  {
+    "translation": "to eat",
+    "lemma": "eszik",
+    "infinitive": "enni",
+    "type": "irregular-ik",
+    "present": {
+      "indefinite": {
+        "én": "eszem",
+        "te": "eszel",
+        "ő": "eszik",
+        "mi": "eszünk",
+        "ti": "esztek",
+        "ők": "esznek"
+      },
+      "definite": {
+        "én": "eszem",
+        "te": "eszed",
+        "ő": "eszi",
+        "mi": "esszük",
+        "ti": "eszitek",
+        "ők": "eszik"
+      }
+    },
+    "past": {
+      "indefinite": {
+        "én": "ettem",
+        "te": "ettél",
+        "ő": "evett",
+        "mi": "ettünk",
+        "ti": "ettetek",
+        "ők": "ettek"
+      },
+      "definite": {
+        "én": "ettem",
+        "te": "etted",
+        "ő": "ette",
+        "mi": "ettük",
+        "ti": "ettétek",
+        "ők": "ették"
+      }
+    }
+  },
+  {
+    "translation": "to drink",
+    "lemma": "iszik",
+    "infinitive": "inni",
+    "type": "irregular-ik",
+    "present": {
+      "indefinite": {
+        "én": "iszom",
+        "te": "iszol",
+        "ő": "iszik",
+        "mi": "iszunk",
+        "ti": "isztok",
+        "ők": "isznak"
+      },
+      "definite": {
+        "én": "iszom",
+        "te": "iszod",
+        "ő": "issza",
+        "mi": "isszuk",
+        "ti": "isszátok",
+        "ők": "isszák"
+      }
+    },
+    "past": {
+      "indefinite": {
+        "én": "ittam",
+        "te": "ittál",
+        "ő": "ivott",
+        "mi": "ittunk",
+        "ti": "ittatok",
+        "ők": "ittak"
+      },
+      "definite": {
+        "én": "ittam",
+        "te": "ittad",
+        "ő": "itta",
+        "mi": "ittuk",
+        "ti": "ittátok",
+        "ők": "itták"
+      }
+    }
+  },
+  {
+    "translation": "to know (fact/ability)",
+    "lemma": "tud",
+    "infinitive": "tudni",
+    "type": "back-vowel",
+    "present": {
+      "indefinite": {
+        "én": "tudok",
+        "te": "tudsz",
+        "ő": "tud",
+        "mi": "tudunk",
+        "ti": "tudtok",
+        "ők": "tudnak"
+      },
+      "definite": {
+        "én": "tudom",
+        "te": "tudod",
+        "ő": "tudja",
+        "mi": "tudjuk",
+        "ti": "tudjátok",
+        "ők": "tudják"
+      }
+    },
+    "past": {
+      "indefinite": {
+        "én": "tudtam",
+        "te": "tudtál",
+        "ő": "tudott",
+        "mi": "tudtunk",
+        "ti": "tudtatok",
+        "ők": "tudtak"
+      },
+      "definite": {
+        "én": "tudtam",
+        "te": "tudtad",
+        "ő": "tudta",
+        "mi": "tudtuk",
+        "ti": "tudtátok",
+        "ők": "tudták"
+      }
+    }
+  },
+  {
+    "translation": "to buy / to take",
+    "lemma": "vesz",
+    "infinitive": "venni",
+    "type": "irregular",
+    "present": {
+      "indefinite": {
+        "én": "veszek",
+        "te": "veszel",
+        "ő": "vesz",
+        "mi": "veszünk",
+        "ti": "vesztek",
+        "ők": "vesznek"
+      },
+      "definite": {
+        "én": "veszem",
+        "te": "veszed",
+        "ő": "veszi",
+        "mi": "vesszük",
+        "ti": "veszitek",
+        "ők": "veszik"
+      }
+    },
+    "past": {
+      "indefinite": {
+        "én": "vettem",
+        "te": "vettél",
+        "ő": "vett",
+        "mi": "vettünk",
+        "ti": "vettetek",
+        "ők": "vettek"
+      },
+      "definite": {
+        "én": "vettem",
+        "te": "vetted",
+        "ő": "vette",
+        "mi": "vettük",
+        "ti": "vettétek",
+        "ők": "vették"
+      }
+    }
+  },
+  {
+    "translation": "to ask for",
+    "lemma": "kér",
+    "infinitive": "kérni",
+    "type": "front-vowel",
+    "present": {
+      "indefinite": {
+        "én": "kérek",
+        "te": "kérsz",
+        "ő": "kér",
+        "mi": "kérünk",
+        "ti": "kértek",
+        "ők": "kérnek"
+      },
+      "definite": {
+        "én": "kérem",
+        "te": "kéred",
+        "ő": "kéri",
+        "mi": "kérjük",
+        "ti": "kéritek",
+        "ők": "kérik"
+      }
+    },
+    "past": {
+      "indefinite": {
+        "én": "kértem",
+        "te": "kértél",
+        "ő": "kért",
+        "mi": "kértünk",
+        "ti": "kértetek",
+        "ők": "kértek"
+      },
+      "definite": {
+        "én": "kértem",
+        "te": "kérted",
+        "ő": "kérte",
+        "mi": "kérjük",
+        "ti": "kértétek",
+        "ők": "kérték"
+      }
+    }
+  },
+  {
+    "translation": "to think",
+    "lemma": "gondol",
+    "infinitive": "gondolni",
+    "type": "back-vowel",
+    "present": {
+      "indefinite": {
+        "én": "gondolok",
+        "te": "gondolsz",
+        "ő": "gondol",
+        "mi": "gondolunk",
+        "ti": "gondoltok",
+        "ők": "gondolnak"
+      },
+      "definite": {
+        "én": "gondolom",
+        "te": "gondolod",
+        "ő": "gondolja",
+        "mi": "gondoljuk",
+        "ti": "gondoljátok",
+        "ők": "gondolják"
+      }
+    },
+    "past": {
+      "indefinite": {
+        "én": "gondoltam",
+        "te": "gondoltál",
+        "ő": "gondolt",
+        "mi": "gondoltunk",
+        "ti": "gondoltatok",
+        "ők": "gondoltak"
+      },
+      "definite": {
+        "én": "gondoltam",
+        "te": "gondoltad",
+        "ő": "gondolta",
+        "mi": "gondoltuk",
+        "ti": "gondoljátok",
+        "ők": "gondolták"
+      }
+    }
+  },
+  {
+    "translation": "to understand",
+    "lemma": "ért",
+    "infinitive": "érteni",
+    "type": "front-vowel",
+    "present": {
+      "indefinite": {
+        "én": "értek",
+        "te": "értesz",
+        "ő": "ért",
+        "mi": "értünk",
+        "ti": "értetek",
+        "ők": "értenek"
+      },
+      "definite": {
+        "én": "értem",
+        "te": "érted",
+        "ő": "érti",
+        "mi": "értjük",
+        "ti": "értitek",
+        "ők": "értik"
+      }
+    },
+    "past": {
+      "indefinite": {
+        "én": "értettem",
+        "te": "értettél",
+        "ő": "értett",
+        "mi": "értettünk",
+        "ti": "értettetek",
+        "ők": "értettek"
+      },
+      "definite": {
+        "én": "értettem",
+        "te": "értetted",
+        "ő": "értette",
+        "mi": "értettük",
+        "ti": "értettétek",
+        "ők": "értették"
+      }
+    }
+  },
+  {
+    "translation": "to write",
+    "lemma": "ír",
+    "infinitive": "írni",
+    "type": "back-vowel",
+    "present": {
+      "indefinite": {
+        "én": "írok",
+        "te": "írsz",
+        "ő": "ír",
+        "mi": "írunk",
+        "ti": "írtok",
+        "ők": "írnak"
+      },
+      "definite": {
+        "én": "írom",
+        "te": "írod",
+        "ő": "írja",
+        "mi": "írjuk",
+        "ti": "írjátok",
+        "ők": "írják"
+      }
+    },
+    "past": {
+      "indefinite": {
+        "én": "írtam",
+        "te": "írtál",
+        "ő": "írt",
+        "mi": "írtunk",
+        "ti": "írtatok",
+        "ők": "írtak"
+      },
+      "definite": {
+        "én": "írtam",
+        "te": "írtad",
+        "ő": "írta",
+        "mi": "írjuk",
+        "ti": "írtátok",
+        "ők": "írták"
+      }
+    }
+  },
+  {
+    "translation": "to sleep",
+    "lemma": "alszik",
+    "infinitive": "aludni",
+    "type": "irregular-ik",
+    "present": {
+      "indefinite": {
+        "én": "alszom",
+        "te": "alszol",
+        "ő": "alszik",
+        "mi": "alszunk",
+        "ti": "alsztok",
+        "ők": "alusznak"
+      },
+      "definite": null
+    },
+    "past": {
+      "indefinite": {
+        "én": "aludtam",
+        "te": "aludtál",
+        "ő": "aludt",
+        "mi": "aludtunk",
+        "ti": "aludtatok",
+        "ők": "aludtak"
+      },
+      "definite": null
+    }
+  },
+  {
+    "translation": "to wait",
+    "lemma": "vár",
+    "infinitive": "várni",
+    "type": "back-vowel",
+    "present": {
+      "indefinite": {
+        "én": "várok",
+        "te": "vársz",
+        "ő": "vár",
+        "mi": "várunk",
+        "ti": "vártok",
+        "ők": "várnak"
+      },
+      "definite": {
+        "én": "várom",
+        "te": "várod",
+        "ő": "várja",
+        "mi": "várjuk",
+        "ti": "várjátok",
+        "ők": "várják"
+      }
+    },
+    "past": {
+      "indefinite": {
+        "én": "vártam",
+        "te": "vártál",
+        "ő": "várt",
+        "mi": "vártunk",
+        "ti": "vártatok",
+        "ők": "vártak"
+      },
+      "definite": {
+        "én": "vártam",
+        "te": "vártad",
+        "ő": "várta",
+        "mi": "várjuk",
+        "ti": "vártátok",
+        "ők": "várták"
+      }
+    }
+  },
+  {
+    "translation": "to look / to watch",
+    "lemma": "néz",
+    "infinitive": "nézni",
+    "type": "front-vowel",
+    "present": {
+      "indefinite": {
+        "én": "nézek",
+        "te": "nézel",
+        "ő": "néz",
+        "mi": "nézünk",
+        "ti": "néztek",
+        "ők": "néznek"
+      },
+      "definite": {
+        "én": "nézem",
+        "te": "nézed",
+        "ő": "nézi",
+        "mi": "nézzük",
+        "ti": "nézitek",
+        "ők": "nézik"
+      }
+    },
+    "past": {
+      "indefinite": {
+        "én": "néztem",
+        "te": "néztél",
+        "ő": "nézett",
+        "mi": "néztünk",
+        "ti": "néztetek",
+        "ők": "néztek"
+      },
+      "definite": {
+        "én": "néztem",
+        "te": "nézted",
+        "ő": "nézte",
+        "mi": "néztük",
+        "ti": "néztétek",
+        "ők": "nézték"
+      }
+    }
+  },
+  {
+    "translation": "to love / to like",
+    "lemma": "szeret",
+    "infinitive": "szeretni",
+    "type": "front-vowel",
+    "present": {
+      "indefinite": { "én": "szeretek", "te": "szeretsz", "ő": "szeret", "mi": "szeretünk", "ti": "szerettek", "ők": "szeretnek" },
+      "definite": { "én": "szeretem", "te": "szereted", "ő": "szereti", "mi": "szeretjük", "ti": "szeretitek", "ők": "szeretik" }
+    },
+    "past": {
+      "indefinite": { "én": "szerettem", "te": "szerettél", "ő": "szeretett", "mi": "szerettünk", "ti": "szerettetek", "ők": "szerettek" },
+      "definite": { "én": "szerettem", "te": "szeretted", "ő": "szerette", "mi": "szerettük", "ti": "szerettétek", "ők": "szerették" }
+    }
+  },
+  {
+    "translation": "to play",
+    "lemma": "játszik",
+    "infinitive": "játszani",
+    "type": "back-vowel-ik",
+    "present": {
+      "indefinite": { "én": "játszom", "te": "játszol", "ő": "játszik", "mi": "játszunk", "ti": "játszotok", "ők": "játszanak" },
+      "definite": { "én": "játszom", "te": "játszod", "ő": "játssza", "mi": "játsszuk", "ti": "játsszátok", "ők": "játsszák" }
+    },
+    "past": {
+      "indefinite": { "én": "játszottam", "te": "játszottál", "ő": "játszott", "mi": "játszottunk", "ti": "játszottatok", "ők": "játszottak" },
+      "definite": { "én": "játszottam", "te": "játszottad", "ő": "játszotta", "mi": "játszottuk", "ti": "játszottátok", "ők": "játszották" }
+    }
+  },
+  {
+    "translation": "to find",
+    "lemma": "talál",
+    "infinitive": "találni",
+    "type": "back-vowel",
+    "present": {
+      "indefinite": { "én": "találok", "te": "találsz", "ő": "talál", "mi": "találunk", "ti": "találtok", "ők": "találnak" },
+      "definite": { "én": "találom", "te": "találod", "ő": "találja", "mi": "találjuk", "ti": "találjátok", "ők": "találják" }
+    },
+    "past": {
+      "indefinite": { "én": "találtam", "te": "találtál", "ő": "talált", "mi": "találtunk", "ti": "találtatok", "ők": "találtak" },
+      "definite": { "én": "találtam", "te": "találtad", "ő": "találta", "mi": "találtuk", "ti": "találtátok", "ők": "találták" }
+    }
+  },
+  {
+    "translation": "to live / to reside",
+    "lemma": "lakik",
+    "infinitive": "lakni",
+    "type": "back-vowel-ik/intransitive",
+    "present": {
+      "indefinite": { "én": "lakom", "te": "lakol", "ő": "lakik", "mi": "lakunk", "ti": "laktok", "ők": "laknak" },
+      "definite": null
+    },
+    "past": {
+      "indefinite": { "én": "laktam", "te": "laktál", "ő": "lakott", "mi": "laktunk", "ti": "laktatok", "ők": "laktak" },
+      "definite": null
+    }
+  },
+  {
+    "translation": "to want",
+    "lemma": "akar",
+    "infinitive": "akarni",
+    "type": "back-vowel",
+    "present": {
+      "indefinite": { "én": "akarok", "te": "akarsz", "ő": "akar", "mi": "akarunk", "ti": "akartok", "ők": "akarnak" },
+      "definite": { "én": "akarom", "te": "akarod", "ő": "akarja", "mi": "akarjuk", "ti": "akarjátok", "ők": "akarják" }
+    },
+    "past": {
+      "indefinite": { "én": "akartam", "te": "akartál", "ő": "akart", "mi": "akartunk", "ti": "akartatok", "ők": "akartak" },
+      "definite": { "én": "akartam", "te": "akartad", "ő": "akarta", "mi": "akartuk", "ti": "akartátok", "ők": "akarták" }
+    }
+  },
+  {
+    "translation": "to listen",
+    "lemma": "hallgat",
+    "infinitive": "hallgatni",
+    "type": "back-vowel",
+    "present": {
+      "indefinite": { "én": "hallgatok", "te": "hallgatsz", "ő": "hallgat", "mi": "hallgatunk", "ti": "hallgattok", "ők": "hallgatnak" },
+      "definite": { "én": "hallgatom", "te": "hallgatod", "ő": "hallgatja", "mi": "hallgatjuk", "ti": "hallgatjátok", "ők": "hallgatják" }
+    },
+    "past": {
+      "indefinite": { "én": "hallgattam", "te": "hallgattál", "ő": "hallgatott", "mi": "hallgattunk", "ti": "hallgattatok", "ők": "hallgattak" },
+      "definite": { "én": "hallgattam", "te": "hallgattad", "ő": "hallgatta", "mi": "hallgattuk", "ti": "hallgattátok", "ők": "hallgatták" }
+    }
+  },
+  {
+    "translation": "to call",
+    "lemma": "hív",
+    "infinitive": "hívni",
+    "type": "back-vowel",
+    "present": {
+      "indefinite": { "én": "hívok", "te": "hívsz", "ő": "hív", "mi": "hívunk", "ti": "hívtok", "ők": "hívnak" },
+      "definite": { "én": "hívom", "te": "hívod", "ő": "hívja", "mi": "hívjuk", "ti": "hívjátok", "ők": "hívják" }
+    },
+    "past": {
+      "indefinite": { "én": "hívtam", "te": "hívtál", "ő": "hívott", "mi": "hívtunk", "ti": "hívtatok", "ők": "hívtak" },
+      "definite": { "én": "hívtam", "te": "hívtad", "ő": "hívta", "mi": "hívtuk", "ti": "hívtátok", "ők": "hívják" }
+    }
+  },
+  {
+    "translation": "to ask (question)",
+    "lemma": "kérdez",
+    "infinitive": "kérdezni",
+    "type": "front-vowel",
+    "present": {
+      "indefinite": { "én": "kérdezek", "te": "kérdezel", "ő": "kérdez", "mi": "kérdezünk", "ti": "kérdeztek", "ők": "kérdeznek" },
+      "definite": { "én": "kérdezem", "te": "kérdezed", "ő": "kérdezi", "mi": "kérdezzük", "ti": "kérdezitek", "ők": "kérdezik" }
+    },
+    "past": {
+      "indefinite": { "én": "kérdeztem", "te": "kérdeztél", "ő": "kérdezett", "mi": "kérdeztünk", "ti": "kérdeztetek", "ők": "kérdeztek" },
+      "definite": { "én": "kérdeztem", "te": "kérdezted", "ő": "kérdezte", "mi": "kérdeztük", "ti": "kérdeztétek", "ők": "kérdezték" }
+    }
+  },
+  {
+    "translation": "to study / to learn",
+    "lemma": "tanul",
+    "infinitive": "tanulni",
+    "type": "back-vowel",
+    "present": {
+      "indefinite": { "én": "tanulok", "te": "tanulsz", "ő": "tanul", "mi": "tanulunk", "ti": "tanultok", "ők": "tanulnak" },
+      "definite": { "én": "tanulom", "te": "tanulod", "ő": "tanulja", "mi": "tanuljuk", "ti": "tanuljátok", "ők": "tanulják" }
+    },
+    "past": {
+      "indefinite": { "én": "tanultam", "te": "tanultál", "ő": "tanult", "mi": "tanultunk", "ti": "tanultatok", "ők": "tanultak" },
+      "definite": { "én": "tanultam", "te": "tanultad", "ő": "tanulta", "mi": "tanultuk", "ti": "tanultátok", "ők": "tanulták" }
+    }
+  },
+  {
+    "translation": "to help",
+    "lemma": "segít",
+    "infinitive": "segíteni",
+    "type": "front-vowel",
+    "present": {
+      "indefinite": { "én": "segítek", "te": "segítesz", "ő": "segít", "mi": "segítünk", "ti": "segítetek", "ők": "segítenek" },
+      "definite": { "én": "segítem", "te": "segíted", "ő": "segíti", "mi": "segítjük", "ti": "segítitek", "ők": "segítik" }
+    },
+    "past": {
+      "indefinite": { "én": "segítettem", "te": "segítettél", "ő": "segített", "mi": "segítettünk", "ti": "segítettetek", "ők": "segítettek" },
+      "definite": { "én": "segítettem", "te": "segítetted", "ő": "segítette", "mi": "segítettük", "ti": "segítettétek", "ők": "segítették" }
+    }
+  },
+  {
+    "translation": "to feel",
+    "lemma": "érez",
+    "infinitive": "érezni",
+    "type": "front-vowel",
+    "present": {
+      "indefinite": { "én": "érezzek", "te": "érzel", "ő": "érez", "mi": "érzünk", "ti": "éreztek", "ők": "éreznek" },
+      "definite": { "én": "érezem", "te": "érezed", "ő": "érezi", "mi": "érezzük", "ti": "érezitek", "ők": "érezik" }
+    },
+    "past": {
+      "indefinite": { "én": "éreztem", "te": "érezte", "ő": "érezett", "mi": "éreztünk", "ti": "éreztetek", "ők": "éreztek" },
+      "definite": { "én": "éreztem", "te": "érezted", "ő": "érezte", "mi": "éreztük", "ti": "éreztétek", "ők": "érezték" }
+    }
+  },
+  {
+    "translation": "to pay",
+    "lemma": "fizet",
+    "infinitive": "fizetni",
+    "type": "front-vowel",
+    "present": {
+      "indefinite": { "én": "fizetek", "te": "fizetsz", "ő": "fizet", "mi": "fizetünk", "ti": "fizettek", "ők": "fizetnek" },
+      "definite": { "én": "fizetem", "te": "fizeted", "ő": "fizeti", "mi": "fizetjük", "ti": "fizetitek", "ők": "fizetik" }
+    },
+    "past": {
+      "indefinite": { "én": "fizettem", "te": "fizettél", "ő": "fizetett", "mi": "fizettünk", "ti": "fizettetek", "ők": "fizettek" },
+      "definite": { "én": "fizettem", "te": "fizetted", "ő": "fizette", "mi": "fizettük", "ti": "fizettétek", "ők": "fizették" }
+    }
+  },
+  {
+    "translation": "to use",
+    "lemma": "használ",
+    "infinitive": "használni",
+    "type": "back-vowel",
+    "present": {
+      "indefinite": { "én": "használok", "te": "használsz", "ő": "használ", "mi": "használunk", "ti": "használtok", "ők": "használnak" },
+      "definite": { "én": "használom", "te": "használod", "ő": "használja", "mi": "használjuk", "ti": "használjátok", "ők": "használják" }
+    },
+    "past": {
+      "indefinite": { "én": "használtam", "te": "használtál", "ő": "használt", "mi": "használtunk", "ti": "használtatok", "ők": "használtak" },
+      "definite": { "én": "használtam", "te": "használtad", "ő": "használta", "mi": "használjuk", "ti": "használtátok", "ők": "használták" }
+    }
+  },
+  {
+    "translation": "to search / to look for",
+    "lemma": "keres",
+    "infinitive": "keresni",
+    "type": "front-vowel",
+    "present": {
+      "indefinite": { "én": "keresek", "te": "keresel", "ő": "keres", "mi": "keresünk", "ti": "kerestek", "ők": "keresnek" },
+      "definite": { "én": "keresem", "te": "keresed", "ő": "keresi", "mi": "keressük", "ti": "keresitek", "ők": "keresik" }
+    },
+    "past": {
+      "indefinite": { "én": "kerestem", "te": "kerestél", "ő": "keresett", "mi": "kerestünk", "ti": "kerestetek", "ők": "kerestek" },
+      "definite": { "én": "kerestem", "te": "kerested", "ő": "kereste", "mi": "kerestük", "ti": "kerestétek", "ők": "keresték" }
+    }
+  },
+  {
+    "translation": "to cook",
+    "lemma": "főz",
+    "infinitive": "főzni",
+    "type": "front-vowel",
+    "present": {
+      "indefinite": { "én": "főzök", "te": "főzöl", "ő": "főz", "mi": "főzünk", "ti": "főztök", "ők": "főznek" },
+      "definite": { "én": "főzöm", "te": "főzöd", "ő": "főzi", "mi": "főzzük", "ti": "főzitek", "ők": "főzik" }
+    },
+    "past": {
+      "indefinite": { "én": "főztem", "te": "főztél", "ő": "főzött", "mi": "főztünk", "ti": "főztetek", "ők": "főztek" },
+      "definite": { "én": "főztem", "te": "főzted", "ő": "főzte", "mi": "főzzük", "ti": "főztétek", "ők": "főzték" }
+    }
+  },
+  {
+    "translation": "to stand",
+    "lemma": "áll",
+    "infinitive": "állni",
+    "type": "back-vowel",
+    "present": {
+      "indefinite": { "én": "állok", "te": "állsz", "ő": "áll", "mi": "állunk", "ti": "álltok", "ők": "állnak" },
+      "definite": { "én": "állom", "te": "állod", "ő": "állja", "mi": "álljuk", "ti": "álljátok", "ők": "állják" }
+    },
+    "past": {
+      "indefinite": { "én": "álltam", "te": "álltál", "ő": "állt", "mi": "álltunk", "ti": "álltatok", "ők": "álltak" },
+      "definite": { "én": "álltam", "te": "álltad", "ő": "állta", "mi": "álltuk", "ti": "álltátok", "ők": "állták" }
+    }
+  },
+  {
+    "translation": "to sit",
+    "lemma": "ül",
+    "infinitive": "ülni",
+    "type": "front-vowel",
+    "present": {
+      "indefinite": { "én": "ülök", "te": "ülsz", "ő": "ül", "mi": "ülünk", "ti": "ültök", "ők": "ülnek" },
+      "definite": { "én": "ülöm", "te": "ülöd", "ő": "üli", "mi": "üljük", "ti": "ülitek", "ők": "ülik" }
+    },
+    "past": {
+      "indefinite": { "én": "ültem", "te": "ültél", "ő": "ült", "mi": "ültünk", "ti": "ültetek", "ők": "ültek" },
+      "definite": { "én": "ültem", "te": "ülted", "ő": "ülte", "mi": "ültük", "ti": "ültétek", "ők": "ülték" }
+    }
+  },
+  {
+    "translation": "to run",
+    "lemma": "fut",
+    "infinitive": "futni",
+    "type": "back-vowel/intransitive",
+    "present": {
+      "indefinite": { "én": "futok", "te": "futsz", "ő": "fut", "mi": "futunk", "ti": "futtok", "ők": "futnak" },
+      "definite": null
+    },
+    "past": {
+      "indefinite": { "én": "futtam", "te": "futtál", "ő": "futott", "mi": "futtunk", "ti": "futtatok", "ők": "futtak" },
+      "definite": null
+    }
+  },
+  {
+    "translation": "to wait",
+    "lemma": "vár",
+    "infinitive": "várni",
+    "type": "back-vowel",
+    "present": {
+      "indefinite": { "én": "várok", "te": "vársz", "ő": "vár", "mi": "várunk", "ti": "vártok", "ők": "várnak" },
+      "definite": { "én": "várom", "te": "várod", "ő": "várja", "mi": "várjuk", "ti": "várjátok", "ők": "várják" }
+    },
+    "past": {
+      "indefinite": { "én": "vártam", "te": "vártál", "ő": "várt", "mi": "vártunk", "ti": "vártatok", "ők": "vártak" },
+      "definite": { "én": "vártam", "te": "vártad", "ő": "várta", "mi": "várjuk", "ti": "vártátok", "ők": "várják" }
+    }
+  },
+  {
+    "translation": "to give",
+    "lemma": "ad",
+    "infinitive": "adni",
+    "type": "back-vowel",
+    "present": {
+      "indefinite": { "én": "adok", "te": "adsz", "ő": "ad", "mi": "adunk", "ti": "adtok", "ők": "adnak" },
+      "definite": { "én": "adom", "te": "adod", "ő": "adja", "mi": "adjuk", "ti": "adjátok", "ők": "adják" }
+    },
+    "past": {
+      "indefinite": { "én": "adtam", "te": "adtál", "ő": "adott", "mi": "adtunk", "ti": "adtatok", "ők": "adtak" },
+      "definite": { "én": "adtam", "te": "adtad", "ő": "adta", "mi": "adtuk", "ti": "adtátok", "ők": "adták" }
+    }
+  },
+  {
+    "translation": "to get / to receive",
+    "lemma": "kap",
+    "infinitive": "kapni",
+    "type": "back-vowel",
+    "present": {
+      "indefinite": { "én": "kapok", "te": "kapsz", "ő": "kap", "mi": "kapunk", "ti": "kaptok", "ők": "kapnak" },
+      "definite": { "én": "kapom", "te": "kapod", "ő": "kapja", "mi": "kapjuk", "ti": "kapjátok", "ők": "kapják" }
+    },
+    "past": {
+      "indefinite": { "én": "kaptam", "te": "kaptál", "ő": "kapott", "mi": "kaptunk", "ti": "kaptatok", "ők": "kaptak" },
+      "definite": { "én": "kaptam", "te": "kaptad", "ő": "kapta", "mi": "kaptuk", "ti": "kaptátok", "ők": "kapták" }
+    }
+  },
+  {
+    "translation": "to begin",
+    "lemma": "kezd",
+    "infinitive": "kezdeni",
+    "type": "front-vowel",
+    "present": {
+      "indefinite": { "én": "kezdek", "te": "kezdesz", "ő": "kezd", "mi": "kezdünk", "ti": "kezdtek", "ők": "kezdenek" },
+      "definite": { "én": "kezdem", "te": "kezded", "ő": "kezdi", "mi": "kezdjük", "ti": "kezditek", "ők": "kezdik" }
+    },
+    "past": {
+      "indefinite": { "én": "kezdtem", "te": "kezdte", "ő": "kezdett", "mi": "kezdte", "ti": "kezdtetek", "ők": "kezdtek" },
+      "definite": { "én": "kezdtem", "te": "kezdted", "ő": "kezdte", "mi": "kezdjük", "ti": "kezdtétek", "ők": "kezdték" }
+    }
+  },
+  {
+    "translation": "to finish",
+    "lemma": "végez",
+    "infinitive": "végezni",
+    "type": "front-vowel",
+    "present": {
+      "indefinite": { "én": "végezek", "te": "végezel", "ő": "végez", "mi": "végezünk", "ti": "végeztek", "ők": "végeznek" },
+      "definite": { "én": "végezem", "te": "végezed", "ő": "végezi", "mi": "végezzük", "ti": "végezitek", "ők": "végezik" }
+    },
+    "past": {
+      "indefinite": { "én": "végeztem", "te": "végeztél", "ő": "végezett", "mi": "végeztünk", "ti": "végeztetek", "ők": "végeztek" },
+      "definite": { "én": "végeztem", "te": "végezted", "ő": "végezte", "mi": "végeztük", "ti": "végeztétek", "ők": "végezték" }
+    }
+  },
+  {
+    "translation": "to stay / to remain",
+    "lemma": "marad",
+    "infinitive": "maradni",
+    "type": "back-vowel/intransitive",
+    "present": {
+      "indefinite": { "én": "maradok", "te": "maradsz", "ő": "marad", "mi": "maradunk", "ti": "maradtok", "ők": "maradnak" },
+      "definite": null
+    },
+    "past": {
+      "indefinite": { "én": "maradtam", "te": "maradtál", "ő": "maradt", "mi": "maradtunk", "ti": "maradtatok", "ők": "maradtak" },
+      "definite": null
+    }
+  },
+  {
+    "translation": "to believe",
+    "lemma": "hisz",
+    "infinitive": "hinni",
+    "type": "irregular",
+    "present": {
+      "indefinite": { "én": "hiszek", "te": "hiszel", "ő": "hisz", "mi": "hiszünk", "ti": "hisztek", "ők": "hisznek" },
+      "definite": { "én": "hiszem", "te": "hiszed", "ő": "hiszi", "mi": "hisszük", "ti": "hiszitek", "ők": "hiszik" }
+    },
+    "past": {
+      "indefinite": { "én": "hittem", "te": "hittél", "ő": "hitt", "mi": "hittünk", "ti": "hittetek", "ők": "hittek" },
+      "definite": { "én": "hittem", "te": "hitted", "ő": "hitte", "mi": "hittük", "ti": "hittétek", "ők": "hitték" }
+    }
+  },
+  {
+    "translation": "to take / to carry",
+    "lemma": "visz",
+    "infinitive": "vinni",
+    "type": "irregular",
+    "present": {
+      "indefinite": { "én": "viszek", "te": "viszel", "ő": "visz", "mi": "viszünk", "ti": "visztek", "ők": "visznek" },
+      "definite": { "én": "viszem", "te": "viszed", "ő": "viszi", "mi": "visszük", "ti": "viszitek", "ők": "viszik" }
+    },
+    "past": {
+      "indefinite": { "én": "vittem", "te": "vittél", "ő": "vitt", "mi": "vittünk", "ti": "vittetek", "ők": "vittek" },
+      "definite": { "én": "vittem", "te": "vitted", "ő": "vitte", "mi": "vittük", "ti": "vittétek", "ők": "vitték" }
+    }
+  },
+  {
+    "translation": "to bring",
+    "lemma": "hoz",
+    "infinitive": "hozni",
+    "type": "back-vowel",
+    "present": {
+      "indefinite": { "én": "hozok", "te": "hozol", "ő": "hoz", "mi": "hozunk", "ti": "hoztok", "ők": "hoznak" },
+      "definite": { "én": "hozom", "te": "hozod", "ő": "hozza", "mi": "hozzuk", "ti": "hozzátok", "ők": "hozzák" }
+    },
+    "past": {
+      "indefinite": { "én": "hoztam", "te": "hoztál", "ő": "hozott", "mi": "hoztunk", "ti": "hoztatok", "ők": "hoztak" },
+      "definite": { "én": "hoztam", "te": "hoztad", "ő": "hozta", "mi": "hozzuk", "ti": "hoztátok", "ők": "hozták" }
+    }
+  },
+  {
+    "translation": "to open",
+    "lemma": "nyit",
+    "infinitive": "nyitni",
+    "type": "back-vowel",
+    "present": {
+      "indefinite": { "én": "nyitok", "te": "nyitsz", "ő": "nyit", "mi": "nyitunk", "ti": "nyittok", "ők": "nyitnak" },
+      "definite": { "én": "nyitom", "te": "nyitod", "ő": "nyitja", "mi": "nyitjuk", "ti": "nyitjátok", "ők": "nyitják" }
+    },
+    "past": {
+      "indefinite": { "én": "nyitottam", "te": "nyitottál", "ő": "nyitott", "mi": "nyitottunk", "ti": "nyitottatok", "ők": "nyitottak" },
+      "definite": { "én": "nyitottam", "te": "nyitottad", "ő": "nyitotta", "mi": "nyitottuk", "ti": "nyitottátok", "ők": "nyitották" }
+    }
+  },
+  {
+    "translation": "to close",
+    "lemma": "zár",
+    "infinitive": "zárni",
+    "type": "back-vowel",
+    "present": {
+      "indefinite": { "én": "zárok", "te": "zársz", "ő": "zár", "mi": "zárunk", "ti": "zártok", "ők": "zárnak" },
+      "definite": { "én": "zárom", "te": "zárod", "ő": "zárja", "mi": "zárjuk", "ti": "zárjátok", "ők": "zárják" }
+    },
+    "past": {
+      "indefinite": { "én": "zártam", "te": "zártál", "ő": "zárt", "mi": "zártunk", "ti": "zártatok", "ők": "zártak" },
+      "definite": { "én": "zártam", "te": "zártad", "ő": "zárta", "mi": "zárjuk", "ti": "zártátok", "ők": "zárták" }
+    }
+  },
+  {
+    "translation": "to live (alive)",
+    "lemma": "él",
+    "infinitive": "élni",
+    "type": "front-vowel/intransitive",
+    "present": {
+      "indefinite": { "én": "élek", "te": "élsz", "ő": "él", "mi": "élünk", "ti": "éltek", "ők": "élnek" },
+      "definite": null
+    },
+    "past": {
+      "indefinite": { "én": "éltem", "te": "éltél", "ő": "élt", "mi": "éltünk", "ti": "éltetek", "ők": "éltek" },
+      "definite": null
+    }
+  },
+  {
+    "translation": "to cut",
+    "lemma": "vág",
+    "infinitive": "vágni",
+    "type": "back-vowel",
+    "present": {
+      "indefinite": { "én": "vágok", "te": "vágsz", "ő": "vág", "mi": "vágunk", "ti": "vágtok", "ők": "vágnak" },
+      "definite": { "én": "vágom", "te": "vágod", "ő": "vágja", "mi": "vágjuk", "ti": "vágjátok", "ők": "vágják" }
+    },
+    "past": {
+      "indefinite": { "én": "vágtam", "te": "vágtál", "ő": "vágott", "mi": "vágtunk", "ti": "vágtatok", "ők": "vágtak" },
+      "definite": { "én": "vágtam", "te": "vágtad", "ő": "vágta", "mi": "vágjuk", "ti": "vágjátok", "ők": "vágják" }
+    }
+  },
+  {
+    "translation": "to throw",
+    "lemma": "dob",
+    "infinitive": "dobni",
+    "type": "back-vowel",
+    "present": {
+      "indefinite": { "én": "dobok", "te": "dobsz", "ő": "dob", "mi": "dobunk", "ti": "dobtok", "ők": "dobnak" },
+      "definite": { "én": "dobom", "te": "dobod", "ő": "dobja", "mi": "dobjuk", "ti": "dobjátok", "ők": "dobják" }
+    },
+    "past": {
+      "indefinite": { "én": "dobtam", "te": "dobtál", "ő": "dobott", "mi": "dobtunk", "ti": "dobtatok", "ők": "dobtak" },
+      "definite": { "én": "dobtam", "te": "dobtad", "ő": "dobta", "mi": "dobjuk", "ti": "dobjátok", "ők": "dobják" }
+    }
+  },
+  {
+    "translation": "to catch / to hold",
+    "lemma": "fog",
+    "infinitive": "fogni",
+    "type": "back-vowel",
+    "present": {
+      "indefinite": { "én": "fogok", "te": "fogsz", "ő": "fog", "mi": "fogunk", "ti": "fogtok", "ők": "fognak" },
+      "definite": { "én": "fogom", "te": "fogod", "ő": "fogja", "mi": "fogjuk", "ti": "fogjátok", "ők": "fogják" }
+    },
+    "past": {
+      "indefinite": { "én": "fogtam", "te": "fogtál", "ő": "fogott", "mi": "fogtunk", "ti": "fogtatok", "ők": "fogtak" },
+      "definite": { "én": "fogtam", "te": "fogtad", "ő": "fogta", "mi": "fogjuk", "ti": "fogjátok", "ők": "fogják" }
+    }
+  },
+  {
+    "translation": "to wear",
+    "lemma": "visel",
+    "infinitive": "viselni",
+    "type": "front-vowel",
+    "present": {
+      "indefinite": { "én": "viselek", "te": "viselsz", "ő": "visel", "mi": "viselünk", "ti": "viseltek", "ők": "viselnek" },
+      "definite": { "én": "viselem", "te": "viseled", "ő": "viseli", "mi": "viseljük", "ti": "viselitek", "ők": "viselik" }
+    },
+    "past": {
+      "indefinite": { "én": "viseltem", "te": "viseltél", "ő": "viselt", "mi": "viseltünk", "ti": "viseltetek", "ők": "viseltek" },
+      "definite": { "én": "viseltem", "te": "viselted", "ő": "viselte", "mi": "viseljük", "ti": "viseltétek", "ők": "viselték" }
+    }
+  },
+  {
+    "translation": "to prepare / to make",
+    "lemma": "készít",
+    "infinitive": "készíteni",
+    "type": "front-vowel",
+    "present": {
+      "indefinite": { "én": "készítek", "te": "készítesz", "ő": "készít", "mi": "készítünk", "ti": "készítetek", "ők": "készítenek" },
+      "definite": { "én": "készítem", "te": "készíted", "ő": "készíti", "mi": "készítjük", "ti": "készítitek", "ők": "készítik" }
+    },
+    "past": {
+      "indefinite": { "én": "készítettem", "te": "készítettél", "ő": "készített", "mi": "készítettünk", "ti": "készítettetek", "ők": "készítettek" },
+      "definite": { "én": "készítettem", "te": "készítetted", "ő": "készítette", "mi": "készítjük", "ti": "készítettétek", "ők": "készítették" }
+    }
+  },
+  {
+    "translation": "to fix / to correct",
+    "lemma": "javít",
+    "infinitive": "javítani",
+    "type": "back-vowel",
+    "present": {
+      "indefinite": { "én": "javítok", "te": "javítasz", "ő": "javít", "mi": "javítunk", "ti": "javíttok", "ők": "javítanak" },
+      "definite": { "én": "javítom", "te": "javítod", "ő": "javítja", "mi": "javítjuk", "ti": "javítjátok", "ők": "javítják" }
+    },
+    "past": {
+      "indefinite": { "én": "javítottam", "te": "javítottál", "ő": "javított", "mi": "javítottunk", "ti": "javítottatok", "ők": "javítottak" },
+      "definite": { "én": "javítottam", "te": "javítottad", "ő": "javította", "mi": "javítjuk", "ti": "javítjátok", "ők": "javítják" }
+    }
+  },
+  {
+    "translation": "to build",
+    "lemma": "épít",
+    "infinitive": "építeni",
+    "type": "front-vowel",
+    "present": {
+      "indefinite": { "én": "építek", "te": "építesz", "ő": "épít", "mi": "építünk", "ti": "építetek", "ők": "építenek" },
+      "definite": { "én": "építem", "te": "építed", "ő": "építi", "mi": "építjük", "ti": "építitek", "ők": "építik" }
+    },
+    "past": {
+      "indefinite": { "én": "építettem", "te": "építettél", "ő": "épített", "mi": "építettünk", "ti": "építettetek", "ők": "építettek" },
+      "definite": { "én": "építettem", "te": "építetted", "ő": "építette", "mi": "építjük", "ti": "építettétek", "ők": "építették" }
+    }
+  },
+  {
+    "translation": "to change",
+    "lemma": "változik",
+    "infinitive": "változni",
+    "type": "back-vowel-ik/intransitive",
+    "present": {
+      "indefinite": { "én": "változom", "te": "változol", "ő": "változik", "mi": "változunk", "ti": "változtok", "ők": "változnak" },
+      "definite": null
+    },
+    "past": {
+      "indefinite": { "én": "változtam", "te": "változtál", "ő": "változott", "mi": "változtunk", "ti": "változtatok", "ők": "változtak" },
+      "definite": null
+    }
+  },
+  {
+    "translation": "to be born",
+    "lemma": "születik",
+    "infinitive": "születni",
+    "type": "front-vowel-ik/intransitive",
+    "present": {
+      "indefinite": { "én": "születek", "te": "születsz", "ő": "születik", "mi": "születünk", "ti": "születtek", "ők": "születnek" },
+      "definite": null
+    },
+    "past": {
+      "indefinite": { "én": "születtem", "te": "születtél", "ő": "született", "mi": "születtünk", "ti": "születtek", "ők": "születtek" },
+      "definite": null
+    }
+  },
+  {
+    "translation": "to die",
+    "lemma": "meghal",
+    "infinitive": "meghalni",
+    "type": "back-vowel/intransitive",
+    "present": {
+      "indefinite": { "én": "meghalok", "te": "meghalsz", "ő": "meghal", "mi": "meghalunk", "ti": "meghaltok", "ők": "meghalnak" },
+      "definite": null
+    },
+    "past": {
+      "indefinite": { "én": "meghaltam", "te": "meghaltál", "ő": "meghalt", "mi": "meghaltunk", "ti": "meghaltatok", "ők": "meghaltak" },
+      "definite": null
+    }
+  },
+  {
+    "translation": "to wake up",
+    "lemma": "ébred",
+    "infinitive": "ébredni",
+    "type": "front-vowel/intransitive",
+    "present": {
+      "indefinite": { "én": "ébredek", "te": "ébredsz", "ő": "ébred", "mi": "ébredünk", "ti": "ébredtek", "ők": "ébrednek" },
+      "definite": null
+    },
+    "past": {
+      "indefinite": { "én": "ébredtem", "te": "ébredtél", "ő": "ébredt", "mi": "ébredtünk", "ti": "ébredtetek", "ők": "ébredtek" },
+      "definite": null
+    }
+  },
+  {
+    "translation": "to grow",
+    "lemma": "nő",
+    "infinitive": "nőni",
+    "type": "irregular/intransitive",
+    "present": {
+      "indefinite": { "én": "növök", "te": "nősz", "ő": "nő", "mi": "növünk", "ti": "nőttök", "ők": "nőnek" },
+      "definite": null
+    },
+    "past": {
+      "indefinite": { "én": "nőttem", "te": "nőttél", "ő": "nőtt", "mi": "nőttünk", "ti": "nőttetek", "ők": "nőttek" },
+      "definite": null
+    }
+  },
+  {
+    "translation": "to leave / to let",
+    "lemma": "hagy",
+    "infinitive": "hagyni",
+    "type": "back-vowel",
+    "present": {
+      "indefinite": { "én": "hagyok", "te": "hagysz", "ő": "hagy", "mi": "hagyunk", "ti": "hagytok", "ők": "hagynak" },
+      "definite": { "én": "hagyom", "te": "hagyod", "ő": "hagyja", "mi": "hagyjuk", "ti": "hagyjátok", "ők": "hagyják" }
+    },
+    "past": {
+      "indefinite": { "én": "hagytam", "te": "hagytál", "ő": "hagyott", "mi": "hagytunk", "ti": "hagytatok", "ők": "hagytak" },
+      "definite": { "én": "hagytam", "te": "hagytad", "ő": "hagyta", "mi": "hagyjuk", "ti": "hagyjátok", "ők": "hagyják" }
+    }
+  },
+  {
+    "translation": "to put / to place",
+    "lemma": "tesz",
+    "infinitive": "tenni",
+    "type": "irregular",
+    "present": {
+      "indefinite": { "én": "teszek", "te": "teszel", "ő": "tesz", "mi": "teszünk", "ti": "tesztek", "ők": "tesznek" },
+      "definite": { "én": "teszem", "te": "teszed", "ő": "teszi", "mi": "tesszük", "ti": "teszitek", "ők": "teszik" }
+    },
+    "past": {
+      "indefinite": { "én": "tettem", "te": "tettél", "ő": "tett", "mi": "tettünk", "ti": "tettetek", "ők": "tettek" },
+      "definite": { "én": "tettem", "te": "tetted", "ő": "tette", "mi": "tettük", "ti": "tettétek", "ők": "tették" }
+    }
+  },
+  {
+    "translation": "to send",
+    "lemma": "küld",
+    "infinitive": "küldeni",
+    "type": "front-vowel",
+    "present": {
+      "indefinite": { "én": "küldök", "te": "küldesz", "ő": "küld", "mi": "küldünk", "ti": "küldtök", "ők": "küldenek" },
+      "definite": { "én": "küldöm", "te": "küldöd", "ő": "küldi", "mi": "küldjük", "ti": "külditek", "ők": "küldik" }
+    },
+    "past": {
+      "indefinite": { "én": "küldtem", "te": "küldtél", "ő": "küldött", "mi": "küldtünk", "ti": "küldtetek", "ők": "küldtek" },
+      "definite": { "én": "küldtem", "te": "küldted", "ő": "küldte", "mi": "küldjük", "ti": "küldtétek", "ők": "küldték" }
+    }
+  },
+  {
+    "translation": "to answer",
+    "lemma": "válaszol",
+    "infinitive": "válaszolni",
+    "type": "back-vowel",
+    "present": {
+      "indefinite": { "én": "válaszolok", "te": "válaszolsz", "ő": "válaszol", "mi": "válaszolunk", "ti": "válaszoltok", "ők": "válaszolnak" },
+      "definite": { "én": "válaszolom", "te": "válaszolod", "ő": "válaszolja", "mi": "válaszoljuk", "ti": "válaszoljátok", "ők": "válaszolják" }
+    },
+    "past": {
+      "indefinite": { "én": "válaszoltam", "te": "válaszoltál", "ő": "válaszolt", "mi": "válaszoltunk", "ti": "válaszoltatok", "ők": "válaszoltak" },
+      "definite": { "én": "válaszoltam", "te": "válaszoltad", "ő": "válaszolta", "mi": "válaszoltuk", "ti": "válaszoltátok", "ők": "válaszolták" }
+    }
+  },
+  {
+    "translation": "to bake / to fry",
+    "lemma": "süt",
+    "infinitive": "sütni",
+    "type": "front-vowel",
+    "present": {
+      "indefinite": { "én": "sütök", "te": "sütsz", "ő": "süt", "mi": "sütünk", "ti": "süttök", "ők": "sütnek" },
+      "definite": { "én": "sütöm", "te": "sütöd", "ő": "süti", "mi": "sütjük", "ti": "sütitek", "ők": "sütik" }
+    },
+    "past": {
+      "indefinite": { "én": "sütöttem", "te": "sütöttél", "ő": "sütött", "mi": "sütöttünk", "ti": "sütöttetek", "ők": "sütöttek" },
+      "definite": { "én": "sütöttem", "te": "sütötted", "ő": "sütötte", "mi": "sütöttük", "ti": "sütöttétek", "ők": "sütötték" }
+    }
+  },
+  {
+    "translation": "to meet",
+    "lemma": "találkozik",
+    "infinitive": "találkozni",
+    "type": "back-vowel-ik/intransitive",
+    "present": {
+      "indefinite": { "én": "találkozom", "te": "találkozol", "ő": "találkozik", "mi": "találkozunk", "ti": "találkoztok", "ők": "találkoznak" },
+      "definite": null
+    },
+    "past": {
+      "indefinite": { "én": "találkoztam", "te": "találkoztál", "ő": "találkozott", "mi": "találkoztunk", "ti": "találkoztatok", "ők": "találkoztak" },
+      "definite": null
+    }
+  },
+  {
+    "translation": "to dance",
+    "lemma": "táncol",
+    "infinitive": "táncolni",
+    "type": "back-vowel",
+    "present": {
+      "indefinite": { "én": "táncolok", "te": "táncolsz", "ő": "táncol", "mi": "táncolunk", "ti": "táncoltok", "ők": "táncolnak" },
+      "definite": { "én": "táncolom", "te": "táncolod", "ő": "táncolja", "mi": "táncoljuk", "ti": "táncoljátok", "ők": "táncolják" }
+    },
+    "past": {
+      "indefinite": { "én": "táncoltam", "te": "táncoltál", "ő": "táncolt", "mi": "táncoltunk", "ti": "táncoltatok", "ők": "táncoltak" },
+      "definite": { "én": "táncoltam", "te": "táncoltad", "ő": "táncolta", "mi": "táncoljuk", "ti": "táncoljátok", "ők": "táncolják" }
+    }
+  },
+  {
+    "translation": "to sell",
+    "lemma": "elad",
+    "infinitive": "eladni",
+    "type": "back-vowel",
+    "present": {
+      "indefinite": { "én": "eladok", "te": "eladsz", "ő": "elad", "mi": "eladunk", "ti": "eladtok", "ők": "eladnak" },
+      "definite": { "én": "eladom", "te": "eladod", "ő": "eladja", "mi": "eladjuk", "ti": "eladjátok", "ők": "eladják" }
+    },
+    "past": {
+      "indefinite": { "én": "eladtam", "te": "eladtál", "ő": "eladott", "mi": "eladtunk", "ti": "eladtatok", "ők": "eladtak" },
+      "definite": { "én": "eladtam", "te": "eladtad", "ő": "eladta", "mi": "eladtuk", "ti": "eladtátok", "ők": "eladták" }
+    }
+  },
+  {
+    "translation": "to jump",
+    "lemma": "ugrik",
+    "infinitive": "ugrani",
+    "type": "back-vowel-ik/intransitive",
+    "present": {
+      "indefinite": { "én": "ugrom", "te": "ugrasz", "ő": "ugrik", "mi": "ugrunk", "ti": "ugrotok", "ők": "ugranak" },
+      "definite": null
+    },
+    "past": {
+      "indefinite": { "én": "ugrottam", "te": "ugrottál", "ő": "ugrott", "mi": "ugrottunk", "ti": "ugrottatok", "ők": "ugrottak" },
+      "definite": null
+    }
+  },
+  {
+    "translation": "to pull",
+    "lemma": "húz",
+    "infinitive": "húzni",
+    "type": "back-vowel",
+    "present": {
+      "indefinite": { "én": "húzok", "te": "húzol", "ő": "húz", "mi": "húzunk", "ti": "húztok", "ők": "húznak" },
+      "definite": { "én": "húzom", "te": "húzod", "ő": "húzza", "mi": "húzzuk", "ti": "húzzátok", "ők": "húzzák" }
+    },
+    "past": {
+      "indefinite": { "én": "húztam", "te": "húztál", "ő": "húzott", "mi": "húztunk", "ti": "húztatok", "ők": "húztak" },
+      "definite": { "én": "húztam", "te": "húztad", "ő": "húzta", "mi": "húzzuk", "ti": "húzzátok", "ők": "húzzák" }
+    }
+  },
+  {
+    "translation": "to push",
+    "lemma": "tol",
+    "infinitive": "tolni",
+    "type": "back-vowel",
+    "present": {
+      "indefinite": { "én": "tolok", "te": "tolsz", "ő": "tol", "mi": "tolunk", "ti": "toltok", "ők": "tolnak" },
+      "definite": { "én": "tolom", "te": "tolod", "ő": "tolja", "mi": "toljuk", "ti": "toljátok", "ők": "tolják" }
+    },
+    "past": {
+      "indefinite": { "én": "toltam", "te": "toltál", "ő": "tolt", "mi": "toltunk", "ti": "toltatok", "ők": "toltak" },
+      "definite": { "én": "toltam", "te": "toltad", "ő": "tolta", "mi": "toljuk", "ti": "toljátok", "ők": "tolják" }
+    }
+  },
+  {
+    "translation": "to fly",
+    "lemma": "repül",
+    "infinitive": "repülni",
+    "type": "front-vowel/intransitive",
+    "present": {
+      "indefinite": { "én": "repülök", "te": "repülsz", "ő": "repül", "mi": "repülünk", "ti": "repültök", "ők": "repülnek" },
+      "definite": null
+    },
+    "past": {
+      "indefinite": { "én": "repültem", "te": "repültél", "ő": "repült", "mi": "repültünk", "ti": "repültetek", "ők": "repültek" },
+      "definite": null
+    }
+  },
+  {
+    "translation": "to laugh",
+    "lemma": "nevet",
+    "infinitive": "nevetni",
+    "type": "front-vowel/intransitive",
+    "present": {
+      "indefinite": { "én": "nevetek", "te": "nevetsz", "ő": "nevet", "mi": "nevetünk", "ti": "nevettek", "ők": "nevetnek" },
+      "definite": null
+    },
+    "past": {
+      "indefinite": { "én": "nevettem", "te": "nevettél", "ő": "nevetett", "mi": "nevettünk", "ti": "nevettetek", "ők": "nevettek" },
+      "definite": null
+    }
+  },
+  {
+    "translation": "to cry",
+    "lemma": "sír",
+    "infinitive": "sírni",
+    "type": "back-vowel/intransitive",
+    "present": {
+      "indefinite": { "én": "sírok", "te": "sírsz", "ő": "sír", "mi": "sírunk", "ti": "sírtok", "ők": "sírnak" },
+      "definite": null
+    },
+    "past": {
+      "indefinite": { "én": "sírtam", "te": "sírtál", "ő": "sírt", "mi": "sírtunk", "ti": "sírtatok", "ők": "sírtak" },
+      "definite": null
+    }
+  },
+  {
+    "translation": "to fear / to be afraid",
+    "lemma": "fél",
+    "infinitive": "félni",
+    "type": "front-vowel/intransitive",
+    "present": {
+      "indefinite": { "én": "félek", "te": "félsz", "ő": "fél", "mi": "félünk", "ti": "féltek", "ők": "félnek" },
+      "definite": null
+    },
+    "past": {
+      "indefinite": { "én": "féltem", "te": "féltél", "ő": "félt", "mi": "féltünk", "ti": "féltetek", "ők": "féltek" },
+      "definite": null
+    }
+  },
+  {
+    "translation": "to win",
+    "lemma": "nyer",
+    "infinitive": "nyerni",
+    "type": "front-vowel",
+    "present": {
+      "indefinite": { "én": "nyerek", "te": "nyersz", "ő": "nyer", "mi": "nyerünk", "ti": "nyertek", "ők": "nyernek" },
+      "definite": { "én": "nyerem", "te": "nyered", "ő": "nyeri", "mi": "nyerjük", "ti": "nyeritek", "ők": "nyerik" }
+    },
+    "past": {
+      "indefinite": { "én": "nyertem", "te": "nyertél", "ő": "nyert", "mi": "nyertünk", "ti": "nyertetek", "ők": "nyertek" },
+      "definite": { "én": "nyertem", "te": "nyerted", "ő": "nyerte", "mi": "nyerjük", "ti": "nyertétek", "ők": "nyerték" }
+    }
+  },
+  {
+    "translation": "to lose",
+    "lemma": "veszít",
+    "infinitive": "veszíteni",
+    "type": "front-vowel",
+    "present": {
+      "indefinite": { "én": "veszítek", "te": "veszítesz", "ő": "veszít", "mi": "veszítünk", "ti": "veszítetek", "ők": "veszítenek" },
+      "definite": { "én": "veszítem", "te": "veszíted", "ő": "veszíti", "mi": "veszítjük", "ti": "veszítitek", "ők": "veszítik" }
+    },
+    "past": {
+      "indefinite": { "én": "veszítettem", "te": "veszítettél", "ő": "veszített", "mi": "veszítettünk", "ti": "veszítettetek", "ők": "veszítettek" },
+      "definite": { "én": "veszítettem", "te": "veszítetted", "ő": "veszítette", "mi": "veszítjük", "ti": "veszítettétek", "ők": "veszítették" }
+    }
+  },
+  {
+    "translation": "to wait for / to expect",
+    "lemma": "elvár",
+    "infinitive": "elvárni",
+    "type": "back-vowel",
+    "present": {
+      "indefinite": { "én": "elvárók", "te": "elvársz", "ő": "elvár", "mi": "elvárünk", "ti": "elvártok", "ők": "elvárnak" },
+      "definite": { "én": "elvárom", "te": "elvárod", "ő": "elvárja", "mi": "elvárjuk", "ti": "elvárjátok", "ők": "elvárják" }
+    },
+    "past": {
+      "indefinite": { "én": "elvártam", "te": "elvártál", "ő": "elvárt", "mi": "elvártunk", "ti": "elvártatok", "ők": "elvártak" },
+      "definite": { "én": "elvártam", "te": "elvártad", "ő": "elvárta", "mi": "elvárjuk", "ti": "elvártátok", "ők": "elvárták" }
     }
   }
 ]
