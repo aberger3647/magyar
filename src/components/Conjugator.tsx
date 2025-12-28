@@ -24,7 +24,8 @@ import type { VoiceType } from "./types";
 import type { TenseType } from "./types";
 import { useParams } from "react-router-dom";
 import { Badge } from "./ui/badge";
-// import { createIcons, circleCheck } from "lucide-react"
+import { CircleCheck, CircleX } from "lucide-react";
+import { useMemo } from "react";
 
 const PRONOUN_KEYS = ["én", "te", "ő", "mi", "ti", "ők"] as const;
 type PronounKey = (typeof PRONOUN_KEYS)[number];
@@ -45,15 +46,15 @@ const getRandomWord = () => {
 };
 
 export const Conjugator = () => {
-  const randomWord = getRandomWord();
-  const infinitive = randomWord.infinitive;
-  const translation = randomWord.translation;
-  const lemma = randomWord.present.indefinite.ő;
-
   const { tense, voice } = useParams<{
     tense: TenseType;
     voice: VoiceType;
   }>();
+
+  const randomWord = useMemo(() => getRandomWord(), []);
+  const infinitive = randomWord.infinitive;
+  const translation = randomWord.translation;
+  const lemma = randomWord.present.indefinite.ő;
 
   const form = useForm({
     defaultValues: {
@@ -68,13 +69,6 @@ export const Conjugator = () => {
       onSubmit: formSchema,
     },
     onSubmit: async ({ value: userAnswers }) => {
-      const incorrectSubmissions = getIncorrectSubmissions(
-        userAnswers,
-        randomWord,
-        tense,
-        voice
-      );
-
       const correctSubmissions = getCorrectSubmissions(
         userAnswers,
         randomWord,
@@ -82,31 +76,18 @@ export const Conjugator = () => {
         voice
       );
 
-      console.log(correctSubmissions)
-      if (correctSubmissions.length) {
-        correctSubmissions.forEach((pronoun) => {
-          form.setFieldMeta(pronoun, (prev) => ({
-            ...prev,
-            isCorrect: true,
-          }));
-        });
-      }
-      
-      if (incorrectSubmissions.length) {
-        incorrectSubmissions.forEach((pronoun) => {
-          form.setFieldMeta(pronoun, (prev) => ({
-            ...prev,
-            errorMap: {
-              onSubmit: {
-                message: "Incorrect",
-              },
-            },
-          }));
-        });
-        toast.error("Check your answers and try again.");
-        return; // Prevent the actual API call
-      }
+      const correctPronouns: PronounKey[] = correctSubmissions;
 
+      PRONOUN_KEYS.forEach((pronoun) => {
+        const isCorrect = correctPronouns.includes(pronoun);
+        form.setFieldMeta(pronoun, (prev) => ({
+          ...prev,
+          isCorrect,
+          errorMap: {
+            onSubmit: isCorrect ? undefined : "no",
+          },
+        }));
+      });
 
       toast.success("Form submitted successfully");
     },
@@ -151,9 +132,8 @@ export const Conjugator = () => {
                     key={pronoun}
                     name={pronoun}
                     children={(field) => {
-                      console.log(field.getMeta());
-                      const isInvalid =
-                        field.state.meta.isTouched && !field.state.meta.isValid;
+                      const isCorrect = (field.state.meta as any).isCorrect;
+                      const isInvalid = field.state.meta.errors.length > 0;
 
                       return (
                         <Field
@@ -169,12 +149,15 @@ export const Conjugator = () => {
                             value={field.state.value}
                             onBlur={field.handleBlur}
                             onChange={(e) => field.handleChange(e.target.value)}
+                            className={isCorrect ? "border-green-500" : ""}
                             aria-invalid={isInvalid}
                             autoComplete="off"
                           />
-                           {field.state.meta.isCorrect && 'yes'}
+                          {isCorrect && (
+                            <CircleCheck className="w-6 h-8 text-green-500" />
+                          )}
                           {isInvalid && (
-                            <FieldError errors={field.state.meta.errors} />
+                            <CircleX className="w-6 h-8 text-red-500" />
                           )}
                         </Field>
                       );
