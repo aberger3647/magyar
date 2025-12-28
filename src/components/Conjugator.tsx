@@ -1,4 +1,4 @@
-import * as conjugations from "../assets/conjugations.json";
+import conjugations from "../assets/conjugations.json";
 import { useForm } from "@tanstack/react-form";
 import { toast } from "sonner";
 import { Toaster } from "sonner";
@@ -13,16 +13,18 @@ import {
   CardDescription,
   CardContent,
 } from "./ui/card";
-import type { VerbConjugation } from "../types/VerbConjugation";
-import type { Pronouns } from "../types/Pronouns";
-import type { VoiceType } from "../types/types";
-import type { TenseType } from "../types/types";
+import type { VerbConjugation } from "./VerbConjugation";
+import type { Pronouns } from "./Pronouns";
+import type { VoiceType } from "./types";
+import type { TenseType } from "./types";
 import { useParams } from "react-router-dom";
 import { Badge } from "./ui/badge";
 import { CircleCheck, CircleX } from "lucide-react";
+import { useMemo } from "react";
 
 const PRONOUN_KEYS = ["én", "te", "ő", "mi", "ti", "ők"] as const;
 type PronounKey = (typeof PRONOUN_KEYS)[number];
+
 const formSchema = z.object({
   én: z.string().nonempty("This field is required"),
   te: z.string().nonempty("This field is required"),
@@ -38,14 +40,13 @@ const getRandomWord = () => {
   return conjugations[randomNum];
 };
 
-const randomWord = getRandomWord();
-
 export const Conjugator = () => {
   const { tense, voice } = useParams<{
     tense: TenseType;
     voice: VoiceType;
   }>();
 
+  const randomWord = useMemo(() => getRandomWord(), []);
   const infinitive = randomWord.infinitive;
   const translation = randomWord.translation;
   const lemma = randomWord.present.indefinite.ő;
