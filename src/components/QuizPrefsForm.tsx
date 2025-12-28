@@ -200,5 +200,5 @@ export const QuizPrefsForm = () => {
         </CardContent>
       </Card>
     </>
-  );  
+  );
 };

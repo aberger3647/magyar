@@ -2,11 +2,7 @@ import conjugations from "../assets/conjugations.json";
 import { useForm } from "@tanstack/react-form";
 import { toast } from "sonner";
 import { Toaster } from "sonner";
-import {
-  Field,
-  FieldGroup,
-  FieldLabel,
-} from "@/components/ui/field";
+import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import * as z from "zod";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
@@ -133,7 +129,10 @@ export const Conjugator = () => {
                     key={pronoun}
                     name={pronoun}
                     children={(field) => {
-                      const meta = field.state.meta as unknown as { isCorrect?: boolean; errors?: unknown[] };
+                      const meta = field.state.meta as unknown as {
+                        isCorrect?: boolean;
+                        errors?: unknown[];
+                      };
                       const isCorrect = !!meta.isCorrect;
                       const isInvalid = (meta.errors || []).length > 0;
 
@@ -181,7 +180,6 @@ export const Conjugator = () => {
     </>
   );
 };
-
 
 function getCorrectSubmissions(
   userAnswers: Pronouns,
