@@ -140,7 +140,10 @@ export const Conjugator = () => {
                           data-invalid={isInvalid}
                           orientation="horizontal"
                         >
-                          <FieldLabel htmlFor={field.name} className="w-14 justify-center text-center">
+                          <FieldLabel
+                            htmlFor={field.name}
+                            className="w-14 justify-center text-center"
+                          >
                             {pronoun}
                           </FieldLabel>
                           <Input
@@ -149,7 +152,9 @@ export const Conjugator = () => {
                             value={field.state.value}
                             onBlur={field.handleBlur}
                             onChange={(e) => field.handleChange(e.target.value)}
-                            className={`${isCorrect ? "border-green-500" : ""} w-64 md:w-96`}
+                            className={`${
+                              isCorrect ? "border-green-500" : ""
+                            } w-64 md:w-96`}
                             aria-invalid={isInvalid}
                             autoComplete="off"
                           />
