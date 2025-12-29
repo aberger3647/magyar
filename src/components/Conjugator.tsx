@@ -35,6 +35,8 @@ const formSchema = z.object({
 });
 
 export const Conjugator = () => {
+  if (!localStorage.getItem("randomWord")) setRandomWord(conjugations);
+
   const { tense, voice } = useParams<{
     tense: TenseType;
     voice: VoiceType;
@@ -61,6 +63,8 @@ export const Conjugator = () => {
       onSubmit: formSchema,
     },
     onSubmit: async ({ value: userAnswers }) => {
+      if (!randomWord) return;
+
       const correctSubmissions = getCorrectSubmissions(
         userAnswers,
         randomWord,
