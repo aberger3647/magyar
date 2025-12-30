@@ -21,6 +21,8 @@ import { useParams } from "react-router-dom";
 import { Badge } from "./ui/badge";
 import { CircleCheck, CircleX } from "lucide-react";
 import { setRandomWord } from "./setRandomWord";
+import { useState } from "react";
+import { useLocalStorage } from "@/lib/useLocalStorage";
 
 const PRONOUN_KEYS = ["én", "te", "ő", "mi", "ti", "ők"] as const;
 type PronounKey = (typeof PRONOUN_KEYS)[number];
@@ -35,14 +37,18 @@ const formSchema = z.object({
 });
 
 export const Conjugator = () => {
-  if (!localStorage.getItem("randomWord")) setRandomWord(conjugations);
+  const [storedWord, setStoredWord] = useLocalStorage<string | null>(
+    "randomWord",
+    null
+  );
+  const [isDisabled, setIsDisabled] = useState(true);
+  if (!storedWord) setRandomWord(conjugations, setStoredWord);
 
   const { tense, voice } = useParams<{
     tense: TenseType;
     voice: VoiceType;
   }>();
 
-  const storedWord = localStorage.getItem("randomWord");
   const randomWord = conjugations.find(
     (conjugation) => conjugation.lemma === storedWord
   );
@@ -85,7 +91,9 @@ export const Conjugator = () => {
         }));
       });
       toast.success("Form submitted successfully");
-      if (correctSubmissions.length === 6) setRandomWord(conjugations);
+      if (correctSubmissions.length === PRONOUN_KEYS.length) {
+        setIsDisabled(false);
+      }
     },
   });
 
@@ -119,7 +127,6 @@ export const Conjugator = () => {
                   fields: {},
                 },
               });
-
               form.handleSubmit();
             }}
           >
@@ -173,7 +180,20 @@ export const Conjugator = () => {
                 );
               })}
             </FieldGroup>
-            <Button type="submit">Submit</Button>
+            <div className="flex gap-3">
+              <Button type="submit">Submit</Button>
+              <Button
+                disabled={isDisabled}
+                onClick={(e) => {
+                  e.preventDefault();
+                  setRandomWord(conjugations, setStoredWord);
+                  setIsDisabled(true)
+                  form.reset();
+                }}
+              >
+                Next Verb
+              </Button>
+            </div>
           </form>
         </CardContent>
       </Card>
