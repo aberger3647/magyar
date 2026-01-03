@@ -21,10 +21,9 @@ import { useParams } from "react-router-dom";
 import { Badge } from "./ui/badge";
 import { CircleCheck, CircleX } from "lucide-react";
 import { setRandomWord } from "./setRandomWord";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useLocalStorage } from "@/lib/useLocalStorage";
 import { AccentedLetters } from "./AccentedLetters";
-
 
 const PRONOUN_KEYS = ["én", "te", "ő", "mi", "ti", "ők"] as const;
 type PronounKey = (typeof PRONOUN_KEYS)[number];
@@ -45,8 +44,10 @@ export const Conjugator = () => {
   );
   const [isDisabled, setIsDisabled] = useState(true);
   if (!storedWord) setRandomWord(conjugations, setStoredWord);
-const [activeField, setActiveField] = useState<'én' | 'te' | 'ő' | 'mi' | 'ti' | 'ők'>('én')
-console.log(activeField)
+  const [activeField, setActiveField] = useState<
+    "én" | "te" | "ő" | "mi" | "ti" | "ők"
+  >("én");
+
   const { tense, voice } = useParams<{
     tense: TenseType;
     voice: VoiceType;
@@ -103,9 +104,13 @@ console.log(activeField)
   const FormField = form.Field;
 
   const handleCharInsert = (char: string) => {
-    const currentVal = form.getFieldValue(activeField) || ''
-    form.setFieldValue(activeField, currentVal + char)
-  }
+    const currentVal = form.getFieldValue(activeField) || "";
+    form.setFieldValue(activeField, currentVal + char);
+    const targetInput = inputRefs.current[activeField]
+    targetInput?.focus()
+  };
+
+  const inputRefs = useRef<Record<string, HTMLInputElement | null>>({});
 
   return (
     <>
@@ -126,7 +131,7 @@ console.log(activeField)
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <AccentedLetters handleCharInsert={handleCharInsert}/>
+          <AccentedLetters handleCharInsert={handleCharInsert} />
           <form
             className="flex flex-col items-center justify-center w-full max-w-md gap-4"
             onSubmit={(e) => {
@@ -170,7 +175,10 @@ console.log(activeField)
                             value={field.state.value}
                             onBlur={field.handleBlur}
                             onChange={(e) => field.handleChange(e.target.value)}
-                            onFocus={()=>setActiveField(field.name)}
+                            onFocus={() => setActiveField(field.name)}
+                            ref={(el) => {
+                              if (el) inputRefs.current[field.name] = el;
+                            }}
                             className={`${
                               isCorrect ? "border-green-500" : ""
                             } w-64 md:w-96`}
