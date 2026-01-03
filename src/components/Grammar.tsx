@@ -1,7 +1,9 @@
+import { PageTitle } from "./PageTitle";
+
 export const Grammar = () => {
   return (
     <main className="flex flex-col items-center pb-4">
-      <p className="text-sm">grammar</p>
+        <PageTitle title="Grammar" />
     </main>
   );
 };

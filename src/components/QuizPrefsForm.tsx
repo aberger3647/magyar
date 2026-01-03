@@ -17,6 +17,7 @@ import {
   CardDescription,
   CardContent,
 } from "./ui/card";
+import { PageTitle } from "./PageTitle";
 
 export const QuizPrefsForm = () => {
   const navigate = useNavigate();
@@ -34,7 +35,7 @@ export const QuizPrefsForm = () => {
 
   return (
     <>
-      <h1 className="mb-5 text-xl">Conjugator Quiz</h1>
+      <PageTitle title="Conjugator Quiz" />
       <Card className="w-full sm:max-w-md">
         <CardHeader>
           <CardTitle>Choose Quiz Preferences</CardTitle>
