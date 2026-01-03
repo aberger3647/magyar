@@ -103,14 +103,24 @@ export const Conjugator = () => {
 
   const FormField = form.Field;
 
+  const inputRefs = useRef<Record<string, HTMLInputElement | null>>({});
   const handleCharInsert = (char: string) => {
     const currentVal = form.getFieldValue(activeField) || "";
-    form.setFieldValue(activeField, currentVal + char);
-    const targetInput = inputRefs.current[activeField]
-    targetInput?.focus()
+    const targetInput = inputRefs.current[activeField];
+    const start = targetInput?.selectionStart || 0;
+    const end = targetInput?.selectionEnd || 0;
+    const before = currentVal.substring(0, start);
+    const after = currentVal.substring(end);
+    const newVal = before + char + after;
+    form.setFieldValue(activeField, newVal);
+    setTimeout(() => {
+      if (targetInput) {
+        const newPos = start + char.length;
+        targetInput.setSelectionRange(newPos, newPos);
+        targetInput?.focus();
+      }
+    }, 0);
   };
-
-  const inputRefs = useRef<Record<string, HTMLInputElement | null>>({});
 
   return (
     <>
