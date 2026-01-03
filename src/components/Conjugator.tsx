@@ -23,6 +23,8 @@ import { CircleCheck, CircleX } from "lucide-react";
 import { setRandomWord } from "./setRandomWord";
 import { useState } from "react";
 import { useLocalStorage } from "@/lib/useLocalStorage";
+import { AccentedLetters } from "./AccentedLetters";
+
 
 const PRONOUN_KEYS = ["én", "te", "ő", "mi", "ti", "ők"] as const;
 type PronounKey = (typeof PRONOUN_KEYS)[number];
@@ -43,7 +45,8 @@ export const Conjugator = () => {
   );
   const [isDisabled, setIsDisabled] = useState(true);
   if (!storedWord) setRandomWord(conjugations, setStoredWord);
-
+const [activeField, setActiveField] = useState('én')
+console.log(activeField)
   const { tense, voice } = useParams<{
     tense: TenseType;
     voice: VoiceType;
@@ -54,7 +57,7 @@ export const Conjugator = () => {
   );
   const infinitive = randomWord?.infinitive;
   const translation = randomWord?.translation;
-  const lemma = randomWord?.present.indefinite.ő;
+  const lemma = randomWord?.lemma;
 
   const form = useForm({
     defaultValues: {
@@ -118,6 +121,7 @@ export const Conjugator = () => {
           </CardDescription>
         </CardHeader>
         <CardContent>
+          <AccentedLetters/>
           <form
             className="flex flex-col items-center justify-center w-full max-w-md gap-4"
             onSubmit={(e) => {
@@ -161,6 +165,7 @@ export const Conjugator = () => {
                             value={field.state.value}
                             onBlur={field.handleBlur}
                             onChange={(e) => field.handleChange(e.target.value)}
+                            onFocus={()=>setActiveField(field.name)}
                             className={`${
                               isCorrect ? "border-green-500" : ""
                             } w-64 md:w-96`}
@@ -187,7 +192,7 @@ export const Conjugator = () => {
                 onClick={(e) => {
                   e.preventDefault();
                   setRandomWord(conjugations, setStoredWord);
-                  setIsDisabled(true)
+                  setIsDisabled(true);
                   form.reset();
                 }}
               >
