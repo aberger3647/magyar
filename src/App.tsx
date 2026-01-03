@@ -6,6 +6,10 @@ import {
 } from "react-router-dom";
 import { Nav, Home, Conjugator } from "./components";
 import { QuizPrefsForm } from "./components/QuizPrefsForm";
+import { Blog } from "./components/Blog";
+import { FlashCards } from "./components/FlashCards";
+import { Grammar } from "./components/Grammar";
+import { Phrasebook } from "./components/Phrasebook";
 
 function Layout() {
   return (
@@ -35,6 +39,11 @@ function App() {
                 <QuizPrefsForm/>
               }
             />
+             <Route path="/" element={<Home />} />
+              <Route path="/flash-cards" element={<FlashCards />} />
+               <Route path="/grammar" element={<Grammar />} />
+                <Route path="/phrasebook" element={<Phrasebook />} />
+                 <Route path="/blog" element={<Blog />} />
           </Route>
         </Routes>
       </Router>

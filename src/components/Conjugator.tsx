@@ -13,14 +13,14 @@ import {
   CardDescription,
   CardContent,
 } from "./ui/card";
-import type { VerbConjugation } from "./VerbConjugation";
-import type { Pronouns } from "./Pronouns";
-import type { VoiceType } from "./types";
-import type { TenseType } from "./types";
+import type { VerbConjugation } from "../types/verbConjugation";
+import type { Pronouns } from "../types/pronouns";
+import type { VoiceType } from "../types/types";
+import type { TenseType } from "../types/types";
 import { useParams } from "react-router-dom";
 import { Badge } from "./ui/badge";
 import { CircleCheck, CircleX } from "lucide-react";
-import { setRandomWord } from "./setRandomWord";
+import { setRandomWord } from "../lib/setRandomWord";
 import { useRef, useState } from "react";
 import { useLocalStorage } from "@/lib/useLocalStorage";
 import { AccentedLetters } from "./AccentedLetters";

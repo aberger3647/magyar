@@ -1,78 +1,84 @@
-import { useState, useEffect } from "react";
-import { Menu, X } from "lucide-react";
-import { NavLink } from "react-router-dom";
+import * as React from "react"
+import { Link } from "react-router-dom"
+import { Menu } from "lucide-react" // Import Menu icon
+import { useIsMobile } from "@/hooks/use-mobile"
 
-interface NavLinksProps {
-  isMobile: boolean;
-  toggleNavbar?: () => void;
+import {
+  NavigationMenu,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  navigationMenuTriggerStyle,
+} from "@/components/ui/navigation-menu"
+
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet"
+
+import { Button } from "@/components/ui/button"
+
+const menuItems = [
+  { title: "Home", to: "/" },
+  { title: "Conjugator", to: "/conjugator" },
+  { title: "Flash Cards", to: "/flash-cards" },
+  { title: "Grammar", to: "/grammar" },
+  { title: "Phrasebook", to: "/phrasebook" },
+  { title: "Blog", to: "/blog" },
+]
+
+export function Nav() {
+  const isMobile = useIsMobile()
+  const [isOpen, setIsOpen] = React.useState(false)
+
+  // --- MOBILE VIEW ---
+  if (isMobile) {
+    return (
+      <Sheet open={isOpen} onOpenChange={setIsOpen}>
+        <SheetTrigger asChild>
+          <Button variant="ghost" size="icon" aria-label="Open Menu">
+            <Menu className="h-6 w-6" />
+          </Button>
+        </SheetTrigger>
+        <SheetContent side="left" className="w-[250px] sm:w-[300px]">
+          <SheetHeader>
+            <SheetTitle className="text-left">Navigation</SheetTitle>
+          </SheetHeader>
+          <div className="flex flex-col gap-4 mt-8 pl-6">
+            {menuItems.map((item) => (
+              <Link
+                key={item.title}
+                to={item.to}
+                onClick={() => setIsOpen(false)} // Close menu on click
+                className="text-lg font-medium transition-colors hover:text-primary"
+              >
+                {item.title}
+              </Link>
+            ))}
+          </div>
+        </SheetContent>
+      </Sheet>
+    )
+  }
+
+  // --- DESKTOP VIEW ---
+  return (
+    <NavigationMenu className="md:p-2">
+      <NavigationMenuList>
+        {menuItems.map((item) => (
+          <NavigationMenuItem key={item.title}>
+            <NavigationMenuLink 
+              asChild 
+              className={navigationMenuTriggerStyle()}
+            >
+              <Link to={item.to}>{item.title}</Link>
+            </NavigationMenuLink>
+          </NavigationMenuItem>
+        ))}
+      </NavigationMenuList>
+    </NavigationMenu>
+  )
 }
-
-const NavLinks = ({ isMobile, toggleNavbar }: NavLinksProps) => {
-  return (
-    <>
-      <li className={`${isMobile ? "w-full py-3" : ""}`}>
-        <NavLink
-          to="/"
-          className={`${isMobile ? "block text-center" : ""}`}
-          onClick={toggleNavbar}
-        >
-          Home
-        </NavLink>
-      </li>
-      <li className={`${isMobile ? "w-full py-3" : ""}`}>
-        <NavLink
-          to="/conjugator"
-          className={`${isMobile ? "block text-center" : ""}`}
-          onClick={toggleNavbar}
-        >
-          Conjugator
-        </NavLink>
-      </li>
-    </>
-  );
-};
-
-export const Nav = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [width, setWidth] = useState(window.innerWidth);
-
-  useEffect(() => {
-    function handleResize() {
-      setWidth(window.innerWidth);
-    }
-    window.addEventListener("resize", handleResize);
-    return function cleanup() {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
-
-  const isSmallScreen = width <= 768;
-
-  const toggleNavbar = () => {
-    setIsOpen(!isOpen);
-  };
-
-  return (
-    <>
-      <nav className="sticky top-0 z-20 mx-auto flex h-16 items-center justify-between p-4">
-        <NavLink to="/">
-          <h2 className="text-2xl">Learn Magyar</h2>
-        </NavLink>
-
-        <ul className="hidden md:flex gap-4">
-          <NavLinks isMobile={false} />
-        </ul>
-
-        <div className="md:hidden flex items-center">
-          <button onClick={toggleNavbar}>{isOpen ? <X /> : <Menu />}</button>
-        </div>
-      </nav>
-
-      {isOpen && isSmallScreen && (
-        <ul className="flex flex-col items-center bg-white">
-          <NavLinks isMobile={true} toggleNavbar={toggleNavbar} />
-        </ul>
-      )}
-    </>
-  );
-};
