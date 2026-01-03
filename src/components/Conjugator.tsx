@@ -45,7 +45,7 @@ export const Conjugator = () => {
   );
   const [isDisabled, setIsDisabled] = useState(true);
   if (!storedWord) setRandomWord(conjugations, setStoredWord);
-const [activeField, setActiveField] = useState('én')
+const [activeField, setActiveField] = useState<'én' | 'te' | 'ő' | 'mi' | 'ti' | 'ők'>('én')
 console.log(activeField)
   const { tense, voice } = useParams<{
     tense: TenseType;
@@ -102,6 +102,11 @@ console.log(activeField)
 
   const FormField = form.Field;
 
+  const handleCharInsert = (char: string) => {
+    const currentVal = form.getFieldValue(activeField) || ''
+    form.setFieldValue(activeField, currentVal + char)
+  }
+
   return (
     <>
       <Card className="w-full sm:max-w-md">
@@ -121,7 +126,7 @@ console.log(activeField)
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <AccentedLetters/>
+          <AccentedLetters handleCharInsert={handleCharInsert}/>
           <form
             className="flex flex-col items-center justify-center w-full max-w-md gap-4"
             onSubmit={(e) => {
