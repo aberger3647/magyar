@@ -45,7 +45,7 @@ export function Nav() {
         </SheetTrigger>
         <SheetContent side="left" className="w-[250px] sm:w-[300px]">
           <SheetHeader>
-            <SheetTitle className="text-left">Navigation</SheetTitle>
+            <SheetTitle className="text-left">Learn Magyar Language</SheetTitle>
           </SheetHeader>
           <div className="flex flex-col gap-4 mt-8 pl-6">
             {menuItems.map((item) => (
@@ -64,14 +64,21 @@ export function Nav() {
     )
   }
 
-  // --- DESKTOP VIEW ---
-  return (
-    <NavigationMenu className="md:p-2">
+// --- DESKTOP VIEW ---
+return (
+  <div className="flex items-center justify-between px-4 py-2">
+<Link to='/'>
+    <h2 className="scroll-m-20 pb-2 text-3xl font-semibold  first:mt-0">
+      Learn Magyar Language
+    </h2>
+</Link>
+    {/* Right: Navigation */}
+    <NavigationMenu>
       <NavigationMenuList>
         {menuItems.map((item) => (
           <NavigationMenuItem key={item.title}>
-            <NavigationMenuLink 
-              asChild 
+            <NavigationMenuLink
+              asChild
               className={navigationMenuTriggerStyle()}
             >
               <Link to={item.to}>{item.title}</Link>
@@ -80,5 +87,6 @@ export function Nav() {
         ))}
       </NavigationMenuList>
     </NavigationMenu>
-  )
+  </div>
+)
 }
