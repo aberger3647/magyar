@@ -1,0 +1,54 @@
+[
+    {
+            "hungarian": "Mit jelent az, hogy 'magyar'?",
+            "english": "What does 'magyar' mean?"
+    },
+    {
+        "hungarian": "Ismételd meg légysi.",
+        "english": "Repeat it please."
+    },
+    {
+        "hungarian": "Hogy mondják azt (magyarul), hogy '...'?",
+        "english": "How do you say '...' (in Hungarian)?"
+    },
+    {
+        "hungarian": "Nem emlékszem.",
+        "english": "I don't remember."
+    },
+    {
+        "hungarian": "Beszélj lassabban kérlek?",
+        "english": "Could you please talk slower?"
+    },
+    {
+        "hungarian": "Van egy kérdésem.",
+        "english": "I have a question."
+    },
+    {
+        "hungarian": "Betűzd kérlek.",
+        "english": "Spell it please."
+    },
+    {
+        "hungarian": "Egészségedre.",
+        "english": "Bless you."
+    },
+    {
+        "hungarian": "Hány fok van?",
+        "english": "How many degrees (celsius)?"
+    },
+    {
+        "hungarian": "21 fok van.",
+        "english": "It's 21 degrees."
+    },
+    {
+        "hungarian": "Ennyi.",
+        "english": "That's it."
+    },
+    {
+        "hungarian": "Milyen típusú ember vagy?",
+        "english": "What kind of person are you?"
+    },
+    {
+        "hungarian": "Hogy nézel ki?",
+        "english": "What do you look like?"
+    }
+]

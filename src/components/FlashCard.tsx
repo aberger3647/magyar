@@ -3,6 +3,7 @@ import image from "../assets/puppy.jpg";
 import { ButtonGroup } from "./ui/button-group";
 import { Button } from "./ui/button";
 import { Skeleton } from "./ui/skeleton";
+import { CreateFlashCard } from "./CreateFlashCard";
 
 export const FlashCard = () => {
   const [isFlipped, setIsFlipped] = useState(false);
@@ -15,6 +16,8 @@ export const FlashCard = () => {
   }
 
   return (
+    <>
+    <CreateFlashCard/>
     <div
       className="w-full h-96 sm:max-w-md overflow-hidden rounded-lg border p-6"
       onClick={() => handleFlip()}
@@ -48,6 +51,6 @@ export const FlashCard = () => {
           <h2 className="text-7xl tracking-wide">{word}</h2>
         </div>
       )}
-    </div>
+    </div></>
   );
 };
