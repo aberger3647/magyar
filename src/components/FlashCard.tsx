@@ -3,7 +3,7 @@ import image from "../assets/puppy.jpg";
 import { ButtonGroup } from "./ui/button-group";
 import { Button } from "./ui/button";
 import { Skeleton } from "./ui/skeleton";
-import { CreateFlashCard } from "./CreateFlashCard";
+import { PageTitle } from "./PageTitle";
 
 export const FlashCard = () => {
   const [isFlipped, setIsFlipped] = useState(false);
@@ -17,7 +17,7 @@ export const FlashCard = () => {
 
   return (
     <>
-      <CreateFlashCard />
+      <PageTitle title="Flash Cards" />
       <div
         className="w-full h-96 sm:max-w-md overflow-hidden rounded-lg border p-6"
         onClick={() => handleFlip()}

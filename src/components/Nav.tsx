@@ -1,7 +1,7 @@
-import * as React from "react"
-import { Link } from "react-router-dom"
-import { Menu } from "lucide-react" // Import Menu icon
-import { useIsMobile } from "@/hooks/use-mobile"
+import * as React from "react";
+import { Link } from "react-router-dom";
+import { Menu } from "lucide-react"; // Import Menu icon
+import { useIsMobile } from "@/hooks/use-mobile";
 
 import {
   NavigationMenu,
@@ -9,7 +9,9 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
   navigationMenuTriggerStyle,
-} from "@/components/ui/navigation-menu"
+  NavigationMenuTrigger,
+    NavigationMenuContent,
+} from "@/components/ui/navigation-menu";
 
 import {
   Sheet,
@@ -17,9 +19,9 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "@/components/ui/sheet"
+} from "@/components/ui/sheet";
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 
 const menuItems = [
   { title: "Home", to: "/" },
@@ -28,11 +30,11 @@ const menuItems = [
   { title: "Grammar", to: "/grammar" },
   { title: "Phrasebook", to: "/phrasebook" },
   { title: "Blog", to: "/blog" },
-]
+];
 
 export function Nav() {
-  const isMobile = useIsMobile()
-  const [isOpen, setIsOpen] = React.useState(false)
+  const isMobile = useIsMobile();
+  const [isOpen, setIsOpen] = React.useState(false);
 
   // --- MOBILE VIEW ---
   if (isMobile) {
@@ -61,32 +63,49 @@ export function Nav() {
           </div>
         </SheetContent>
       </Sheet>
-    )
+    );
   }
 
-// --- DESKTOP VIEW ---
-return (
-  <div className="flex items-center justify-between px-4 py-2">
-<Link to='/'>
-    <h2 className="scroll-m-20 pb-2 text-3xl font-semibold  first:mt-0">
-      Learn Magyar Language
-    </h2>
-</Link>
-    {/* Right: Navigation */}
-    <NavigationMenu>
-      <NavigationMenuList>
-        {menuItems.map((item) => (
-          <NavigationMenuItem key={item.title}>
-            <NavigationMenuLink
-              asChild
-              className={navigationMenuTriggerStyle()}
-            >
-              <Link to={item.to}>{item.title}</Link>
-            </NavigationMenuLink>
+  const simpleLinks = menuItems.filter((link) => link.title != "Flash Cards");
+  // --- DESKTOP VIEW ---
+  return (
+    <div className="flex items-center justify-between px-4 py-2">
+      <Link to="/">
+        <h2 className="scroll-m-20 pb-2 text-3xl font-semibold  first:mt-0">
+          Learn Magyar Language
+        </h2>
+      </Link>
+      {/* Right: Navigation */}
+      <NavigationMenu>
+        <NavigationMenuList>
+        <NavigationMenuItem>
+            <NavigationMenuTrigger className={navigationMenuTriggerStyle()}>Flash Cards</NavigationMenuTrigger>
+            <NavigationMenuContent>
+            <ul className="grid w-[200px] gap-4">
+              <li>
+                <NavigationMenuLink asChild>
+                  <Link to="/flash-cards">Study Flash Cards</Link>
+                </NavigationMenuLink>
+                <NavigationMenuLink asChild>
+                  <Link to="/flash-cards/create">Create Flash Cards</Link>
+                </NavigationMenuLink>
+              </li>
+            </ul>
+            </NavigationMenuContent>
           </NavigationMenuItem>
-        ))}
-      </NavigationMenuList>
-    </NavigationMenu>
-  </div>
-)
+
+          {simpleLinks.map((item) => (
+            <NavigationMenuItem key={item.title}>
+              <NavigationMenuLink
+                asChild
+                className={navigationMenuTriggerStyle()}
+              >
+                <Link to={item.to}>{item.title}</Link>
+              </NavigationMenuLink>
+            </NavigationMenuItem>
+          ))}
+        </NavigationMenuList>
+      </NavigationMenu>
+    </div>
+  );
 }

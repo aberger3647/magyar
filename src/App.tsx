@@ -7,9 +7,10 @@ import {
 import { Nav, Home, Conjugator } from "./components";
 import { QuizPrefsForm } from "./components/QuizPrefsForm";
 import { Blog } from "./components/Blog";
-import { FlashCards } from "./components/FlashCards";
+import { FlashCard } from "./components/FlashCard";
 import { Grammar } from "./components/Grammar";
 import { Phrasebook } from "./components/Phrasebook";
+import { CreateFlashCard } from "./components/CreateFlashCard";
 
 function Layout() {
   return (
@@ -40,7 +41,8 @@ function App() {
               }
             />
              <Route path="/" element={<Home />} />
-              <Route path="/flash-cards" element={<FlashCards />} />
+              <Route path="/flash-cards" element={<FlashCard />} />
+              <Route path="/flash-cards/create" element={<CreateFlashCard />} />
                <Route path="/grammar" element={<Grammar />} />
                 <Route path="/phrasebook" element={<Phrasebook />} />
                  <Route path="/blog" element={<Blog />} />

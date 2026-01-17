@@ -3,9 +3,13 @@ import { FieldGroup, FieldLabel } from "./ui/field";
 import { Input } from "./ui/input";
 import { useForm } from "@tanstack/react-form";
 import { Button } from "./ui/button";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { PageTitle } from "./PageTitle";
 
 export const CreateFlashCard = () => {
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
+
   const form = useForm({
     defaultValues: {
       word: "",
@@ -22,10 +26,25 @@ export const CreateFlashCard = () => {
     const file = e.target.files?.[0];
     if (file) {
       console.log("selected file: ", file.name);
+      setSelectedFile(file);
     }
   };
 
+  useEffect(() => {
+    if (selectedFile) {
+      const url = URL.createObjectURL(selectedFile);
+      setImageUrl(url);
+      return () => {
+        URL.revokeObjectURL(url);
+      };
+    } else {
+      setImageUrl(null);
+    }
+  }, [selectedFile]);
   return (
+    <>
+    <PageTitle title="Create Flash Cards" />
+
     <div className="w-full h-96 sm:max-w-md overflow-hidden rounded-lg border p-6 flex flex-col justify-between items-center">
       <div className="w-full">
         <form.Field
@@ -54,14 +73,23 @@ export const CreateFlashCard = () => {
         />
       </div>
 
-      <Button
-        className="border-dashed border-black flex-1 m-8 w-56"
-        variant="outline"
-        size="icon-lg"
-        onClick={handleBoxClick}
-      >
-        <ImagePlus />
-      </Button>
+      {imageUrl ? (
+        <img
+          src={imageUrl}
+          alt="selected image"
+          className="w-full h-full object-contain"
+          onClick={handleBoxClick}
+        />
+      ) : (
+        <Button
+          className="border-dashed border-black flex-1 m-8 w-56"
+          variant="outline"
+          size="icon-lg"
+          onClick={handleBoxClick}
+        >
+          <ImagePlus />
+        </Button>
+      )}
 
       <input
         type="file"
@@ -73,5 +101,6 @@ export const CreateFlashCard = () => {
 
       <Button>Create Card</Button>
     </div>
+    </>
   );
 };
