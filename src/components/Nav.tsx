@@ -10,7 +10,7 @@ import {
   NavigationMenuList,
   navigationMenuTriggerStyle,
   NavigationMenuTrigger,
-    NavigationMenuContent,
+  NavigationMenuContent,
 } from "@/components/ui/navigation-menu";
 
 import {
@@ -36,6 +36,8 @@ export function Nav() {
   const isMobile = useIsMobile();
   const [isOpen, setIsOpen] = React.useState(false);
 
+  const simpleLinks = menuItems.filter((link) => link.title != "Flash Cards");
+
   // --- MOBILE VIEW ---
   if (isMobile) {
     return (
@@ -50,23 +52,36 @@ export function Nav() {
             <SheetTitle className="text-left">Learn Magyar Language</SheetTitle>
           </SheetHeader>
           <div className="flex flex-col gap-4 mt-8 pl-6">
-            {menuItems.map((item) => (
+            {simpleLinks.map((item) => (
               <Link
                 key={item.title}
                 to={item.to}
-                onClick={() => setIsOpen(false)} // Close menu on click
+                onClick={() => setIsOpen(false)}
                 className="text-lg font-medium transition-colors hover:text-primary"
               >
                 {item.title}
               </Link>
             ))}
+            <Link
+              to="/flash-cards"
+              onClick={() => setIsOpen(false)}
+              className="text-lg font-medium transition-colors hover:text-primary"
+            >
+              Study Flash Cards
+            </Link>
+            <Link
+              to="/flash-cards/create"
+              onClick={() => setIsOpen(false)}
+              className="text-lg font-medium transition-colors hover:text-primary"
+            >
+              Create Flash Cards
+            </Link>
           </div>
         </SheetContent>
       </Sheet>
     );
   }
 
-  const simpleLinks = menuItems.filter((link) => link.title != "Flash Cards");
   // --- DESKTOP VIEW ---
   return (
     <div className="flex items-center justify-between px-4 py-2">
@@ -78,22 +93,6 @@ export function Nav() {
       {/* Right: Navigation */}
       <NavigationMenu>
         <NavigationMenuList>
-        <NavigationMenuItem>
-            <NavigationMenuTrigger className={navigationMenuTriggerStyle()}>Flash Cards</NavigationMenuTrigger>
-            <NavigationMenuContent>
-            <ul className="grid w-[200px] gap-4">
-              <li>
-                <NavigationMenuLink asChild>
-                  <Link to="/flash-cards">Study Flash Cards</Link>
-                </NavigationMenuLink>
-                <NavigationMenuLink asChild>
-                  <Link to="/flash-cards/create">Create Flash Cards</Link>
-                </NavigationMenuLink>
-              </li>
-            </ul>
-            </NavigationMenuContent>
-          </NavigationMenuItem>
-
           {simpleLinks.map((item) => (
             <NavigationMenuItem key={item.title}>
               <NavigationMenuLink
@@ -104,6 +103,26 @@ export function Nav() {
               </NavigationMenuLink>
             </NavigationMenuItem>
           ))}
+
+          <NavigationMenuItem>
+            <NavigationMenuTrigger className={navigationMenuTriggerStyle()}>
+              Flash Cards
+            </NavigationMenuTrigger>
+            <NavigationMenuContent>
+              <ul className="grid w-[200px] gap-4">
+                <li>
+                  <NavigationMenuLink asChild>
+                    <Link to="/flash-cards">Study Flash Cards</Link>
+                  </NavigationMenuLink>
+                </li>
+                <li>
+                  <NavigationMenuLink asChild>
+                    <Link to="/flash-cards/create">Create Flash Cards</Link>
+                  </NavigationMenuLink>
+                </li>
+              </ul>
+            </NavigationMenuContent>
+          </NavigationMenuItem>
         </NavigationMenuList>
       </NavigationMenu>
     </div>
