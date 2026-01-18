@@ -91,7 +91,7 @@ export function Nav() {
         </h2>
       </Link>
       {/* Right: Navigation */}
-      <NavigationMenu>
+      <NavigationMenu viewport={false}>
         <NavigationMenuList>
           {simpleLinks.map((item) => (
             <NavigationMenuItem key={item.title}>
@@ -109,15 +109,25 @@ export function Nav() {
               Flash Cards
             </NavigationMenuTrigger>
             <NavigationMenuContent>
-              <ul className="grid w-[200px] gap-4">
+              <ul className="grid gap-4">
                 <li>
                   <NavigationMenuLink asChild>
-                    <Link to="/flash-cards">Study Flash Cards</Link>
+                    <Link
+                      to="/flash-cards"
+                      className="whitespace-normal text-left"
+                    >
+                      Study
+                    </Link>
                   </NavigationMenuLink>
                 </li>
                 <li>
                   <NavigationMenuLink asChild>
-                    <Link to="/flash-cards/create">Create Flash Cards</Link>
+                    <Link
+                      to="/flash-cards/create"
+                      className="whitespace-normal text-left"
+                    >
+                      Create
+                    </Link>
                   </NavigationMenuLink>
                 </li>
               </ul>
