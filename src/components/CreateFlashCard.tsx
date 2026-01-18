@@ -6,6 +6,8 @@ import { Button } from "./ui/button";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { PageTitle } from "./PageTitle";
 import { supabase } from "@/lib/supabase";
+import { toast } from "sonner";
+import { Toaster } from "sonner";
 
 export const CreateFlashCard = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -26,12 +28,25 @@ export const CreateFlashCard = () => {
         return
       }
       const uuid = crypto.randomUUID()
-      const result = await supabase.storage.from('cardimages').upload(`${value.word}-${uuid}`, selectedFile)
-      console.log(result)
+      const extension = selectedFile.name.split('.').pop()
+      const filePath = `${value.word}-${uuid}.${extension}`
+      const result = await supabase.storage.from('cardimages').upload(filePath, selectedFile)
       if (result.error) {
-        setErrMsg('Image upload failed') 
+        console.log(result.error)
+        setErrMsg('Image upload failed')
         return
       }
+      const { data: { publicUrl } } = supabase.storage.from('cardimages').getPublicUrl(filePath)
+      const { error } = await supabase.from('flashcards').insert({ word: value.word, img_url: publicUrl })
+      if (error) {
+        setErrMsg(`Failed to create card: ${error}`)
+        console.log(error)
+        return
+      } else {
+        toast.success('Card created successfully')
+      }
+      form.reset();
+      setSelectedFile(null)
     }
 
   });
@@ -120,6 +135,7 @@ export const CreateFlashCard = () => {
         <p className="text-xs">{errMsg}</p>
         <Button onClick={() => form.handleSubmit()}>Create Card</Button>
       </div>
+      <Toaster />
     </>
   );
 };
