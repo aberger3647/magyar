@@ -3,17 +3,29 @@ import { FieldGroup, FieldLabel } from "./ui/field";
 import { Input } from "./ui/input";
 import { useForm } from "@tanstack/react-form";
 import { Button } from "./ui/button";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { PageTitle } from "./PageTitle";
 
 export const CreateFlashCard = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [errMsg, setErrMsg] = useState<string | null>(null)
 
   const form = useForm({
     defaultValues: {
       word: "",
     },
+    onSubmit:async({value})=>{
+      setErrMsg(null)
+      if (!selectedFile) {
+setErrMsg('Upload an image')
+return
+      }
+      if (!value.word || value.word.trim()===''){
+        setErrMsg('Enter a word')
+        return
+      }
+    }
+
   });
 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -30,17 +42,17 @@ export const CreateFlashCard = () => {
     }
   };
 
+  const imageUrl=useMemo(()=>{
+    if(!selectedFile) return null
+    return URL.createObjectURL(selectedFile)
+  },[selectedFile])
+
   useEffect(() => {
-    if (selectedFile) {
-      const url = URL.createObjectURL(selectedFile);
-      setImageUrl(url);
       return () => {
-        URL.revokeObjectURL(url);
+        if (imageUrl)         URL.revokeObjectURL(imageUrl);
       };
-    } else {
-      setImageUrl(null);
-    }
-  }, [selectedFile]);
+
+  }, [imageUrl]);
   return (
     <>
     <PageTitle title="Create Flash Cards" />
@@ -50,7 +62,7 @@ export const CreateFlashCard = () => {
         <form.Field
           name="word"
           children={(field) => (
-            <FieldGroup>
+            <FieldGroup className="gap-2">
               <FieldLabel htmlFor={field.name} className="self-center text-md">
                 Enter Word
               </FieldLabel>
@@ -77,7 +89,7 @@ export const CreateFlashCard = () => {
         <img
           src={imageUrl}
           alt="selected image"
-          className="w-full h-full object-contain"
+          className="w-full max-h-48 object-contain cursor-pointer"
           onClick={handleBoxClick}
         />
       ) : (
@@ -98,8 +110,8 @@ export const CreateFlashCard = () => {
         className="hidden"
         accept="image/*"
       />
-
-      <Button>Create Card</Button>
+<p className="text-xs">{errMsg}</p>
+      <Button onClick={()=>form.handleSubmit()}>Create Card</Button>
     </div>
     </>
   );
