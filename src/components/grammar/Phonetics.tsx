@@ -5,6 +5,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import AlphabetTable from "../AlphabetTable";
+import { GrammarLessonLinks } from "./GrammarLessonLinks";
 
 const Phonetics = () => {
   return (
@@ -14,6 +15,7 @@ const Phonetics = () => {
         <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
           Alphabet, Pronunciation and Vowel Harmony
         </h1>
+        <GrammarLessonLinks compact />
       </div>
 
       {/* ALPHABET & PRONUNCIATION CARD */}
@@ -39,7 +41,6 @@ const Phonetics = () => {
           <CardTitle className="text-xl sm:text-2xl">Vowel Harmony</CardTitle>
         </CardHeader>
         <CardContent className="min-w-0 space-y-8 sm:space-y-10">
-          
           {/* Harmony Breakdown */}
           <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
             {/* Back Vowels */}

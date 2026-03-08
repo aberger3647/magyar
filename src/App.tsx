@@ -9,6 +9,8 @@ import { QuizPrefsForm } from "./components/QuizPrefsForm";
 import { Blog } from "./components/Blog";
 import { FlashCard } from "./components/FlashCard";
 import { Grammar } from "./components/Grammar";
+import Phonetics from "./components/grammar/Phonetics";
+import Possessives from "./components/grammar/Possessives";
 import { Phrasebook } from "./components/Phrasebook";
 import { CreateFlashCard } from "./components/CreateFlashCard";
 
@@ -29,7 +31,7 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={<Layout />}>
-            <Route path="/" element={<Home />} />
+            <Route index element={<Home />} />
             <Route
               path="/conjugator/:tense/:voice/"
               element={<Conjugator/>}
@@ -40,10 +42,11 @@ function App() {
                 <QuizPrefsForm/>
               }
             />
-             <Route path="/" element={<Home />} />
               <Route path="/flash-cards" element={<FlashCard />} />
               <Route path="/flash-cards/create" element={<CreateFlashCard />} />
                <Route path="/grammar" element={<Grammar />} />
+               <Route path="/grammar/phonetics" element={<Phonetics />} />
+               <Route path="/grammar/possessives" element={<Possessives />} />
                 <Route path="/phrasebook" element={<Phrasebook />} />
                  <Route path="/blog" element={<Blog />} />
           </Route>
