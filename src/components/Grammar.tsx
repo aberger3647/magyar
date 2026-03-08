@@ -1,11 +1,11 @@
-import HungarianModuleOne from "./grammar/Module1";
+import Phonetics from "./grammar/Phonetics";
 import { PageTitle } from "./PageTitle";
 
 export const Grammar = () => {
   return (
     <>
         <PageTitle title="Grammar" />
-        <HungarianModuleOne/>
+        <Phonetics />
     </>
   );
 };

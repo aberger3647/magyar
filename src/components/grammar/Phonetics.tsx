@@ -4,9 +4,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import AlphabetTable from '../AlphabetTable';
+import AlphabetTable from "../AlphabetTable";
 
-const HungarianModuleOne = () => {
+const Phonetics = () => {
   return (
     <div className="mx-auto w-full max-w-5xl space-y-8 overflow-x-hidden px-4 py-6 sm:space-y-12 sm:px-6 wrap-break-word">
       {/* HEADER SECTION */}
@@ -46,7 +46,7 @@ const HungarianModuleOne = () => {
             <div className="space-y-4">
               <h3 className="text-lg font-bold uppercase tracking-widest text-muted-foreground wrap-break-word">Back Vowels (Mély)</h3>
               <div className="flex flex-wrap gap-2">
-                {['a', 'á', 'o', 'ó', 'u', 'ú'].map(v => (
+                {["a", "á", "o", "ó", "u", "ú"].map((v) => (
                   <div key={v} className="h-12 w-12 flex items-center justify-center rounded-md border bg-card text-xl font-bold shadow-sm">
                     {v}
                   </div>
@@ -62,7 +62,7 @@ const HungarianModuleOne = () => {
                 <div>
                   <p className="text-xs font-semibold mb-2 opacity-70">Unrounded:</p>
                   <div className="flex flex-wrap gap-2">
-                    {['e', 'é', 'i', 'í'].map(v => (
+                    {["e", "é", "i", "í"].map((v) => (
                       <div key={v} className="h-12 w-12 flex items-center justify-center rounded-md border bg-card text-xl font-bold shadow-sm">
                         {v}
                       </div>
@@ -72,7 +72,7 @@ const HungarianModuleOne = () => {
                 <div>
                   <p className="text-xs font-semibold mb-2 opacity-70">Rounded:</p>
                   <div className="flex flex-wrap gap-2">
-                    {['ö', 'ő', 'ü', 'ű'].map(v => (
+                    {["ö", "ő", "ü", "ű"].map((v) => (
                       <div key={v} className="h-12 w-12 flex items-center justify-center rounded-md border bg-card text-xl font-bold shadow-sm">
                         {v}
                       </div>
@@ -116,4 +116,4 @@ const HungarianModuleOne = () => {
   );
 };
 
-export default HungarianModuleOne;
+export default Phonetics;
