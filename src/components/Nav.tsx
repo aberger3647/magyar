@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/sheet";
 
 import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 const menuItems = [
   { title: "Home", to: "/" },
@@ -48,8 +49,9 @@ export function Nav() {
           </Button>
         </SheetTrigger>
         <SheetContent side="left" className="w-[250px] sm:w-[300px]">
-          <SheetHeader>
+          <SheetHeader className="flex-row items-center justify-between space-y-0">
             <SheetTitle className="text-left">Learn Magyar Language</SheetTitle>
+            <ThemeToggle />
           </SheetHeader>
           <div className="flex flex-col gap-4 mt-8 pl-6">
             {simpleLinks.map((item) => (
@@ -90,8 +92,8 @@ export function Nav() {
           Learn Magyar Language
         </h2>
       </Link>
-      {/* Right: Navigation */}
-      <NavigationMenu viewport={false}>
+      <div className="flex items-center gap-2">
+        <NavigationMenu viewport={false}>
         <NavigationMenuList>
           {simpleLinks.map((item) => (
             <NavigationMenuItem key={item.title}>
@@ -135,6 +137,8 @@ export function Nav() {
           </NavigationMenuItem>
         </NavigationMenuList>
       </NavigationMenu>
+        <ThemeToggle />
+      </div>
     </div>
   );
 }
