@@ -17,25 +17,25 @@ import { GrammarLessonLinks } from "./GrammarLessonLinks";
 
 const Possessives = () => {
   return (
-    <div className="max-w-5xl mx-auto p-6 space-y-12">
+    <div className="mx-auto w-full max-w-5xl space-y-8 overflow-x-hidden px-4 py-6 sm:space-y-12 sm:px-6 wrap-break-word">
       {/* HEADER SECTION */}
       <div className="space-y-2">
-        <h1 className="text-4xl font-bold tracking-tight">Possessives</h1>
+        <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">Possessives</h1>
         <GrammarLessonLinks compact />
       </div>
 
       {/* CORE RULE CARD */}
       <Card>
         <CardHeader>
-          <CardTitle>The Lengthening Rule</CardTitle>
+          <CardTitle className="text-xl sm:text-2xl">The Lengthening Rule</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="p-4 bg-muted rounded-lg border-l-4 border-primary">
-            <p className="text-sm">
+            <p className="text-sm wrap-break-word">
               If a word ends in <strong>-a</strong> or <strong>-e</strong>, these vowels must lengthen to
               <strong> -á</strong> and <strong> -é</strong> before you can attach any possessive ending.
             </p>
-            <div className="mt-3 flex gap-8 text-sm font-mono">
+            <div className="mt-3 flex flex-wrap gap-3 text-sm font-mono sm:gap-8">
               <span>anya → any<strong>á</strong>m</span>
               <span>macska → macsk<strong>á</strong>m</span>
               <span>bögre → bögr<strong>é</strong>m</span>
@@ -47,80 +47,88 @@ const Possessives = () => {
       {/* SINGULAR POSSESSION CARD */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-2xl">Singular Possession (One Item)</CardTitle>
+          <CardTitle className="text-xl sm:text-2xl">Singular Possession (One Item)</CardTitle>
           <CardDescription>Adding suffixes based on vowel harmony groups.</CardDescription>
         </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Person</TableHead>
-                <TableHead>Back (asztal)</TableHead>
-                <TableHead>Front (szék)</TableHead>
-                <TableHead className="text-right">Rounded Front (főnök)</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              <TableRow>
-                <TableCell className="font-bold">én (my)</TableCell>
-                <TableCell>asztalom</TableCell>
-                <TableCell>székem</TableCell>
-                <TableCell className="text-right font-medium text-primary">főnököm</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell className="font-bold">te (your)</TableCell>
-                <TableCell>asztalod</TableCell>
-                <TableCell>széked</TableCell>
-                <TableCell className="text-right font-medium text-primary">főnököd</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell className="font-bold">ő / Ön (his/her)</TableCell>
-                <TableCell>asztala</TableCell>
-                <TableCell>széke</TableCell>
-                <TableCell className="text-right font-medium text-primary">főnöke</TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
+        <CardContent className="min-w-0">
+          <div className="w-full overflow-x-auto">
+            <div className="min-w-[720px]">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Person</TableHead>
+                    <TableHead>Back (asztal)</TableHead>
+                    <TableHead>Front (szék)</TableHead>
+                    <TableHead className="text-right">Rounded Front (főnök)</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  <TableRow>
+                    <TableCell className="font-bold">én (my)</TableCell>
+                    <TableCell>asztalom</TableCell>
+                    <TableCell>székem</TableCell>
+                    <TableCell className="text-right font-medium text-primary">főnököm</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="font-bold">te (your)</TableCell>
+                    <TableCell>asztalod</TableCell>
+                    <TableCell>széked</TableCell>
+                    <TableCell className="text-right font-medium text-primary">főnököd</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="font-bold">ő / Ön (his/her)</TableCell>
+                    <TableCell>asztala</TableCell>
+                    <TableCell>széke</TableCell>
+                    <TableCell className="text-right font-medium text-primary">főnöke</TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </div>
+          </div>
         </CardContent>
       </Card>
 
       {/* PLURAL POSSESSION CARD */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-2xl">Plural Possession (Our, Your, Their)</CardTitle>
+          <CardTitle className="text-xl sm:text-2xl">Plural Possession (Our, Your, Their)</CardTitle>
           <CardDescription>Suffixes for multiple owners of a singular object.</CardDescription>
         </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Person</TableHead>
-                <TableHead>Back (iroda)</TableHead>
-                <TableHead>Front (szék)</TableHead>
-                <TableHead className="text-right">Rounded Front (főnök)</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              <TableRow>
-                <TableCell className="font-bold">mi (our)</TableCell>
-                <TableCell>irodánk</TableCell>
-                <TableCell>székünk</TableCell>
-                <TableCell className="text-right font-medium text-primary">főnökünk</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell className="font-bold">ti (your pl.)</TableCell>
-                <TableCell>irodátok</TableCell>
-                <TableCell>széketek</TableCell>
-                <TableCell className="text-right font-medium text-primary text-nowrap">főnökötök</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell className="font-bold">ők (their)</TableCell>
-                <TableCell>irodájuk</TableCell>
-                <TableCell>székük</TableCell>
-                <TableCell className="text-right font-medium text-primary text-nowrap">főnökük</TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
+        <CardContent className="min-w-0">
+          <div className="w-full overflow-x-auto">
+            <div className="min-w-[720px]">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Person</TableHead>
+                    <TableHead>Back (iroda)</TableHead>
+                    <TableHead>Front (szék)</TableHead>
+                    <TableHead className="text-right">Rounded Front (főnök)</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  <TableRow>
+                    <TableCell className="font-bold">mi (our)</TableCell>
+                    <TableCell>irodánk</TableCell>
+                    <TableCell>székünk</TableCell>
+                    <TableCell className="text-right font-medium text-primary">főnökünk</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="font-bold">ti (your pl.)</TableCell>
+                    <TableCell>irodátok</TableCell>
+                    <TableCell>széketek</TableCell>
+                    <TableCell className="text-right font-medium text-primary text-nowrap">főnökötök</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="font-bold">ők (their)</TableCell>
+                    <TableCell>irodájuk</TableCell>
+                    <TableCell>székük</TableCell>
+                    <TableCell className="text-right font-medium text-primary text-nowrap">főnökük</TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </div>
+          </div>
         </CardContent>
       </Card>
 
