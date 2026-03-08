@@ -1,28 +1,53 @@
 import { useEffect, useState } from "react";
 import { ButtonGroup } from "./ui/button-group";
 import { Button } from "./ui/button";
-import { Skeleton } from "./ui/skeleton";
+// import { Skeleton } from "./ui/skeleton";
 import { PageTitle } from "./PageTitle";
 import { supabase } from "@/lib/supabase";
+import { type Card, createEmptyCard, State, type StateType, fsrs, type Grade, Grades } from "ts-fsrs";
+import type { Database } from "@/types/database.types";
 
-type Flashcard = {
-  id: number;
+
+interface MyCard extends Card {
   word: string;
   img_url: string;
-  created_at: string;
-  state: string;
-  next_review_at: string | null;
-  stability: number | null;
-  difficulty: number | null;
-};
+  id: number;
+}
+
+const convertDbRows = (data: Database['public']['Tables']['flashcards']['Row'][]) => {
+  const cards: MyCard[] = [];
+  data.forEach(card => {
+    cards.push(convertDbRow(card))
+  })
+  return cards
+}
+
+const convertDbRow = (data: Database['public']['Tables']['flashcards']['Row']) => {
+  const scard: Card = createEmptyCard(new Date());
+  const card: MyCard = {
+    id: data.id,
+    word: data.word,
+    img_url: data.img_url,
+    state: data.state,
+    last_review: data.last_review ? new Date(data.last_review) : undefined,
+    due: data.due ? new Date(data.due) : scard.due,
+    stability: data.stability ?? scard.stability,
+    difficulty: data.difficulty ?? scard.difficulty,
+    elapsed_days: scard.elapsed_days,
+    scheduled_days: data.scheduled_days ?? scard.scheduled_days,
+    learning_steps: data.learning_steps ?? scard.learning_steps,
+    reps: data.reps ?? scard.reps,
+    lapses: data.lapses ?? scard.lapses
+  }
+  return card;
+}
 
 export const FlashCard = () => {
   const [isFlipped, setIsFlipped] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [flashcards, setFlashcards] = useState<Flashcard[]>([]);
+  // const [isLoading, setIsLoading] = useState(false);
+  const [flashcards, setFlashcards] = useState<MyCard[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  const ratings: string[] = ["Again", "Hard", "Good", "Easy"];
 
   function handleFlip(): void {
     setIsFlipped(true);
@@ -34,7 +59,8 @@ export const FlashCard = () => {
       if (error) {
         console.log(error)
       } else {
-        setFlashcards(data)
+        const cards = convertDbRows(data);
+        setFlashcards(cards)
       }
     })()
   }, [])
@@ -52,31 +78,24 @@ export const FlashCard = () => {
     );
   }
 
-  const handleRating = async (rating: string, id: number) => {
-    let numRating
-    switch (rating) {
-      case "Again":
-        numRating = 1;
-        break;
-      case "Hard":
-        numRating = 2;
-        break;
-      case "Good":
-        numRating = 3;
-        break;
-      case "Easy":
-        numRating = 4;
-        break;
-      default:
-        numRating = 1
-    }
-    const { data, error } = await supabase.from('flashcards').update({ difficulty: numRating }).eq('id', id).select()
-    console.log(data,error)
+  console.log(currentCard);
+
+
+  const handleRating = async (rating: Grade, id: number) => {
+    const newCard = fsrs().next(currentCard, new Date(), rating)
+    const { data, error } = await supabase.from('flashcards').update({ ...newCard.card, due: newCard.card.due.toISOString(), last_review: newCard.card.last_review?.toISOString() }).eq('id', id).select()
+    console.log(data, error)
     if (error) {
       console.log(error)
     } else {
-      setCurrentIndex(prev => prev + 1)
       setIsFlipped(false)
+      setFlashcards(prev => {
+        const newFlashcards = [...prev];
+        newFlashcards[currentIndex] = convertDbRow(data[0]);
+        return newFlashcards;
+      });
+      setCurrentIndex(prev => prev + 1)
+
     }
 
   }
@@ -94,20 +113,20 @@ export const FlashCard = () => {
               {currentCard.word}
             </h2>
             <div className="flex-1 w-full min-h-0 flex items-center justify-center">
-              {isLoading ? (
+              {/* {isLoading ? (
                 <Skeleton className="max-w-full max-h-full w-full h-full rounded-lg shadow-sm object-contain" />
-              ) : (
-                <>
-                  <img
-                    className="max-w-full max-h-full object-contain rounded-lg shadow-sm"
-                    src={currentCard.img_url}
-                    alt={currentCard.word}
-                  ></img>
-                </>
-              )}
+              ) : ( */}
+              <>
+                <img
+                  className="max-w-full max-h-full object-contain rounded-lg shadow-sm"
+                  src={currentCard.img_url}
+                  alt={currentCard.word}
+                ></img>
+              </>
+              {/* )} */}
             </div>
             <ButtonGroup>
-              {ratings.map((rating) => (
+              {Grades.map((rating) => (
                 <Button
                   variant="outline"
                   size="sm"
