@@ -7,6 +7,19 @@ import {
 import AlphabetTable from "../AlphabetTable";
 import { GrammarLessonLinks } from "./GrammarLessonLinks";
 
+const vowelChipClassName =
+  "h-12 w-12 flex items-center justify-center rounded-md border bg-muted/30 text-xl font-bold";
+
+const VowelChips = ({ vowels }: { vowels: string[] }) => (
+  <div className="flex flex-wrap gap-2">
+    {vowels.map((vowel) => (
+      <div key={vowel} className={vowelChipClassName}>
+        {vowel}
+      </div>
+    ))}
+  </div>
+);
+
 const Phonetics = () => {
   return (
     <div className="mx-auto w-full max-w-6xl overflow-x-hidden px-4 py-6 sm:px-6 wrap-break-word">
@@ -50,13 +63,7 @@ const Phonetics = () => {
                 {/* Back Vowels */}
                 <div className="space-y-4">
                   <h3 className="text-lg font-bold uppercase tracking-widest text-muted-foreground wrap-break-word">Back Vowels (Mély)</h3>
-                  <div className="flex flex-wrap gap-2">
-                    {["a", "á", "o", "ó", "u", "ú"].map((v) => (
-                      <div key={v} className="h-12 w-12 flex items-center justify-center rounded-md border bg-card text-xl font-bold shadow-sm">
-                        {v}
-                      </div>
-                    ))}
-                  </div>
+                  <VowelChips vowels={["a", "á", "o", "ó", "u", "ú"]} />
                   <p className="text-sm italic wrap-break-word">Think of the word: <strong>Autó</strong></p>
                 </div>
 
@@ -66,23 +73,11 @@ const Phonetics = () => {
                   <div className="space-y-6">
                     <div>
                       <p className="text-xs font-semibold mb-2 opacity-70">Unrounded:</p>
-                      <div className="flex flex-wrap gap-2">
-                        {["e", "é", "i", "í"].map((v) => (
-                          <div key={v} className="h-12 w-12 flex items-center justify-center rounded-md border bg-card text-xl font-bold shadow-sm">
-                            {v}
-                          </div>
-                        ))}
-                      </div>
+                      <VowelChips vowels={["e", "é", "i", "í"]} />
                     </div>
                     <div>
                       <p className="text-xs font-semibold mb-2 opacity-70">Rounded:</p>
-                      <div className="flex flex-wrap gap-2">
-                        {["ö", "ő", "ü", "ű"].map((v) => (
-                          <div key={v} className="h-12 w-12 flex items-center justify-center rounded-md border bg-card text-xl font-bold shadow-sm">
-                            {v}
-                          </div>
-                        ))}
-                      </div>
+                      <VowelChips vowels={["ö", "ő", "ü", "ű"]} />
                     </div>
                   </div>
                   <p className="text-sm italic wrap-break-word">Think of the word: <strong>Teniszütő</strong></p>

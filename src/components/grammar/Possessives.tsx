@@ -32,6 +32,12 @@ type TableColumn = {
   className?: string;
 };
 
+type PossessiveEnding = {
+  person: string;
+  boldEnding: string;
+  otherEndings: string;
+};
+
 const tableColumns: TableColumn[] = [
   { key: "auto", label: "autó" },
   { key: "szek", label: "szék" },
@@ -96,6 +102,25 @@ const possessiveRows: PossessiveRow[] = [
   },
 ];
 
+const possessiveEndings: PossessiveEnding[] = [
+  { person: "én", boldEnding: "-m", otherEndings: ", -om/-am, -em, -öm" },
+  { person: "te", boldEnding: "-d", otherEndings: ", -od/-ad, -ed, -öd" },
+  { person: "ő/Ön", boldEnding: "-a/-e", otherEndings: ", -ja/-je" },
+  { person: "mi", boldEnding: "-nk", otherEndings: ", -unk, -ünk" },
+  {
+    person: "ti",
+    boldEnding: "-tok/-tek/-tök",
+    otherEndings: ", -otok/-atok, -etek, -ötök",
+  },
+  { person: "ők", boldEnding: "-uk/-ük", otherEndings: ", -juk/-jük" },
+];
+
+const desktopEndingPairs: Array<[number, number]> = [
+  [0, 3],
+  [1, 4],
+  [2, 5],
+];
+
 const Possessives = () => {
   return (
     <div className="mx-auto w-full max-w-6xl px-4 py-6 sm:px-6 wrap-break-word">
@@ -116,6 +141,48 @@ const Possessives = () => {
               <CardDescription>The English words <em>my, your, his, her,</em> etc. in Hungarian are expressed by possessive endings. For words ending in a vowel, just add the ending. For words ending in a consonant, add the ending with a linking vowel according to vowel harmony.</CardDescription>
             </CardHeader>
             <CardContent>
+              <aside className="mb-4 rounded-lg border bg-muted/60 p-3 text-sm">
+                <div className="mt-2 overflow-x-auto">
+                  <Table className="hidden md:table">
+                    <TableBody>
+                      {desktopEndingPairs.map(([leftIndex, rightIndex]) => {
+                        const left = possessiveEndings[leftIndex];
+                        const right = possessiveEndings[rightIndex];
+
+                        return (
+                          <TableRow key={`${left.person}-${right.person}`}>
+                            <TableCell className="w-20 align-top font-bold">{left.person}</TableCell>
+                            <TableCell className="wrap-break-word">
+                              <span className="font-semibold">{left.boldEnding}</span>
+                              {left.otherEndings}
+                            </TableCell>
+                            <TableCell className="w-20 align-top font-bold">{right.person}</TableCell>
+                            <TableCell className="wrap-break-word">
+                              <span className="font-semibold">{right.boldEnding}</span>
+                              {right.otherEndings}
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
+                    </TableBody>
+                  </Table>
+                </div>
+                <div className="mt-2 overflow-x-auto md:hidden">
+                  <Table>
+                    <TableBody>
+                      {possessiveEndings.map((ending) => (
+                        <TableRow key={ending.person}>
+                          <TableCell className="w-20 align-top font-bold">{ending.person}</TableCell>
+                          <TableCell className="wrap-break-word">
+                            <span className="font-semibold">{ending.boldEnding}</span>
+                            {ending.otherEndings}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              </aside>
               <div className="p-4 bg-muted rounded-lg border-l-4 border-primary">
                 <p className="text-sm wrap-break-word">
                   If a word ends in <strong>-a</strong> or <strong>-e</strong>, these vowels must lengthen to
