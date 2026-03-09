@@ -2,7 +2,7 @@ export const HUNGARIAN_ALPHABET = [
   {
     letter: "A",
     name: "a",
-    pronunciation: "Short, like 'o' in 'hot'. Drop your chin.",
+    pronunciation: "Like 'o' in 'hot,' only drop your chin.",
     example: "hal (fish)",
   },
   {
@@ -96,10 +96,10 @@ export const HUNGARIAN_ALPHABET = [
     example: "íz (taste)",
   },
   {
-    letter: "J / LY",
+    letter: "J",
     name: "jé / elipszilon",
-    pronunciation: "Both pronounced like 'y' in 'you'.",
-    example: "jó / hely",
+    pronunciation: "Like 'y' in 'you'.",
+    example: "jó (good)",
   },
   {
     letter: "K",
@@ -112,6 +112,12 @@ export const HUNGARIAN_ALPHABET = [
     name: "el",
     pronunciation: "Like English 'l'.",
     example: "ló (horse)",
+  },
+  {
+    letter: "LY",
+    name: "elipszilon",
+    pronunciation: "Like English 'l'.",
+    example: "hely (place)",
   },
   {
     letter: "NY",
@@ -182,8 +188,8 @@ export const HUNGARIAN_ALPHABET = [
   {
     letter: "U",
     name: "u",
-    pronunciation: "Short, like 'u' in 'pull'.",
-    example: "új (new)",
+    pronunciation: "Like 'u' in 'put,' only round your lips.",
+    example: "fut (run)",
   },
   {
     letter: "Ú",
@@ -194,7 +200,7 @@ export const HUNGARIAN_ALPHABET = [
   {
     letter: "Ü",
     name: "ü",
-    pronunciation: "Like French 'u' or German 'ü'.",
+    pronunciation: "Say 'i' like in 'sit,' purse your lips and put your tongue forward.",
     example: "ül (sit)",
   },
   {
