@@ -4,9 +4,8 @@ import { Button } from "./ui/button";
 // import { Skeleton } from "./ui/skeleton";
 import { PageTitle } from "./PageTitle";
 import { supabase } from "@/lib/supabase";
-import { type Card, createEmptyCard, State, type StateType, fsrs, type Grade, Grades } from "ts-fsrs";
+import { type Card, createEmptyCard, fsrs, type Grade, Grades } from "ts-fsrs";
 import type { Database } from "@/types/database.types";
-
 
 interface MyCard extends Card {
   word: string;
@@ -14,15 +13,19 @@ interface MyCard extends Card {
   id: number;
 }
 
-const convertDbRows = (data: Database['public']['Tables']['flashcards']['Row'][]) => {
+const convertDbRows = (
+  data: Database["public"]["Tables"]["flashcards"]["Row"][],
+) => {
   const cards: MyCard[] = [];
-  data.forEach(card => {
-    cards.push(convertDbRow(card))
-  })
-  return cards
-}
+  data.forEach((card) => {
+    cards.push(convertDbRow(card));
+  });
+  return cards;
+};
 
-const convertDbRow = (data: Database['public']['Tables']['flashcards']['Row']) => {
+const convertDbRow = (
+  data: Database["public"]["Tables"]["flashcards"]["Row"],
+) => {
   const scard: Card = createEmptyCard(new Date());
   const card: MyCard = {
     id: data.id,
@@ -37,10 +40,10 @@ const convertDbRow = (data: Database['public']['Tables']['flashcards']['Row']) =
     scheduled_days: data.scheduled_days ?? scard.scheduled_days,
     learning_steps: data.learning_steps ?? scard.learning_steps,
     reps: data.reps ?? scard.reps,
-    lapses: data.lapses ?? scard.lapses
-  }
+    lapses: data.lapses ?? scard.lapses,
+  };
   return card;
-}
+};
 
 export const FlashCard = () => {
   const [isFlipped, setIsFlipped] = useState(false);
@@ -48,22 +51,21 @@ export const FlashCard = () => {
   const [flashcards, setFlashcards] = useState<MyCard[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
 
-
   function handleFlip(): void {
     setIsFlipped(true);
   }
 
   useEffect(() => {
     (async () => {
-      const { data, error } = await supabase.from('flashcards').select('*')
+      const { data, error } = await supabase.from("flashcards").select("*");
       if (error) {
-        console.log(error)
+        console.log(error);
       } else {
         const cards = convertDbRows(data);
-        setFlashcards(cards)
+        setFlashcards(cards);
       }
-    })()
-  }, [])
+    })();
+  }, []);
 
   const currentCard = flashcards[currentIndex];
 
@@ -80,25 +82,30 @@ export const FlashCard = () => {
 
   console.log(currentCard);
 
-
   const handleRating = async (rating: Grade, id: number) => {
-    const newCard = fsrs().next(currentCard, new Date(), rating)
-    const { data, error } = await supabase.from('flashcards').update({ ...newCard.card, due: newCard.card.due.toISOString(), last_review: newCard.card.last_review?.toISOString() }).eq('id', id).select()
-    console.log(data, error)
+    const newCard = fsrs().next(currentCard, new Date(), rating);
+    const { data, error } = await supabase
+      .from("flashcards")
+      .update({
+        ...newCard.card,
+        due: newCard.card.due.toISOString(),
+        last_review: newCard.card.last_review?.toISOString(),
+      })
+      .eq("id", id)
+      .select();
+    console.log(data, error);
     if (error) {
-      console.log(error)
+      console.log(error);
     } else {
-      setIsFlipped(false)
-      setFlashcards(prev => {
+      setIsFlipped(false);
+      setFlashcards((prev) => {
         const newFlashcards = [...prev];
         newFlashcards[currentIndex] = convertDbRow(data[0]);
         return newFlashcards;
       });
-      setCurrentIndex(prev => prev + 1)
-
+      setCurrentIndex((prev) => prev + 1);
     }
-
-  }
+  };
 
   return (
     <>
@@ -132,7 +139,10 @@ export const FlashCard = () => {
                   size="sm"
                   key={rating}
                   className="cursor-pointer"
-                  onClick={(e) => { e.stopPropagation(); handleRating(rating, currentCard.id) }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleRating(rating, currentCard.id);
+                  }}
                 >
                   {rating}
                 </Button>
