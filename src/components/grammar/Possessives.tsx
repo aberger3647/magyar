@@ -15,23 +15,105 @@ import {
 } from "@/components/ui/table";
 import { GrammarLessonLinks } from "./GrammarLessonLinks";
 
+type PossessiveCell = {
+  stem: string;
+  ending: string;
+  className?: string;
+};
+
+type PossessiveRow = {
+  person: string;
+  forms: PossessiveCell[];
+};
+
+type TableColumn = {
+  key: string;
+  label: string;
+  className?: string;
+};
+
+const tableColumns: TableColumn[] = [
+  { key: "auto", label: "autó" },
+  { key: "szek", label: "szék" },
+  { key: "cipo", label: "cipő" },
+  { key: "zsemle", label: "zsemle" },
+];
+
+const possessiveRows: PossessiveRow[] = [
+  {
+    person: "én",
+    forms: [
+      { stem: "autó", ending: "m" },
+      { stem: "szék", ending: "em" },
+      { stem: "cipő", ending: "m" },
+      { stem: "zseml", ending: "ém", className: "font-medium text-primary" },
+    ],
+  },
+  {
+    person: "te",
+    forms: [
+      { stem: "autó", ending: "d" },
+      { stem: "szék", ending: "ed" },
+      { stem: "cipő", ending: "d" },
+      { stem: "zseml", ending: "éd", className: "font-medium text-primary" },
+    ],
+  },
+  {
+    person: "ő / Ön",
+    forms: [
+      { stem: "autó", ending: "ja" },
+      { stem: "szék", ending: "e" },
+      { stem: "cipő", ending: "je" },
+      { stem: "zseml", ending: "éje", className: "font-medium text-primary" },
+    ],
+  },
+  {
+    person: "mi",
+    forms: [
+      { stem: "autó", ending: "nk" },
+      { stem: "szék", ending: "ünk" },
+      { stem: "cipő", ending: "nk" },
+      { stem: "zseml", ending: "énk", className: "font-medium text-primary" },
+    ],
+  },
+  {
+    person: "ti",
+    forms: [
+      { stem: "autó", ending: "tok" },
+      { stem: "szék", ending: "etek" },
+      { stem: "cipő", ending: "tök" },
+      { stem: "zseml", ending: "étek", className: "font-medium text-primary text-nowrap" },
+    ],
+  },
+  {
+    person: "ők",
+    forms: [
+      { stem: "autó", ending: "juk" },
+      { stem: "szék", ending: "ük" },
+      { stem: "cipő", ending: "jük" },
+      { stem: "zseml", ending: "éjük", className: "font-medium text-primary text-nowrap" },
+    ],
+  },
+];
+
 const Possessives = () => {
   return (
-    <div className="mx-auto w-full max-w-6xl overflow-x-hidden px-4 py-6 sm:px-6 wrap-break-word">
-      <div className="space-y-8 md:grid md:grid-cols-[220px_1fr] md:items-start md:gap-8 md:space-y-0">
+    <div className="mx-auto w-full max-w-6xl px-4 py-6 sm:px-6 wrap-break-word">
+      <div className="space-y-8 md:grid md:grid-cols-[220px_minmax(0,1fr)] md:items-start md:gap-8 md:space-y-0">
         <aside className="md:sticky md:top-6">
           <GrammarLessonLinks compact vertical />
         </aside>
-        <div className="space-y-8 sm:space-y-12">
+        <div className="min-w-0 space-y-8 sm:space-y-12">
           {/* HEADER SECTION */}
           <div className="space-y-2">
             <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">Possessives</h1>
           </div>
 
-          {/* CORE RULE CARD */}
+          {/* POSSESSION CARD */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-xl sm:text-2xl">The Lengthening Rule</CardTitle>
+              <CardTitle className="text-xl sm:text-2xl">Possessive Endings</CardTitle>
+              <CardDescription>The English words <em>my, your, his, her,</em> etc. in Hungarian are expressed by possessive endings. For words ending in a vowel, just add the ending. For words ending in a consonant, add the ending with a linking vowel according to vowel harmony.</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="p-4 bg-muted rounded-lg border-l-4 border-primary">
@@ -46,123 +128,37 @@ const Possessives = () => {
                 </div>
               </div>
             </CardContent>
-          </Card>
-
-          {/* SINGULAR POSSESSION CARD */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-xl sm:text-2xl">Singular Possession (One Item)</CardTitle>
-              <CardDescription>Adding suffixes based on vowel harmony groups.</CardDescription>
-            </CardHeader>
-            <CardContent className="min-w-0">
-              <div className="w-full overflow-x-auto">
-                <div className="min-w-[720px]">
-                  <Table>
+            <CardContent className="min-w-0 px-0 sm:px-6">
+              <div className="w-full max-w-full overflow-x-auto">
+                <Table className="min-w-[760px]">
                     <TableHeader>
                       <TableRow>
                         <TableHead>Person</TableHead>
-                        <TableHead>Back (asztal)</TableHead>
-                        <TableHead>Front (szék)</TableHead>
-                        <TableHead className="text-right">Rounded Front (főnök)</TableHead>
+                        {tableColumns.map((column) => (
+                          <TableHead key={column.key} className={column.className}>
+                            {column.label}
+                          </TableHead>
+                        ))}
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      <TableRow>
-                        <TableCell className="font-bold">én (my)</TableCell>
-                        <TableCell>asztalom</TableCell>
-                        <TableCell>székem</TableCell>
-                        <TableCell className="text-right font-medium text-primary">főnököm</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell className="font-bold">te (your)</TableCell>
-                        <TableCell>asztalod</TableCell>
-                        <TableCell>széked</TableCell>
-                        <TableCell className="text-right font-medium text-primary">főnököd</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell className="font-bold">ő / Ön (his/her)</TableCell>
-                        <TableCell>asztala</TableCell>
-                        <TableCell>széke</TableCell>
-                        <TableCell className="text-right font-medium text-primary">főnöke</TableCell>
-                      </TableRow>
+                      {possessiveRows.map((row) => (
+                        <TableRow key={row.person}>
+                          <TableCell className="font-bold">{row.person}</TableCell>
+                          {row.forms.map((form, index) => (
+                            <TableCell key={`${row.person}-${index}`} className={form.className}>
+                              {form.stem}
+                              <strong>{form.ending}</strong>
+                            </TableCell>
+                          ))}
+                        </TableRow>
+                      ))}
                     </TableBody>
-                  </Table>
-                </div>
+                </Table>
               </div>
             </CardContent>
           </Card>
 
-          {/* PLURAL POSSESSION CARD */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-xl sm:text-2xl">Plural Possession (Our, Your, Their)</CardTitle>
-              <CardDescription>Suffixes for multiple owners of a singular object.</CardDescription>
-            </CardHeader>
-            <CardContent className="min-w-0">
-              <div className="w-full overflow-x-auto">
-                <div className="min-w-[720px]">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Person</TableHead>
-                        <TableHead>Back (iroda)</TableHead>
-                        <TableHead>Front (szék)</TableHead>
-                        <TableHead className="text-right">Rounded Front (főnök)</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      <TableRow>
-                        <TableCell className="font-bold">mi (our)</TableCell>
-                        <TableCell>irodánk</TableCell>
-                        <TableCell>székünk</TableCell>
-                        <TableCell className="text-right font-medium text-primary">főnökünk</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell className="font-bold">ti (your pl.)</TableCell>
-                        <TableCell>irodátok</TableCell>
-                        <TableCell>széketek</TableCell>
-                        <TableCell className="text-right font-medium text-primary text-nowrap">főnökötök</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell className="font-bold">ők (their)</TableCell>
-                        <TableCell>irodájuk</TableCell>
-                        <TableCell>székük</TableCell>
-                        <TableCell className="text-right font-medium text-primary text-nowrap">főnökük</TableCell>
-                      </TableRow>
-                    </TableBody>
-                  </Table>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* ADDITIONAL EXAMPLES */}
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-            <Card>
-              <CardHeader><CardTitle className="text-sm uppercase opacity-60">Family</CardTitle></CardHeader>
-              <CardContent className="text-sm space-y-1">
-                <p><strong>anyukám</strong> (my mom)</p>
-                <p><strong>apukád</strong> (your dad)</p>
-                <p><strong>férje</strong> (her husband)</p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader><CardTitle className="text-sm uppercase opacity-60">Everyday</CardTitle></CardHeader>
-              <CardContent className="text-sm space-y-1">
-                <p><strong>autóm</strong> (my car)</p>
-                <p><strong>táskád</strong> (your bag)</p>
-                <p><strong>irodája</strong> (his office)</p>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader><CardTitle className="text-sm uppercase opacity-60">Pets</CardTitle></CardHeader>
-              <CardContent className="text-sm space-y-1">
-                <p><strong>macskám</strong> (my cat)</p>
-                <p><strong>kutyád</strong> (your dog)</p>
-                <p><strong>hörcsögöm</strong> (my hamster)</p>
-              </CardContent>
-            </Card>
-          </div>
         </div>
       </div>
     </div>

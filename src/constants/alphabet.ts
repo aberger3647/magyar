@@ -116,7 +116,7 @@ export const HUNGARIAN_ALPHABET = [
   {
     letter: "LY",
     name: "elipszilon",
-    pronunciation: "Like English 'l'.",
+    pronunciation: "Like 'y' in 'you'.",
     example: "hely (place)",
   },
   {
