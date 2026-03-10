@@ -17,14 +17,15 @@ import type { VerbConjugation } from "../types/verbConjugation";
 import type { Pronouns } from "../types/pronouns";
 import type { VoiceType } from "../types/types";
 import type { TenseType } from "../types/types";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Badge } from "./ui/badge";
 import { CircleCheck, CircleX } from "lucide-react";
 import { setRandomWord } from "../lib/setRandomWord";
-import { useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useLocalStorage } from "@/lib/useLocalStorage";
 import { AccentedLetters } from "./AccentedLetters";
 
+const COMPLETED_WORDS_SESSION_KEY = "completedQuizWords";
 const PRONOUN_KEYS = ["én", "te", "ő", "mi", "ti", "ők"] as const;
 type PronounKey = (typeof PRONOUN_KEYS)[number];
 
@@ -38,12 +39,93 @@ const formSchema = z.object({
 });
 
 export const Conjugator = () => {
+  const navigate = useNavigate();
   const [storedWord, setStoredWord] = useLocalStorage<string | null>(
     "randomWord",
     null
   );
+  const [selectedWords] = useLocalStorage<string[]>("quizWords", []);
+  const [completedWords, setCompletedWords] = useState<string[]>(() => {
+    const rawValue = sessionStorage.getItem(COMPLETED_WORDS_SESSION_KEY);
+    if (!rawValue) return [];
+    try {
+      const parsed = JSON.parse(rawValue);
+      return Array.isArray(parsed)
+        ? parsed.filter((word): word is string => typeof word === "string")
+        : [];
+    } catch {
+      return [];
+    }
+  });
+  const markWordAsCompleted = (word: string) => {
+    setCompletedWords((prev) => {
+      if (prev.includes(word)) return prev;
+      const next = [...prev, word];
+      sessionStorage.setItem(COMPLETED_WORDS_SESSION_KEY, JSON.stringify(next));
+      return next;
+    });
+  };
+  const selectedConjugations = useMemo(() => {
+    if (selectedWords.length === 0) return conjugations;
+    const selectedWordSet = new Set(selectedWords);
+    return conjugations.filter((conjugation) =>
+      selectedWordSet.has(conjugation.lemma)
+    );
+  }, [selectedWords]);
+  const completedWordSet = useMemo(
+    () => new Set(completedWords),
+    [completedWords]
+  );
+  const availableConjugations = useMemo(
+    () =>
+      selectedConjugations.filter(
+        (conjugation) => !completedWordSet.has(conjugation.lemma)
+      ),
+    [selectedConjugations, completedWordSet]
+  );
+  const totalQuizWords = selectedConjugations.length;
+  const completedQuizWordsCount = selectedConjugations.filter((conjugation) =>
+    completedWordSet.has(conjugation.lemma)
+  ).length;
+  const currentWordNumber = Math.min(completedQuizWordsCount + 1, totalQuizWords);
+  const progressPercent =
+    totalQuizWords === 0 ? 0 : (completedQuizWordsCount / totalQuizWords) * 100;
   const [isDisabled, setIsDisabled] = useState(true);
-  if (!storedWord) setRandomWord(conjugations, setStoredWord);
+  const resetSessionProgress = () => {
+    sessionStorage.removeItem(COMPLETED_WORDS_SESSION_KEY);
+    setCompletedWords([]);
+    setStoredWord(null);
+  };
+  if (availableConjugations.length === 0) {
+    return (
+      <>
+        <Card className="w-full sm:max-w-md">
+          <CardHeader>
+            <CardTitle>Session complete</CardTitle>
+            <CardDescription>
+              You have completed all selected words for this session.
+            </CardDescription>
+            <Button
+              className="mt-2 w-fit"
+              onClick={() => {
+                resetSessionProgress();
+                navigate("/conjugator");
+              }}
+            >
+              Play Again
+            </Button>
+          </CardHeader>
+        </Card>
+        <Toaster />
+      </>
+    );
+  }
+  const hasStoredWordInSelection = !!availableConjugations.find(
+    (conjugation) => conjugation.lemma === storedWord
+  );
+  if (!storedWord || !hasStoredWordInSelection) {
+    setRandomWord(availableConjugations, setStoredWord);
+  }
   const [activeField, setActiveField] = useState<
     "én" | "te" | "ő" | "mi" | "ti" | "ők"
   >("én");
@@ -53,7 +135,7 @@ export const Conjugator = () => {
     voice: VoiceType;
   }>();
 
-  const randomWord = conjugations.find(
+  const randomWord = availableConjugations.find(
     (conjugation) => conjugation.lemma === storedWord
   );
   const infinitive = randomWord?.infinitive;
@@ -96,6 +178,9 @@ export const Conjugator = () => {
       });
       toast.success("Form submitted successfully");
       if (correctSubmissions.length === PRONOUN_KEYS.length) {
+        if (lemma) {
+          markWordAsCompleted(lemma);
+        }
         setIsDisabled(false);
       }
     },
@@ -138,6 +223,19 @@ export const Conjugator = () => {
               {tense}
             </Badge>
             <Badge variant="outline">{voice}</Badge>
+          </CardDescription>
+          <CardDescription>
+            <div className="space-y-2">
+              <p>
+                Word {currentWordNumber} of {totalQuizWords}
+              </p>
+              <div className="h-2 w-full rounded-full bg-muted">
+                <div
+                  className="h-full rounded-full bg-primary transition-all"
+                  style={{ width: `${progressPercent}%` }}
+                />
+              </div>
+            </div>
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -211,10 +309,10 @@ export const Conjugator = () => {
             <div className="flex gap-3">
               <Button type="submit">Submit</Button>
               <Button
-                disabled={isDisabled}
+                disabled={isDisabled || availableConjugations.length === 0}
                 onClick={(e) => {
                   e.preventDefault();
-                  setRandomWord(conjugations, setStoredWord);
+                  setRandomWord(availableConjugations, setStoredWord);
                   setIsDisabled(true);
                   form.reset();
                 }}

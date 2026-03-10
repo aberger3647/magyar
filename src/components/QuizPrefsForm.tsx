@@ -1,5 +1,7 @@
 import { useForm } from "@tanstack/react-form";
 import { Checkbox } from "@/components/ui/checkbox";
+import conjugations from "../assets/conjugations.json";
+import { useLocalStorage } from "@/lib/useLocalStorage";
 import {
   Field,
   FieldGroup,
@@ -21,6 +23,23 @@ import { PageTitle } from "./PageTitle";
 
 export const QuizPrefsForm = () => {
   const navigate = useNavigate();
+  const allWords = conjugations.map((conjugation) => conjugation.lemma);
+  const [selectedWords, setSelectedWords] = useLocalStorage<string[]>(
+    "quizWords",
+    allWords
+  );
+
+  const toggleWord = (word: string, checked: boolean) => {
+    if (checked) {
+      if (selectedWords.includes(word)) return;
+      setSelectedWords([...selectedWords, word]);
+      return;
+    }
+    setSelectedWords(
+      selectedWords.filter((existingWord) => existingWord !== word)
+    );
+  };
+
   const form = useForm({
     defaultValues: {
       tense: "present",
@@ -39,7 +58,9 @@ export const QuizPrefsForm = () => {
       <Card className="w-full sm:max-w-md">
         <CardHeader>
           <CardTitle>Choose Quiz Preferences</CardTitle>
-          <CardDescription>Select one tense and one voice</CardDescription>
+          <CardDescription>
+            Select one tense, one voice, and at least one word
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <form
@@ -195,8 +216,49 @@ export const QuizPrefsForm = () => {
                   </FieldGroup>
                 </FieldSet>
               </FieldGroup>
+              <FieldSeparator />
+              <FieldSet className="w-full">
+                <FieldLegend variant="label">Words</FieldLegend>
+                <div className="mb-2 flex items-center justify-between text-sm">
+                  <span>{selectedWords.length} selected</span>
+                  <div className="flex gap-2">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setSelectedWords(allWords)}
+                    >
+                      Select all
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setSelectedWords([])}
+                    >
+                      Clear all
+                    </Button>
+                  </div>
+                </div>
+                <div className="max-h-48 space-y-2 overflow-y-auto rounded-md border p-3">
+                  {allWords.map((word) => (
+                    <Field key={word} orientation="horizontal">
+                      <Checkbox
+                        id={`word-${word}`}
+                        checked={selectedWords.includes(word)}
+                        onCheckedChange={(checked) => toggleWord(word, !!checked)}
+                      />
+                      <FieldLabel htmlFor={`word-${word}`} className="font-normal">
+                        {word}
+                      </FieldLabel>
+                    </Field>
+                  ))}
+                </div>
+              </FieldSet>
             </FieldGroup>
-            <Button className="mt-4">Start Quiz</Button>
+            <Button className="mt-4" disabled={selectedWords.length === 0}>
+              Start Quiz
+            </Button>
           </form>
         </CardContent>
       </Card>
