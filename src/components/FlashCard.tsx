@@ -67,6 +67,14 @@ export const FlashCard = () => {
     })();
   }, []);
 
+  useEffect(() => {
+    const nextCard = flashcards[currentIndex + 1];
+    if (!nextCard) return;
+    const preloadImage = new Image();
+    preloadImage.decoding = "async";
+    preloadImage.src = nextCard.img_url;
+  }, [flashcards, currentIndex]);
+
   const currentCard = flashcards[currentIndex];
 
   if (!currentCard) {
@@ -128,6 +136,8 @@ export const FlashCard = () => {
                   className="max-w-full max-h-full object-contain rounded-lg shadow-sm"
                   src={currentCard.img_url}
                   alt={currentCard.word}
+                  decoding="async"
+                  fetchPriority="high"
                 ></img>
               </>
               {/* )} */}
@@ -155,6 +165,8 @@ export const FlashCard = () => {
               className="max-w-full max-h-full object-contain rounded-lg shadow-sm"
               src={currentCard.img_url}
               alt={currentCard.word}
+              decoding="async"
+              fetchPriority="high"
             ></img>
           </div>
         )}

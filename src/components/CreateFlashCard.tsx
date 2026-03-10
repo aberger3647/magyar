@@ -9,6 +9,97 @@ import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
 import { Toaster } from "sonner";
 
+const MAX_IMAGE_DIMENSION = 1200;
+const MAX_IMAGE_BYTES = 300 * 1024;
+
+const getExtensionForType = (mimeType: string) => {
+  if (mimeType === "image/png") return "png";
+  if (mimeType === "image/webp") return "webp";
+  return "jpg";
+};
+
+const makeSafeStorageKey = (text: string) => {
+  const normalized = text
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+
+  return normalized || "card";
+};
+
+const loadImage = (file: File) =>
+  new Promise<HTMLImageElement>((resolve, reject) => {
+    const objectUrl = URL.createObjectURL(file);
+    const image = new Image();
+
+    image.onload = () => {
+      URL.revokeObjectURL(objectUrl);
+      resolve(image);
+    };
+    image.onerror = () => {
+      URL.revokeObjectURL(objectUrl);
+      reject(new Error("Could not read selected image"));
+    };
+    image.src = objectUrl;
+  });
+
+const canvasToBlob = (
+  canvas: HTMLCanvasElement,
+  type: string,
+  quality?: number,
+) =>
+  new Promise<Blob>((resolve, reject) => {
+    canvas.toBlob((blob) => {
+      if (!blob) {
+        reject(new Error("Could not process selected image"));
+        return;
+      }
+      resolve(blob);
+    }, type, quality);
+  });
+
+const optimizeImage = async (file: File) => {
+  const image = await loadImage(file);
+  const ratio = Math.min(
+    1,
+    MAX_IMAGE_DIMENSION / Math.max(image.width, image.height),
+  );
+  const targetWidth = Math.max(1, Math.round(image.width * ratio));
+  const targetHeight = Math.max(1, Math.round(image.height * ratio));
+
+  const canvas = document.createElement("canvas");
+  canvas.width = targetWidth;
+  canvas.height = targetHeight;
+  const context = canvas.getContext("2d");
+  if (!context) {
+    throw new Error("Could not optimize selected image");
+  }
+
+  context.drawImage(image, 0, 0, targetWidth, targetHeight);
+  const outputType = "image/jpeg";
+
+  let blob = await canvasToBlob(
+    canvas,
+    outputType,
+    0.8,
+  );
+
+  // Try lower quality levels until the file is under the size target.
+  for (const quality of [0.7, 0.6, 0.5, 0.4]) {
+    if (blob.size <= MAX_IMAGE_BYTES) break;
+    blob = await canvasToBlob(canvas, outputType, quality);
+  }
+
+  const originalName = file.name.replace(/\.[^/.]+$/, "");
+  const extension = getExtensionForType(outputType);
+  return new File([blob], `${originalName}.${extension}`, {
+    type: outputType,
+    lastModified: Date.now(),
+  });
+};
+
 export const CreateFlashCard = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [errMsg, setErrMsg] = useState<string | null>(null)
@@ -28,12 +119,13 @@ export const CreateFlashCard = () => {
         return
       }
       const uuid = crypto.randomUUID()
-      const extension = selectedFile.name.split('.').pop()
-      const filePath = `${value.word}-${uuid}.${extension}`
+      const extension = getExtensionForType(selectedFile.type)
+      const safeWord = makeSafeStorageKey(value.word)
+      const filePath = `${safeWord}-${uuid}.${extension}`
       const result = await supabase.storage.from('cardimages').upload(filePath, selectedFile)
       if (result.error) {
         console.log(result.error)
-        setErrMsg('Image upload failed')
+        setErrMsg(`Image upload failed: ${result.error.message}`)
         return
       }
       const { data: { publicUrl } } = supabase.storage.from('cardimages').getPublicUrl(filePath)
@@ -57,11 +149,18 @@ export const CreateFlashCard = () => {
     fileInputRef.current?.click();
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      console.log("selected file: ", file.name);
-      setSelectedFile(file);
+      try {
+        const optimizedImage = await optimizeImage(file);
+        console.log("selected image optimized:", file.size, "->", optimizedImage.size);
+        setSelectedFile(optimizedImage);
+        setErrMsg(null);
+      } catch (error) {
+        console.log(error);
+        setErrMsg("Could not process selected image");
+      }
     }
   };
 
