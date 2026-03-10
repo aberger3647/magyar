@@ -88,9 +88,76 @@ export const Conjugator = () => {
     completedWordSet.has(conjugation.lemma)
   ).length;
   const currentWordNumber = Math.min(completedQuizWordsCount + 1, totalQuizWords);
+  const isLastQuizWord = totalQuizWords > 0 && currentWordNumber === totalQuizWords;
   const progressPercent =
     totalQuizWords === 0 ? 0 : (completedQuizWordsCount / totalQuizWords) * 100;
   const [isDisabled, setIsDisabled] = useState(true);
+  const [isHintDisabled, setIsHintDisabled] = useState(true);
+  const [activeField, setActiveField] = useState<PronounKey>("én");
+  const [readyToFinishQuiz, setReadyToFinishQuiz] = useState(false);
+  const { tense, voice } = useParams<{
+    tense: TenseType;
+    voice: VoiceType;
+  }>();
+  const inputRefs = useRef<Record<string, HTMLInputElement | null>>({});
+  const randomWord = availableConjugations.find(
+    (conjugation) => conjugation.lemma === storedWord
+  );
+  const infinitive = randomWord?.infinitive;
+  const translation = randomWord?.translation;
+  const lemma = randomWord?.lemma;
+
+  const form = useForm({
+    defaultValues: {
+      én: "",
+      te: "",
+      ő: "",
+      mi: "",
+      ti: "",
+      ők: "",
+    },
+    validators: {
+      onSubmit: formSchema,
+    },
+    onSubmit: async ({ value: userAnswers }) => {
+      if (!randomWord) return;
+      setIsDisabled(true);
+      setReadyToFinishQuiz(false);
+
+      const correctSubmissions = getCorrectSubmissions(
+        userAnswers,
+        randomWord,
+        tense ?? "present",
+        voice ?? "indefinite"
+      );
+
+      const correctPronouns: PronounKey[] = correctSubmissions;
+
+      PRONOUN_KEYS.forEach((pronoun) => {
+        const isCorrect = correctPronouns.includes(pronoun);
+        form.setFieldMeta(pronoun, (prev) => ({
+          ...prev,
+          isCorrect,
+          errorMap: {
+            onSubmit: isCorrect ? undefined : "no",
+          },
+        }));
+      });
+      toast.success("Form submitted successfully");
+      setIsHintDisabled(correctSubmissions.length === PRONOUN_KEYS.length);
+      if (correctSubmissions.length === PRONOUN_KEYS.length) {
+        if (lemma && !isLastQuizWord) {
+          markWordAsCompleted(lemma);
+        }
+        if (isLastQuizWord) {
+          setReadyToFinishQuiz(true);
+        }
+        setIsDisabled(false);
+      }
+    },
+  });
+
+  const FormField = form.Field;
   const resetSessionProgress = () => {
     sessionStorage.removeItem(COMPLETED_WORDS_SESSION_KEY);
     setCompletedWords([]);
@@ -126,69 +193,6 @@ export const Conjugator = () => {
   if (!storedWord || !hasStoredWordInSelection) {
     setRandomWord(availableConjugations, setStoredWord);
   }
-  const [activeField, setActiveField] = useState<
-    "én" | "te" | "ő" | "mi" | "ti" | "ők"
-  >("én");
-
-  const { tense, voice } = useParams<{
-    tense: TenseType;
-    voice: VoiceType;
-  }>();
-
-  const randomWord = availableConjugations.find(
-    (conjugation) => conjugation.lemma === storedWord
-  );
-  const infinitive = randomWord?.infinitive;
-  const translation = randomWord?.translation;
-  const lemma = randomWord?.lemma;
-
-  const form = useForm({
-    defaultValues: {
-      én: "",
-      te: "",
-      ő: "",
-      mi: "",
-      ti: "",
-      ők: "",
-    },
-    validators: {
-      onSubmit: formSchema,
-    },
-    onSubmit: async ({ value: userAnswers }) => {
-      if (!randomWord) return;
-
-      const correctSubmissions = getCorrectSubmissions(
-        userAnswers,
-        randomWord,
-        tense ?? "present",
-        voice ?? "indefinite"
-      );
-
-      const correctPronouns: PronounKey[] = correctSubmissions;
-
-      PRONOUN_KEYS.forEach((pronoun) => {
-        const isCorrect = correctPronouns.includes(pronoun);
-        form.setFieldMeta(pronoun, (prev) => ({
-          ...prev,
-          isCorrect,
-          errorMap: {
-            onSubmit: isCorrect ? undefined : "no",
-          },
-        }));
-      });
-      toast.success("Form submitted successfully");
-      if (correctSubmissions.length === PRONOUN_KEYS.length) {
-        if (lemma) {
-          markWordAsCompleted(lemma);
-        }
-        setIsDisabled(false);
-      }
-    },
-  });
-
-  const FormField = form.Field;
-
-  const inputRefs = useRef<Record<string, HTMLInputElement | null>>({});
   const handleCharInsert = (char: string) => {
     const currentVal = form.getFieldValue(activeField) || "";
     const targetInput = inputRefs.current[activeField];
@@ -205,6 +209,46 @@ export const Conjugator = () => {
         targetInput?.focus();
       }
     }, 0);
+  };
+
+  const handleHint = () => {
+    if (!randomWord) return;
+    const focusedField = PRONOUN_KEYS.find(
+      (pronoun) => inputRefs.current[pronoun] === document.activeElement
+    );
+    const fallbackField = PRONOUN_KEYS.find((pronoun) => {
+      const expected = getExpectedWord(
+        randomWord,
+        tense ?? "present",
+        voice ?? "indefinite",
+        pronoun
+      );
+      const current = form.getFieldValue(pronoun) || "";
+      return current !== expected;
+    });
+    const targetField = focusedField ?? fallbackField ?? activeField;
+    setActiveField(targetField);
+
+    const expectedWord = getExpectedWord(
+      randomWord,
+      tense ?? "present",
+      voice ?? "indefinite",
+      targetField
+    );
+    if (!expectedWord) return;
+    const currentVal = form.getFieldValue(targetField) || "";
+    if (currentVal === expectedWord) return;
+
+    const correctPrefixLength = getCorrectPrefixLength(currentVal, expectedWord);
+    const hasIncorrectLetters = correctPrefixLength !== currentVal.length;
+    if (hasIncorrectLetters) {
+      form.setFieldValue(targetField, currentVal.slice(0, -1));
+      return;
+    }
+
+    const nextChar = expectedWord[correctPrefixLength];
+    if (!nextChar) return;
+    form.setFieldValue(targetField, currentVal + nextChar);
   };
 
   return (
@@ -309,15 +353,34 @@ export const Conjugator = () => {
             <div className="flex gap-3">
               <Button type="submit">Submit</Button>
               <Button
+                type="button"
+                disabled={isHintDisabled}
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleHint();
+                }}
+              >
+                Hint
+              </Button>
+              <Button
+                type="button"
                 disabled={isDisabled || availableConjugations.length === 0}
                 onClick={(e) => {
                   e.preventDefault();
+                  if (readyToFinishQuiz) {
+                    if (lemma) {
+                      markWordAsCompleted(lemma);
+                    }
+                    return;
+                  }
                   setRandomWord(availableConjugations, setStoredWord);
                   setIsDisabled(true);
+                  setIsHintDisabled(true);
+                  setReadyToFinishQuiz(false);
                   form.reset();
                 }}
               >
-                Next Verb
+                {readyToFinishQuiz ? "Finish Quiz" : "Next Verb"}
               </Button>
             </div>
           </form>
@@ -343,4 +406,24 @@ function getCorrectSubmissions(
     }
     return [];
   });
+}
+
+function getExpectedWord(
+  randomWord: VerbConjugation,
+  tense: TenseType,
+  voice: VoiceType,
+  pronoun: PronounKey
+): string {
+  const voiceGroup = randomWord[tense][voice];
+  return voiceGroup ? voiceGroup[pronoun] : "";
+}
+
+function getCorrectPrefixLength(typed: string, correct: string): number {
+  const sharedLength = Math.min(typed.length, correct.length);
+  for (let i = 0; i < sharedLength; i += 1) {
+    if (typed[i] !== correct[i]) {
+      return i;
+    }
+  }
+  return sharedLength;
 }
