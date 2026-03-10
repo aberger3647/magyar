@@ -25,12 +25,12 @@ import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
 
 const menuItems = [
-  { title: "Home", to: "/" },
+  // { title: "Home", to: "/" },
   { title: "Conjugator", to: "/conjugator" },
   { title: "Flash Cards", to: "/flash-cards" },
   { title: "Grammar", to: "/grammar" },
   { title: "Phrasebook", to: "/phrasebook" },
-  { title: "Blog", to: "/blog" },
+  // { title: "Blog", to: "/blog" },
 ];
 
 export function Nav() {
