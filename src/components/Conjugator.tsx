@@ -337,12 +337,14 @@ export const Conjugator = () => {
                             aria-invalid={isInvalid}
                             autoComplete="off"
                           />
-                          {isCorrect && (
-                            <CircleCheck className="w-6 h-8 text-green-500" />
-                          )}
-                          {isInvalid && (
-                            <CircleX className="w-6 h-8 text-red-500" />
-                          )}
+                          <span className="flex h-8 w-6 shrink-0 items-center justify-center">
+                            {isCorrect && (
+                              <CircleCheck className="h-8 w-6 text-green-500" />
+                            )}
+                            {isInvalid && (
+                              <CircleX className="h-8 w-6 text-red-500" />
+                            )}
+                          </span>
                         </Field>
                       );
                     }}
