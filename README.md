@@ -33,31 +33,6 @@ Anyone learning Hungarian who wants to:
 
 ---
 
-## 🌎 How It Works
-
-1. Visit **[magyar.netlify.app](https://magyar.netlify.app/)** 🌐
-2. Open the **Conjugator Quiz** and choose your **tense**, **voice**, and **word list** ✅
-3. Submit conjugations, use hints, and track your progress 📈
-4. Study or create **Flash Cards** with image support and FSRS ratings 🖼️
-5. Explore **Grammar** lessons and the **Phrasebook** for extra practice 📚
-
----
-
-## 🚀 Getting Started
-
-No install needed for learners - just open:  
-👉 **[https://magyar.netlify.app/](https://magyar.netlify.app/)**
-
-### 🛠️ Local Development (Optional)
-
-1. Install dependencies: `npm install`
-2. Create a `.env` file with:
-   - `VITE_SUPABASE_URL`
-   - `VITE_SUPABASE_ANON_KEY`
-3. Run locally: `npm run dev`
-
----
-
 ## 🪄 License
 
 This project is licensed under the **MIT License**.
