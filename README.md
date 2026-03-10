@@ -1,73 +1,63 @@
-# React + TypeScript + Vite
+# 🇭🇺 Magyar
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**Learn Hungarian through conjugation quizzes, grammar lessons, flash cards, and useful everyday phrases.**
 
-Currently, two official plugins are available:
+🔗 **Live site:** [**magyar.netlify.app**](https://magyar.netlify.app/)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## React Compiler
+## 📚 Overview
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+**Magyar** is a Hungarian language learning app focused on practical study tools.  
+Practice verb forms with the **Conjugator Quiz** 🧠, review lessons in the **Grammar** section 📖, and build vocabulary with **FSRS-powered Flash Cards** 🗂️.
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 👥 Who It's For
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+Anyone learning Hungarian who wants to:
+- Practice verb conjugations by tense and voice ✍️
+- Study vocabulary with spaced repetition 🔁
+- Review grammar topics like phonetics and possessives 🧩
+- Keep a handy phrasebook for common expressions 💬
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+---
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## 💻 Tech Stack
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+- ⚛️ **React 19 + Vite + TypeScript** - fast, modern front end
+- 🎨 **Tailwind CSS + Radix UI** - responsive, accessible UI components
+- 🧠 **TanStack Form + Zod** - form state and validation
+- ☁️ **Supabase** - flashcard storage, image hosting, and typed DB access
+- 🔁 **ts-fsrs** - spaced repetition scheduling for study cards
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+---
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## 🌎 How It Works
+
+1. Visit **[magyar.netlify.app](https://magyar.netlify.app/)** 🌐
+2. Open the **Conjugator Quiz** and choose your **tense**, **voice**, and **word list** ✅
+3. Submit conjugations, use hints, and track your progress 📈
+4. Study or create **Flash Cards** with image support and FSRS ratings 🖼️
+5. Explore **Grammar** lessons and the **Phrasebook** for extra practice 📚
+
+---
+
+## 🚀 Getting Started
+
+No install needed for learners - just open:  
+👉 **[https://magyar.netlify.app/](https://magyar.netlify.app/)**
+
+### 🛠️ Local Development (Optional)
+
+1. Install dependencies: `npm install`
+2. Create a `.env` file with:
+   - `VITE_SUPABASE_URL`
+   - `VITE_SUPABASE_ANON_KEY`
+3. Run locally: `npm run dev`
+
+---
+
+## 🪄 License
+
+This project is licensed under the **MIT License**.
