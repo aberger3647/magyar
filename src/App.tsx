@@ -13,6 +13,7 @@ import Phonetics from "./components/grammar/Phonetics";
 import Possessives from "./components/grammar/Possessives";
 import { Phrasebook } from "./components/Phrasebook";
 import { CreateFlashCard } from "./components/CreateFlashCard";
+import { NotFound } from "./components/NotFound";
 
 function Layout() {
   return (
@@ -49,6 +50,7 @@ function App() {
                <Route path="/grammar/possessives" element={<Possessives />} />
                 <Route path="/phrasebook" element={<Phrasebook />} />
                  <Route path="/blog" element={<Blog />} />
+                 <Route path="*" element={<NotFound />} />
           </Route>
         </Routes>
       </Router>
