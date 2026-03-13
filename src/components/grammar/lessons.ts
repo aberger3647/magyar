@@ -11,6 +11,11 @@ export const grammarLessons: GrammarLesson[] = [
     to: "/grammar/phonetics",
   },
   {
+    title: "Numbers & Time",
+    description: "Core numbers and everyday time expressions.",
+    to: "/grammar/numbers-time",
+  },
+  {
     title: "Possessives",
     description: "How Hungarian shows ownership with suffixes.",
     to: "/grammar/possessives",
