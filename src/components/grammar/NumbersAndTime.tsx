@@ -1,6 +1,7 @@
 import {
   Card,
   CardContent,
+  CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -10,6 +11,7 @@ import {
   TableCell,
   TableRow,
 } from "@/components/ui/table";
+import type { ReactNode } from "react";
 import { GrammarLessonLinks } from "./GrammarLessonLinks";
 
 type NumberRow = {
@@ -20,6 +22,13 @@ type NumberRow = {
 type TimeRow = {
   english: string;
   hungarian: string;
+};
+
+type BilingualRow = {
+  english: string;
+  hungarian: ReactNode;
+  emphasizeEnglish?: boolean;
+  monospace?: boolean;
 };
 
 const numbersZeroToNine: NumberRow[] = [
@@ -85,6 +94,102 @@ const quarterStyleTimes: TimeRow[] = [
   },
 ];
 
+const timeBasicsRows: BilingualRow[] = timeBasics.map((row) => ({
+  english: row.english,
+  hungarian: row.hungarian,
+  emphasizeEnglish: true,
+}));
+
+const quarterStyleRows: BilingualRow[] = quarterStyleTimes.map((row) => ({
+  english: row.english,
+  hungarian: row.hungarian,
+  emphasizeEnglish: true,
+}));
+
+const fromWhenUntilWhenRows: BilingualRow[] = [
+  {
+    english: "From when until when?",
+    hungarian: "Mettől meddig?",
+  },
+  {
+    english: "I work from 8 to 5.",
+    hungarian: (
+      <>
+        nyolc<strong>tól</strong> öt<strong>ig</strong> dolgozom.
+      </>
+    ),
+  },
+  {
+    english: "I study from 10 to 12.",
+    hungarian: (
+      <>
+        tíz<strong>től</strong> tizenkettő<strong>ig</strong> tanulok.
+      </>
+    ),
+  },
+];
+
+const formalTimeRows: BilingualRow[] = [
+  {
+    english: "We meet at 9 o'clock.",
+    hungarian: "Huszonegykor találkozunk.",
+  },
+  {
+    english: "We meet at 9 in the evening.",
+    hungarian: "Este kilenckor találkozunk.",
+  },
+];
+
+const howOftenRows: BilingualRow[] = [
+  {
+    english: "I exercise four times a week.",
+    hungarian: "Hetente négyszer sportolok.",
+  },
+  {
+    english: "I compete two times a year.",
+    hungarian: "Kétszer versenyzem egy év.",
+  },
+  {
+    english: "I dance three times a week.",
+    hungarian: "Háromszor táncolok egy hét.",
+  },
+  {
+    english: "I eat five times a day.",
+    hungarian: "Naponta ötször eszem.",
+  },
+];
+
+const BilingualZebraRows = ({ rows }: { rows: BilingualRow[] }) => {
+  return (
+    <div className="overflow-hidden rounded-lg border">
+      <Table className="w-full table-fixed text-sm">
+        <TableBody>
+          {rows.map((row, index) => (
+            <TableRow
+              key={`${row.english}-${index}`}
+              className={`${index % 2 === 0 ? "bg-muted/40" : "bg-background"} ${row.monospace ? "font-mono" : ""}`}
+            >
+              <TableCell className={`w-1/2 py-2 pr-2 ${row.emphasizeEnglish ? "font-medium" : ""}`}>
+                {row.english}
+              </TableCell>
+              <TableCell className="w-1/2 py-2 pl-2 text-right">{row.hungarian}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </div>
+  );
+};
+
+const BilingualCardHeader = ({ english, hungarian }: { english: string; hungarian: string }) => {
+  return (
+    <CardTitle className="grid grid-cols-2 gap-4 text-xl sm:text-2xl">
+      <span>{english}</span>
+      <span className="text-right">{hungarian}</span>
+    </CardTitle>
+  );
+};
+
 const NumbersAndTime = () => {
   return (
     <div className="mx-auto w-full max-w-6xl px-4 py-6 sm:px-6 wrap-break-word">
@@ -99,7 +204,7 @@ const NumbersAndTime = () => {
 
           <Card>
             <CardHeader>
-              <CardTitle className="text-xl sm:text-2xl">Numbers</CardTitle>
+              <BilingualCardHeader english="Numbers" hungarian="Számok" />
             </CardHeader>
             <CardContent>
               <div className="overflow-hidden rounded-lg">
@@ -119,42 +224,37 @@ const NumbersAndTime = () => {
 
           <Card>
             <CardHeader>
-              <CardTitle className="text-xl sm:text-2xl">Telling Time</CardTitle>
+              <BilingualCardHeader english="Time" hungarian="Idő" />
             </CardHeader>
             <CardContent className="space-y-6">
-              <div className="rounded-lg border p-4">
-                <div className="space-y-2 text-sm">
-                  {timeBasics.map((row) => (
-                    <p key={row.english}>
-                      <span className="font-medium">{row.english}</span> {" → "} {row.hungarian}
-                    </p>
-                  ))}
-                </div>
-              </div>
+              <BilingualZebraRows rows={timeBasicsRows} />
 
-              <div className="rounded-lg border p-4">
-                <div className="space-y-2 text-sm">
-                  {quarterStyleTimes.map((row) => (
-                    <p key={row.english}>
-                      <span className="font-medium">{row.english}</span> {" → "} {row.hungarian}
-                    </p>
-                  ))}
-                </div>
-              </div>
+              <BilingualZebraRows rows={quarterStyleRows} />
+
+              <BilingualZebraRows rows={fromWhenUntilWhenRows} />
 
               <div className="rounded-lg border-l-4 border-primary bg-muted/40 p-4 text-sm">
                 <p>
                   Hungary uses 24-hour time in formal contexts. You can also use day-part words like{" "}
                   <strong>reggel</strong> (in the morning) and <strong>este</strong> (in the evening).
                 </p>
-                <p className="mt-3 font-mono">
-                  huszonegykor találkozunk = we meet at 9 o&apos;clock
-                </p>
-                <p className="mt-1 font-mono">
-                  este kilenckor találkozunk = we meet at 9 in the evening
-                </p>
               </div>
 
+              <BilingualZebraRows rows={formalTimeRows} />
+
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <BilingualCardHeader english="How Often?" hungarian="Milyen gyakran?" />
+              <CardDescription className="pt-2 text-xs sm:text-sm">
+                Use the suffixes <strong>-szer</strong>, <strong>-szor</strong>, and{" "}
+                <strong>-ször</strong> to express "times."
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <BilingualZebraRows rows={howOftenRows} />
             </CardContent>
           </Card>
         </div>
