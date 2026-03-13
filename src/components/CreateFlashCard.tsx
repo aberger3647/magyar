@@ -102,45 +102,51 @@ const optimizeImage = async (file: File) => {
 
 export const CreateFlashCard = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [errMsg, setErrMsg] = useState<string | null>(null)
+  const [errMsg, setErrMsg] = useState<string | null>(null);
+  const [isDraggingImage, setIsDraggingImage] = useState(false);
 
   const form = useForm({
     defaultValues: {
       word: "",
     },
     onSubmit: async ({ value }) => {
-      setErrMsg(null)
+      setErrMsg(null);
       if (!selectedFile) {
-        setErrMsg('Upload an image')
-        return
+        setErrMsg("Upload an image");
+        return;
       }
-      if (!value.word || value.word.trim() === '') {
-        setErrMsg('Enter a word')
-        return
+      if (!value.word || value.word.trim() === "") {
+        setErrMsg("Enter a word");
+        return;
       }
-      const uuid = crypto.randomUUID()
-      const extension = getExtensionForType(selectedFile.type)
-      const safeWord = makeSafeStorageKey(value.word)
-      const filePath = `${safeWord}-${uuid}.${extension}`
-      const result = await supabase.storage.from('cardimages').upload(filePath, selectedFile)
+      const uuid = crypto.randomUUID();
+      const extension = getExtensionForType(selectedFile.type);
+      const safeWord = makeSafeStorageKey(value.word);
+      const filePath = `${safeWord}-${uuid}.${extension}`;
+      const result = await supabase.storage
+        .from("cardimages")
+        .upload(filePath, selectedFile);
       if (result.error) {
-        console.log(result.error)
-        setErrMsg(`Image upload failed: ${result.error.message}`)
-        return
+        console.log(result.error);
+        setErrMsg(`Image upload failed: ${result.error.message}`);
+        return;
       }
-      const { data: { publicUrl } } = supabase.storage.from('cardimages').getPublicUrl(filePath)
-      const { error } = await supabase.from('flashcards').insert({ word: value.word, img_url: publicUrl })
+      const { data: { publicUrl } } = supabase.storage
+        .from("cardimages")
+        .getPublicUrl(filePath);
+      const { error } = await supabase
+        .from("flashcards")
+        .insert({ word: value.word, img_url: publicUrl });
       if (error) {
-        setErrMsg(`Failed to create card: ${error}`)
-        console.log(error)
-        return
+        setErrMsg(`Failed to create card: ${error}`);
+        console.log(error);
+        return;
       } else {
-        toast.success('Card created successfully')
+        toast.success("Card created successfully");
       }
       form.reset();
-      setSelectedFile(null)
-    }
-
+      setSelectedFile(null);
+    },
   });
 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -149,25 +155,53 @@ export const CreateFlashCard = () => {
     fileInputRef.current?.click();
   };
 
+  const handleSelectedImage = async (file: File) => {
+    if (!file.type.startsWith("image/")) {
+      setErrMsg("Please upload an image file");
+      return;
+    }
+
+    try {
+      const optimizedImage = await optimizeImage(file);
+      console.log("selected image optimized:", file.size, "->", optimizedImage.size);
+      setSelectedFile(optimizedImage);
+      setErrMsg(null);
+    } catch (error) {
+      console.log(error);
+      setErrMsg("Could not process selected image");
+    }
+  };
+
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      try {
-        const optimizedImage = await optimizeImage(file);
-        console.log("selected image optimized:", file.size, "->", optimizedImage.size);
-        setSelectedFile(optimizedImage);
-        setErrMsg(null);
-      } catch (error) {
-        console.log(error);
-        setErrMsg("Could not process selected image");
-      }
+      await handleSelectedImage(file);
+    }
+  };
+
+  const handleDragOver = (e: React.DragEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    setIsDraggingImage(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    setIsDraggingImage(false);
+  };
+
+  const handleDrop = async (e: React.DragEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    setIsDraggingImage(false);
+    const file = e.dataTransfer.files?.[0];
+    if (file) {
+      await handleSelectedImage(file);
     }
   };
 
   const imageUrl = useMemo(() => {
-    if (!selectedFile) return null
-    return URL.createObjectURL(selectedFile)
-  }, [selectedFile])
+    if (!selectedFile) return null;
+    return URL.createObjectURL(selectedFile);
+  }, [selectedFile]);
 
   useEffect(() => {
     return () => {
@@ -206,23 +240,28 @@ export const CreateFlashCard = () => {
           />
         </div>
 
-        {imageUrl ? (
-          <img
-            src={imageUrl}
-            alt="selected image"
-            className="w-full max-h-48 object-contain cursor-pointer"
-            onClick={handleBoxClick}
-          />
-        ) : (
-          <Button
-            className="border-dashed border-black flex-1 m-8 w-56"
-            variant="outline"
-            size="icon-lg"
-            onClick={handleBoxClick}
-          >
-            <ImagePlus />
-          </Button>
-        )}
+        <Button
+          className={`border-dashed border-black flex-1 m-8 w-56 p-0 overflow-hidden ${isDraggingImage ? "border-blue-500 bg-blue-50" : ""}`}
+          variant="outline"
+          size="icon-lg"
+          onClick={handleBoxClick}
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+          onDrop={handleDrop}
+        >
+          {imageUrl ? (
+            <img
+              src={imageUrl}
+              alt="selected image"
+              className="w-full max-h-48 object-contain"
+            />
+          ) : (
+            <div className="flex flex-col items-center justify-center gap-2 text-sm text-slate-500">
+              <ImagePlus />
+              <span>Click or drag image here</span>
+            </div>
+          )}
+        </Button>
 
         <input
           type="file"
