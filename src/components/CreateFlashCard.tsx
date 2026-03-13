@@ -9,9 +9,6 @@ import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
 import { Toaster } from "sonner";
 
-const MAX_IMAGE_DIMENSION = 1200;
-const MAX_IMAGE_BYTES = 300 * 1024;
-
 const getExtensionForType = (mimeType: string) => {
   if (mimeType === "image/png") return "png";
   if (mimeType === "image/webp") return "webp";
@@ -27,77 +24,6 @@ const makeSafeStorageKey = (text: string) => {
     .replace(/^-+|-+$/g, "");
 
   return normalized || "card";
-};
-
-const loadImage = (file: File) =>
-  new Promise<HTMLImageElement>((resolve, reject) => {
-    const objectUrl = URL.createObjectURL(file);
-    const image = new Image();
-
-    image.onload = () => {
-      URL.revokeObjectURL(objectUrl);
-      resolve(image);
-    };
-    image.onerror = () => {
-      URL.revokeObjectURL(objectUrl);
-      reject(new Error("Could not read selected image"));
-    };
-    image.src = objectUrl;
-  });
-
-const canvasToBlob = (
-  canvas: HTMLCanvasElement,
-  type: string,
-  quality?: number,
-) =>
-  new Promise<Blob>((resolve, reject) => {
-    canvas.toBlob((blob) => {
-      if (!blob) {
-        reject(new Error("Could not process selected image"));
-        return;
-      }
-      resolve(blob);
-    }, type, quality);
-  });
-
-const optimizeImage = async (file: File) => {
-  const image = await loadImage(file);
-  const ratio = Math.min(
-    1,
-    MAX_IMAGE_DIMENSION / Math.max(image.width, image.height),
-  );
-  const targetWidth = Math.max(1, Math.round(image.width * ratio));
-  const targetHeight = Math.max(1, Math.round(image.height * ratio));
-
-  const canvas = document.createElement("canvas");
-  canvas.width = targetWidth;
-  canvas.height = targetHeight;
-  const context = canvas.getContext("2d");
-  if (!context) {
-    throw new Error("Could not optimize selected image");
-  }
-
-  context.drawImage(image, 0, 0, targetWidth, targetHeight);
-  const outputType = "image/jpeg";
-
-  let blob = await canvasToBlob(
-    canvas,
-    outputType,
-    0.8,
-  );
-
-  // Try lower quality levels until the file is under the size target.
-  for (const quality of [0.7, 0.6, 0.5, 0.4]) {
-    if (blob.size <= MAX_IMAGE_BYTES) break;
-    blob = await canvasToBlob(canvas, outputType, quality);
-  }
-
-  const originalName = file.name.replace(/\.[^/.]+$/, "");
-  const extension = getExtensionForType(outputType);
-  return new File([blob], `${originalName}.${extension}`, {
-    type: outputType,
-    lastModified: Date.now(),
-  });
 };
 
 export const CreateFlashCard = () => {
@@ -155,27 +81,19 @@ export const CreateFlashCard = () => {
     fileInputRef.current?.click();
   };
 
-  const handleSelectedImage = async (file: File) => {
+  const handleSelectedImage = (file: File) => {
     if (!file.type.startsWith("image/")) {
       setErrMsg("Please upload an image file");
       return;
     }
-
-    try {
-      const optimizedImage = await optimizeImage(file);
-      console.log("selected image optimized:", file.size, "->", optimizedImage.size);
-      setSelectedFile(optimizedImage);
-      setErrMsg(null);
-    } catch (error) {
-      console.log(error);
-      setErrMsg("Could not process selected image");
-    }
+    setSelectedFile(file);
+    setErrMsg(null);
   };
 
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      await handleSelectedImage(file);
+      handleSelectedImage(file);
     }
   };
 
@@ -189,12 +107,12 @@ export const CreateFlashCard = () => {
     setIsDraggingImage(false);
   };
 
-  const handleDrop = async (e: React.DragEvent<HTMLButtonElement>) => {
+  const handleDrop = (e: React.DragEvent<HTMLButtonElement>) => {
     e.preventDefault();
     setIsDraggingImage(false);
     const file = e.dataTransfer.files?.[0];
     if (file) {
-      await handleSelectedImage(file);
+      handleSelectedImage(file);
     }
   };
 
@@ -208,11 +126,12 @@ export const CreateFlashCard = () => {
       if (imageUrl) URL.revokeObjectURL(imageUrl);
     };
   }, [imageUrl]);
+
   return (
     <>
       <PageTitle title="Create Flash Cards" />
 
-      <div className="w-full h-96 sm:max-w-md overflow-hidden rounded-lg border p-6 flex flex-col justify-between items-center">
+      <div className="w-full min-h-96 sm:max-w-md overflow-hidden rounded-lg border p-6 flex flex-col justify-between items-center gap-3">
         <div className="w-full">
           <form.Field
             name="word"
@@ -253,7 +172,7 @@ export const CreateFlashCard = () => {
             <img
               src={imageUrl}
               alt="selected image"
-              className="w-full max-h-48 object-contain"
+              className="w-full h-full object-cover"
             />
           ) : (
             <div className="flex flex-col items-center justify-center gap-2 text-sm text-slate-500">
