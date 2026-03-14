@@ -9,7 +9,8 @@ import { QuizPrefsForm } from "./components/QuizPrefsForm";
 import { Blog } from "./components/Blog";
 import { FlashCard } from "./components/FlashCard";
 import { Grammar } from "./components/Grammar";
-import Phonetics from "./components/grammar/Phonetics";
+import Alphabet from "./components/grammar/Alphabet";
+import VowelHarmony from "./components/grammar/VowelHarmony";
 import Numbers from "./components/grammar/Numbers";
 import Possessives from "./components/grammar/Possessives";
 import Accusative from "./components/grammar/Accusative";
@@ -48,7 +49,9 @@ function App() {
               <Route path="/flash-cards" element={<FlashCard />} />
               <Route path="/flash-cards/create" element={<CreateFlashCard />} />
                <Route path="/grammar" element={<Grammar />} />
-               <Route path="/grammar/phonetics" element={<Phonetics />} />
+               <Route path="/grammar/phonetics" element={<Alphabet />} />
+               <Route path="/grammar/alphabet" element={<Alphabet />} />
+               <Route path="/grammar/vowel-harmony" element={<VowelHarmony />} />
                <Route path="/grammar/numbers" element={<Numbers />} />
                <Route path="/grammar/possessives" element={<Possessives />} />
                <Route path="/grammar/accusative" element={<Accusative />} />

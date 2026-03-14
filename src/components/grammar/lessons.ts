@@ -6,9 +6,14 @@ export type GrammarLesson = {
 
 export const grammarLessons: GrammarLesson[] = [
   {
-    title: "Phonetics",
-    description: "Alphabet, pronunciation, and vowel harmony.",
-    to: "/grammar/phonetics",
+    title: "Alphabet",
+    description: "Hungarian alphabet and pronunciation basics.",
+    to: "/grammar/alphabet",
+  },
+  {
+    title: "Vowel Harmony",
+    description: "Back/front vowels and harmony rules for suffixes.",
+    to: "/grammar/vowel-harmony",
   },
   {
     title: "Numbers",
