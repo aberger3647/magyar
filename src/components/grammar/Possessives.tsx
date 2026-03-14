@@ -121,6 +121,15 @@ const desktopEndingPairs: Array<[number, number]> = [
   [2, 5],
 ];
 
+const BilingualCardHeader = ({ english, hungarian }: { english: string; hungarian: string }) => {
+  return (
+    <CardTitle className="grid grid-cols-2 gap-4 text-xl sm:text-2xl">
+      <span>{english}</span>
+      <span className="text-right">{hungarian}</span>
+    </CardTitle>
+  );
+};
+
 const Possessives = () => {
   return (
     <div className="mx-auto w-full max-w-6xl px-4 py-6 sm:px-6 wrap-break-word">
@@ -137,7 +146,7 @@ const Possessives = () => {
           {/* POSSESSION CARD */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-xl sm:text-2xl">Possessive Endings</CardTitle>
+              <BilingualCardHeader english="Possessive Endings" hungarian="Birtokos ragok" />
               <CardDescription>The English words <em>my, your, his, her,</em> etc. in Hungarian are expressed by possessive endings. For words ending in a vowel, just add the ending. For words ending in a consonant, add the ending with a linking vowel according to vowel harmony.</CardDescription>
             </CardHeader>
             <CardContent>

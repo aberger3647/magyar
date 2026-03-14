@@ -20,6 +20,15 @@ const VowelChips = ({ vowels }: { vowels: string[] }) => (
   </div>
 );
 
+const BilingualCardHeader = ({ english, hungarian }: { english: string; hungarian: string }) => {
+  return (
+    <CardTitle className="grid grid-cols-2 gap-4 text-xl sm:text-2xl">
+      <span>{english}</span>
+      <span className="text-right">{hungarian}</span>
+    </CardTitle>
+  );
+};
+
 const Phonetics = () => {
   return (
     <div className="mx-auto w-full max-w-6xl overflow-x-hidden px-4 py-6 sm:px-6 wrap-break-word">
@@ -38,7 +47,7 @@ const Phonetics = () => {
           {/* ALPHABET & PRONUNCIATION CARD */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-xl sm:text-2xl">The Hungarian Alphabet</CardTitle>
+              <BilingualCardHeader english="The Hungarian Alphabet" hungarian="A magyar ábécé" />
             </CardHeader>
             <CardContent className="min-w-0">
               <div className="w-full overflow-x-auto">
@@ -55,7 +64,7 @@ const Phonetics = () => {
           {/* VOWEL HARMONY CARD */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-xl sm:text-2xl">Vowel Harmony</CardTitle>
+              <BilingualCardHeader english="Vowel Harmony" hungarian="Magánhangzó-harmónia" />
             </CardHeader>
             <CardContent className="min-w-0 space-y-8 sm:space-y-10">
               {/* Harmony Breakdown */}

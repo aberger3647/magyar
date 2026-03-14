@@ -20,4 +20,9 @@ export const grammarLessons: GrammarLesson[] = [
     description: "How Hungarian shows ownership with suffixes.",
     to: "/grammar/possessives",
   },
+  {
+    title: "Accusative Case",
+    description: "How to mark direct objects with -t.",
+    to: "/grammar/accusative",
+  },
 ];
