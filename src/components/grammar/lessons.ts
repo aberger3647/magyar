@@ -11,9 +11,9 @@ export const grammarLessons: GrammarLesson[] = [
     to: "/grammar/phonetics",
   },
   {
-    title: "Numbers & Time",
-    description: "Core numbers and everyday time expressions.",
-    to: "/grammar/numbers-time",
+    title: "Numbers",
+    description: "Core numbers and common counting patterns.",
+    to: "/grammar/numbers",
   },
   {
     title: "Possessives",

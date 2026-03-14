@@ -10,7 +10,7 @@ import { Blog } from "./components/Blog";
 import { FlashCard } from "./components/FlashCard";
 import { Grammar } from "./components/Grammar";
 import Phonetics from "./components/grammar/Phonetics";
-import NumbersAndTime from "./components/grammar/NumbersAndTime";
+import Numbers from "./components/grammar/Numbers";
 import Possessives from "./components/grammar/Possessives";
 import { Phrasebook } from "./components/Phrasebook";
 import { CreateFlashCard } from "./components/CreateFlashCard";
@@ -48,7 +48,7 @@ function App() {
               <Route path="/flash-cards/create" element={<CreateFlashCard />} />
                <Route path="/grammar" element={<Grammar />} />
                <Route path="/grammar/phonetics" element={<Phonetics />} />
-               <Route path="/grammar/numbers-time" element={<NumbersAndTime />} />
+               <Route path="/grammar/numbers" element={<Numbers />} />
                <Route path="/grammar/possessives" element={<Possessives />} />
                 <Route path="/phrasebook" element={<Phrasebook />} />
                  <Route path="/blog" element={<Blog />} />

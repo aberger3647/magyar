@@ -19,11 +19,6 @@ type NumberRow = {
   hungarian: string;
 };
 
-type TimeRow = {
-  english: string;
-  hungarian: string;
-};
-
 type BilingualRow = {
   english: string;
   hungarian: ReactNode;
@@ -60,83 +55,33 @@ const largerNumbers: NumberRow[] = [
 
 const allNumbers: NumberRow[] = [...numbersZeroToNine, ...largerNumbers];
 
-const timeBasics: TimeRow[] = [
+const kettoRows: BilingualRow[] = [
   {
-    english: "It's 3 o'clock.",
-    hungarian: "három óra van",
+    english: "How many apples are there? Two.",
+    hungarian: "Hány alma van? Kettő.",
   },
   {
-    english: "At 3 o'clock",
-    hungarian: "három órakor",
+    english: "One, two, three...",
+    hungarian: "Egy, kettő, három...",
   },
   {
-    english: "At 7:45",
-    hungarian: "negyvenöt perckor",
-  },
-  {
-    english: "It's 8:20",
-    hungarian: "nyolc óra húsz perc van",
+    english: "I only want two [of them].",
+    hungarian: "Csak kettőt kérek.",
   },
 ];
 
-const quarterStyleTimes: TimeRow[] = [
+const ketRows: BilingualRow[] = [
   {
-    english: "2:15",
-    hungarian: "negyed három",
+    english: "I'd like two coffees.",
+    hungarian: "Két kávét kérek.",
   },
   {
-    english: "2:30",
-    hungarian: "fél három",
+    english: "I ran two kilometers.",
+    hungarian: "Két kilométert futottam.",
   },
   {
-    english: "2:45",
-    hungarian: "háromnegyed három",
-  },
-];
-
-const timeBasicsRows: BilingualRow[] = timeBasics.map((row) => ({
-  english: row.english,
-  hungarian: row.hungarian,
-  emphasizeEnglish: true,
-}));
-
-const quarterStyleRows: BilingualRow[] = quarterStyleTimes.map((row) => ({
-  english: row.english,
-  hungarian: row.hungarian,
-  emphasizeEnglish: true,
-}));
-
-const fromWhenUntilWhenRows: BilingualRow[] = [
-  {
-    english: "From when until when?",
-    hungarian: "Mettől meddig?",
-  },
-  {
-    english: "I work from 8 to 5.",
-    hungarian: (
-      <>
-        nyolc<strong>tól</strong> öt<strong>ig</strong> dolgozom.
-      </>
-    ),
-  },
-  {
-    english: "I study from 10 to 12.",
-    hungarian: (
-      <>
-        tíz<strong>től</strong> tizenkettő<strong>ig</strong> tanulok.
-      </>
-    ),
-  },
-];
-
-const formalTimeRows: BilingualRow[] = [
-  {
-    english: "We meet at 9 o'clock.",
-    hungarian: "Huszonegykor találkozunk.",
-  },
-  {
-    english: "We meet at 9 in the evening.",
-    hungarian: "Este kilenckor találkozunk.",
+    english: "There are two eggs in the fridge.",
+    hungarian: "Két tojás van a hűtőben.",
   },
 ];
 
@@ -190,7 +135,7 @@ const BilingualCardHeader = ({ english, hungarian }: { english: string; hungaria
   );
 };
 
-const NumbersAndTime = () => {
+const Numbers = () => {
   return (
     <div className="mx-auto w-full max-w-6xl px-4 py-6 sm:px-6 wrap-break-word">
       <div className="space-y-8 md:grid md:grid-cols-[220px_minmax(0,1fr)] md:items-start md:gap-8 md:space-y-0">
@@ -199,12 +144,16 @@ const NumbersAndTime = () => {
         </aside>
         <div className="min-w-0 space-y-8 sm:space-y-12">
           <div className="space-y-2">
-            <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">Numbers &amp; Time</h1>
+            <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">Numbers</h1>
           </div>
 
           <Card>
             <CardHeader>
               <BilingualCardHeader english="Numbers" hungarian="Számok" />
+              <CardDescription className="pt-2 text-xs sm:text-sm">
+                In Hungarian, counted nouns are not pluralized (e.g., <strong>két alma</strong>, not{" "}
+                <strong>két almák</strong>).
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="overflow-hidden rounded-lg">
@@ -224,24 +173,26 @@ const NumbersAndTime = () => {
 
           <Card>
             <CardHeader>
-              <BilingualCardHeader english="Time" hungarian="Idő" />
+              <BilingualCardHeader english="Two" hungarian="Két/Kettő" />
             </CardHeader>
             <CardContent className="space-y-6">
-              <BilingualZebraRows rows={timeBasicsRows} />
-
-              <BilingualZebraRows rows={quarterStyleRows} />
-
-              <BilingualZebraRows rows={fromWhenUntilWhenRows} />
-
               <div className="rounded-lg border-l-4 border-primary bg-muted/40 p-4 text-sm">
                 <p>
-                  Hungary uses 24-hour time in formal contexts. You can also use day-part words like{" "}
-                  <strong>reggel</strong> (in the morning) and <strong>este</strong> (in the evening).
+                  Use <strong>kettő</strong> when the noun is not there, or when you are counting "one, two,
+                  three...".
+                  </p><p>Use <strong>két</strong> before a noun.
                 </p>
               </div>
 
-              <BilingualZebraRows rows={formalTimeRows} />
+              <div className="space-y-2">
+                <h3 className="text-base font-semibold">kettő</h3>
+                <BilingualZebraRows rows={kettoRows} />
+              </div>
 
+              <div className="space-y-2">
+                <h3 className="text-base font-semibold">két</h3>
+                <BilingualZebraRows rows={ketRows} />
+              </div>
             </CardContent>
           </Card>
 
@@ -263,4 +214,4 @@ const NumbersAndTime = () => {
   );
 };
 
-export default NumbersAndTime;
+export default Numbers;
