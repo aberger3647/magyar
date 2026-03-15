@@ -98,6 +98,15 @@ const Accusative = () => {
                 </p>
               </div>
               <ExampleTable rows={directObjectRows} />
+              <div className="rounded-lg border-l-4 border-primary bg-muted/40 p-4 text-sm">
+                <p>
+                For many words ending in a single consonant, you can skip the linking vowel and add the{" "}
+                <strong>-t</strong> directly if the word ends in one of these "stable" consonants:
+                <p className="mt-3 p-2 font-mono text-sm wrap-break-word">
+                j, l, n, ny, r, s, sz, z, zs
+              </p>
+                </p>
+              </div>
             </CardContent>
           </Card>
 

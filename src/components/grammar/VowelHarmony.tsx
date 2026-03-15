@@ -40,6 +40,16 @@ const VowelHarmony = () => {
               <BilingualCardHeader english="Vowel Harmony" hungarian="Magánhangzó-harmónia" />
             </CardHeader>
             <CardContent className="min-w-0 space-y-8 sm:space-y-10">
+              <div className="space-y-3 text-sm leading-relaxed wrap-break-word">
+                <p>
+                  Hungarian is an agglutinative language. Words and sentences are formed by
+                  adding suffixes.
+                </p>
+                <p>
+                  If a word ends in a vowel, just add the ending. If a word ends in a consonant, add the
+                  ending with a linking vowel according to vowel harmony.
+                </p>
+              </div>
               <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
                 <div className="space-y-4">
                   <h3 className="text-lg font-bold uppercase tracking-widest text-muted-foreground wrap-break-word">
@@ -57,12 +67,12 @@ const VowelHarmony = () => {
                   </h3>
                   <div className="space-y-6">
                     <div>
-                      <p className="mb-2 text-xs font-semibold opacity-70">Unrounded:</p>
                       <VowelChips vowels={["e", "é", "i", "í"]} />
+                      <p className="mb-2 text-xs font-semibold opacity-70">Unrounded</p>
                     </div>
                     <div>
-                      <p className="mb-2 text-xs font-semibold opacity-70">Rounded:</p>
                       <VowelChips vowels={["ö", "ő", "ü", "ű"]} />
+                      <p className="mb-2 text-xs font-semibold opacity-70">Rounded</p>
                     </div>
                   </div>
                   <p className="text-sm italic wrap-break-word">
@@ -103,20 +113,7 @@ const VowelHarmony = () => {
             </CardContent>
           </Card>
 
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-xl sm:text-2xl">The "Linking Vowel Skip" Rule</CardTitle>
-            </CardHeader>
-            <CardContent className="min-w-0 rounded-lg border bg-muted/30 p-4">
-              <p className="text-sm wrap-break-word">
-                For many words ending in a single consonant, you can skip the linking vowel and add the{" "}
-                <strong>-t</strong> directly if the word ends in one of these "stable" consonants:
-              </p>
-              <p className="mt-3 rounded border bg-background p-2 font-mono text-sm wrap-break-word">
-                j, l, n, ny, r, s, sz, z, zs
-              </p>
-            </CardContent>
-          </Card>
+         
         </div>
       </div>
     </div>
