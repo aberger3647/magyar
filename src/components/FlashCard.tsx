@@ -3,11 +3,19 @@ import { ButtonGroup } from "./ui/button-group";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Pencil } from "lucide-react";
-// import { Skeleton } from "./ui/skeleton";
 import { PageTitle } from "./PageTitle";
 import { supabase } from "@/lib/supabase";
-import { type Card, createEmptyCard, fsrs, type Grade, Grades } from "ts-fsrs";
+import {
+  type Card,
+  createEmptyCard,
+  fsrs,
+  type Grade,
+  Grades,
+  Rating,
+} from "ts-fsrs";
 import type { Database } from "@/types/database.types";
+
+const f = fsrs();
 
 interface MyCard extends Card {
   word: string;
@@ -39,21 +47,11 @@ const getStoragePathFromPublicUrl = (publicUrl: string) => {
   return publicUrl.slice(idx + marker.length);
 };
 
-const convertDbRows = (
-  data: Database["public"]["Tables"]["flashcards"]["Row"][],
-) => {
-  const cards: MyCard[] = [];
-  data.forEach((card) => {
-    cards.push(convertDbRow(card));
-  });
-  return cards;
-};
-
 const convertDbRow = (
   data: Database["public"]["Tables"]["flashcards"]["Row"],
-) => {
+): MyCard => {
   const scard: Card = createEmptyCard(new Date());
-  const card: MyCard = {
+  return {
     id: data.id,
     word: data.word,
     img_url: data.img_url,
@@ -62,13 +60,44 @@ const convertDbRow = (
     due: data.due ? new Date(data.due) : scard.due,
     stability: data.stability ?? scard.stability,
     difficulty: data.difficulty ?? scard.difficulty,
-    elapsed_days: scard.elapsed_days,
+    elapsed_days: data.elapsed_days,
     scheduled_days: data.scheduled_days ?? scard.scheduled_days,
     learning_steps: data.learning_steps ?? scard.learning_steps,
     reps: data.reps ?? scard.reps,
     lapses: data.lapses ?? scard.lapses,
   };
-  return card;
+};
+
+const formatInterval = (due: Date, now: Date): string => {
+  const diffMs = due.getTime() - now.getTime();
+  const diffMins = Math.round(diffMs / 60_000);
+  if (diffMins < 60) return `${Math.max(1, diffMins)}m`;
+  const diffHours = Math.round(diffMins / 60);
+  if (diffHours < 24) return `${diffHours}h`;
+  return `${Math.round(diffHours / 24)}d`;
+};
+
+const fetchDueCards = async (): Promise<MyCard[]> => {
+  const now = new Date().toISOString();
+  const { data, error } = await supabase
+    .from("flashcards")
+    .select("*")
+    .or(`due.is.null,due.lte.${now}`)
+    .order("due", { ascending: true, nullsFirst: true });
+  if (error) throw error;
+  return data.map(convertDbRow);
+};
+
+const fetchNextDueDate = async (): Promise<Date | null> => {
+  const now = new Date().toISOString();
+  const { data, error } = await supabase
+    .from("flashcards")
+    .select("due")
+    .gt("due", now)
+    .order("due", { ascending: true })
+    .limit(1);
+  if (error || !data?.length) return null;
+  return data[0].due ? new Date(data[0].due) : null;
 };
 
 export const FlashCard = () => {
@@ -77,27 +106,30 @@ export const FlashCard = () => {
   const [editWord, setEditWord] = useState("");
   const [replacementImage, setReplacementImage] = useState<File | null>(null);
   const [editErrMsg, setEditErrMsg] = useState<string | null>(null);
-  // const [isLoading, setIsLoading] = useState(false);
   const [flashcards, setFlashcards] = useState<MyCard[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [nextDueDate, setNextDueDate] = useState<Date | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   const replacementPreviewUrl = useMemo(() => {
     if (!replacementImage) return null;
     return URL.createObjectURL(replacementImage);
   }, [replacementImage]);
 
-  function handleFlip(): void {
-    setIsFlipped(true);
-  }
-
   useEffect(() => {
     (async () => {
-      const { data, error } = await supabase.from("flashcards").select("*");
-      if (error) {
-        console.log(error);
-      } else {
-        const cards = convertDbRows(data);
+      setIsLoading(true);
+      try {
+        const cards = await fetchDueCards();
         setFlashcards(cards);
+        if (cards.length === 0) {
+          const nextDue = await fetchNextDueDate();
+          setNextDueDate(nextDue);
+        }
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setIsLoading(false);
       }
     })();
   }, []);
@@ -118,40 +150,93 @@ export const FlashCard = () => {
 
   const currentCard = flashcards[currentIndex];
 
-  if (!currentCard) {
+  const schedulingPreviews = useMemo(() => {
+    if (!currentCard || !isFlipped) return null;
+    const now = new Date();
+    const items = f.repeat(currentCard, now);
+    const map = new Map<Grade, string>();
+    for (const item of items) {
+      map.set(item.log.rating as Grade, formatInterval(item.card.due, now));
+    }
+    return map;
+  }, [currentCard, isFlipped]);
+
+  if (isLoading) {
     return (
       <>
         <PageTitle title="Flash Cards" />
         <div className="w-full h-96 sm:max-w-md overflow-hidden rounded-lg border p-6 flex items-center justify-center">
-          <p>No flashcards available</p>
+          <p className="text-muted-foreground">Loading…</p>
+        </div>
+      </>
+    );
+  }
+
+  if (!currentCard) {
+    const hasMore = nextDueDate !== null;
+    return (
+      <>
+        <PageTitle title="Flash Cards" />
+        <div className="w-full h-96 sm:max-w-md overflow-hidden rounded-lg border p-6 flex flex-col items-center justify-center gap-2 text-center">
+          {hasMore ? (
+            <>
+              <p className="text-lg font-medium">All caught up!</p>
+              <p className="text-sm text-muted-foreground">
+                Next review:{" "}
+                {nextDueDate.toLocaleString(undefined, {
+                  weekday: "short",
+                  month: "short",
+                  day: "numeric",
+                  hour: "numeric",
+                  minute: "2-digit",
+                })}
+              </p>
+            </>
+          ) : (
+            <p className="text-muted-foreground">No flashcards yet</p>
+          )}
         </div>
       </>
     );
   }
 
   const handleRating = async (rating: Grade, id: number) => {
-    const newCard = fsrs().next(currentCard, new Date(), rating);
+    const now = new Date();
+    const result = f.next(currentCard, now, rating);
     const { data, error } = await supabase
       .from("flashcards")
       .update({
-        ...newCard.card,
-        due: newCard.card.due.toISOString(),
-        last_review: newCard.card.last_review?.toISOString(),
+        ...result.card,
+        due: result.card.due.toISOString(),
+        last_review: result.card.last_review?.toISOString(),
       })
       .eq("id", id)
       .select();
-    console.log(data, error);
     if (error) {
-      console.log(error);
-    } else {
-      setIsFlipped(false);
-      setFlashcards((prev) => {
-        const newFlashcards = [...prev];
-        newFlashcards[currentIndex] = convertDbRow(data[0]);
-        return newFlashcards;
-      });
-      setCurrentIndex((prev) => prev + 1);
+      console.error(error);
+      return;
     }
+
+    await supabase.from("review_logs").insert({
+      flashcard_id: id,
+      rating: result.log.rating,
+      state: result.log.state,
+      due: result.log.due?.toISOString() ?? null,
+      stability: result.log.stability ?? null,
+      difficulty: result.log.difficulty ?? null,
+      elapsed_days: result.log.elapsed_days,
+      last_elapsed_days: result.log.last_elapsed_days,
+      scheduled_days: result.log.scheduled_days,
+      review: result.log.review.toISOString(),
+    });
+
+    setIsFlipped(false);
+    setFlashcards((prev) => {
+      const next = [...prev];
+      next[currentIndex] = convertDbRow(data[0]);
+      return next;
+    });
+    setCurrentIndex((prev) => prev + 1);
   };
 
   const handleStartEdit = () => {
@@ -213,7 +298,7 @@ export const FlashCard = () => {
           .from("cardimages")
           .remove([uploadedStoragePath]);
         if (cleanupError) {
-          console.log("Failed to clean up uploaded image", cleanupError);
+          console.error("Failed to clean up uploaded image", cleanupError);
         }
       }
       setEditErrMsg(`Failed to save card: ${error?.message ?? "unknown error"}`);
@@ -225,14 +310,14 @@ export const FlashCard = () => {
         .from("cardimages")
         .remove([oldStoragePathToDelete]);
       if (storageDeleteError) {
-        console.log("Failed to delete old image", storageDeleteError);
+        console.error("Failed to delete old image", storageDeleteError);
       }
     }
 
     setFlashcards((prev) => {
-      const newFlashcards = [...prev];
-      newFlashcards[currentIndex] = convertDbRow(data[0]);
-      return newFlashcards;
+      const next = [...prev];
+      next[currentIndex] = convertDbRow(data[0]);
+      return next;
     });
     setEditErrMsg(null);
     setReplacementImage(null);
@@ -260,25 +345,31 @@ export const FlashCard = () => {
         .from("cardimages")
         .remove([storagePath]);
       if (storageError) {
-        console.log("Failed to delete image", storageError);
+        console.error("Failed to delete image", storageError);
       }
     }
 
-    const nextLength = Math.max(0, flashcards.length - 1);
-    setCurrentIndex((prev) => Math.min(prev, Math.max(0, nextLength - 1)));
-    setFlashcards((prev) => prev.filter((card) => card.id !== currentCard.id));
+    const remaining = flashcards.filter((c) => c.id !== currentCard.id);
+    const nextIndex = Math.min(currentIndex, Math.max(0, remaining.length - 1));
+    setCurrentIndex(nextIndex);
+    setFlashcards(remaining);
     setIsEditing(false);
     setIsFlipped(false);
     setEditErrMsg(null);
     setReplacementImage(null);
   };
 
+  const remaining = flashcards.length - currentIndex;
+
   return (
     <>
       <PageTitle title="Flash Cards" />
+      <p className="text-sm text-muted-foreground mb-2">
+        {remaining} card{remaining !== 1 ? "s" : ""} remaining
+      </p>
       <div
         className="w-full h-96 sm:max-w-md overflow-hidden rounded-lg border p-6"
-        onClick={!isFlipped ? () => handleFlip() : undefined}
+        onClick={!isFlipped ? () => setIsFlipped(true) : undefined}
       >
         {isFlipped ? (
           <div className="relative flex flex-col items-center justify-between h-full gap-5">
@@ -286,23 +377,17 @@ export const FlashCard = () => {
               {currentCard.word}
             </h2>
             <div className="flex-1 w-full min-h-0 flex items-center justify-center">
-              {/* {isLoading ? (
-                <Skeleton className="max-w-full max-h-full w-full h-full rounded-lg shadow-sm object-contain" />
-              ) : ( */}
-              <>
-                <img
-                  className="max-w-full max-h-full object-contain rounded-lg shadow-sm"
-                  src={
-                    isEditing && replacementPreviewUrl
-                      ? replacementPreviewUrl
-                      : currentCard.img_url
-                  }
-                  alt={currentCard.word}
-                  decoding="async"
-                  fetchPriority="high"
-                ></img>
-              </>
-              {/* )} */}
+              <img
+                className="max-w-full max-h-full object-contain rounded-lg shadow-sm"
+                src={
+                  isEditing && replacementPreviewUrl
+                    ? replacementPreviewUrl
+                    : currentCard.img_url
+                }
+                alt={currentCard.word}
+                decoding="async"
+                fetchPriority="high"
+              />
             </div>
             {isEditing ? (
               <div
@@ -340,18 +425,23 @@ export const FlashCard = () => {
             ) : (
               <>
                 <ButtonGroup>
-                  {Grades.map((rating) => (
+                  {Grades.map((grade) => (
                     <Button
                       variant="outline"
                       size="sm"
-                      key={rating}
-                      className="cursor-pointer"
+                      key={grade}
+                      className="cursor-pointer flex flex-col h-auto py-1.5 px-3 gap-0.5"
                       onClick={(e) => {
                         e.stopPropagation();
-                        handleRating(rating, currentCard.id);
+                        handleRating(grade, currentCard.id);
                       }}
                     >
-                      {rating}
+                      <span className="text-xs font-medium">{Rating[grade]}</span>
+                      {schedulingPreviews?.get(grade) && (
+                        <span className="text-[10px] text-muted-foreground">
+                          {schedulingPreviews.get(grade)}
+                        </span>
+                      )}
                     </Button>
                   ))}
                 </ButtonGroup>
@@ -378,7 +468,7 @@ export const FlashCard = () => {
               alt={currentCard.word}
               decoding="async"
               fetchPriority="high"
-            ></img>
+            />
           </div>
         )}
       </div>

@@ -65,6 +65,59 @@ export type Database = {
         }
         Relationships: []
       }
+      review_logs: {
+        Row: {
+          created_at: string
+          difficulty: number | null
+          due: string | null
+          elapsed_days: number
+          flashcard_id: number
+          id: number
+          last_elapsed_days: number
+          rating: number
+          review: string
+          scheduled_days: number
+          stability: number | null
+          state: number
+        }
+        Insert: {
+          created_at?: string
+          difficulty?: number | null
+          due?: string | null
+          elapsed_days: number
+          flashcard_id: number
+          id?: number
+          last_elapsed_days: number
+          rating: number
+          review: string
+          scheduled_days: number
+          stability?: number | null
+          state: number
+        }
+        Update: {
+          created_at?: string
+          difficulty?: number | null
+          due?: string | null
+          elapsed_days?: number
+          flashcard_id?: number
+          id?: number
+          last_elapsed_days?: number
+          rating?: number
+          review?: string
+          scheduled_days?: number
+          stability?: number | null
+          state?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "review_logs_flashcard_id_fkey"
+            columns: ["flashcard_id"]
+            isOneToOne: false
+            referencedRelation: "flashcards"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never

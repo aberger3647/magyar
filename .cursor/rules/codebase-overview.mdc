@@ -1,0 +1,66 @@
+---
+description: Magyar codebase overview — architecture, conventions, and data models
+alwaysApply: true
+---
+
+# Magyar Codebase Overview
+
+Hungarian language learning app built with React 19 + TypeScript + Vite + Tailwind v4 + Supabase.
+
+## Feature Areas
+- **Conjugator** — fill-in-the-blank verb conjugation quiz (`Conjugator.tsx`, `QuizPrefsForm.tsx`)
+- **Flash Cards** — FSRS spaced-repetition with Supabase images (`FlashCard.tsx`, `CreateFlashCard.tsx`)
+- **Grammar Lessons** — static lessons in `src/components/grammar/`
+- **Phrasebook** — static phrase reference (`Phrasebook.tsx`)
+
+## Key Tech
+- Routing: `react-router-dom` v7, configured in `App.tsx`
+- Backend: Supabase only — two tables (`flashcards`, `review_logs`), one storage bucket (`cardimages`); no auth (anon key)
+- Forms: `@tanstack/react-form` + `zod` validation
+- Spaced repetition: `ts-fsrs` used exclusively in `FlashCard.tsx`; single module-level `fsrs()` instance (`const f = fsrs()`)
+- UI primitives: shadcn/ui pattern (`src/components/ui/`) on top of Radix + Tailwind
+- Icons: `lucide-react`; toasts: `sonner`
+
+## State & Persistence
+- `localStorage`: conjugator quiz state — `"randomWord"`, `"quizWords"` (via `useLocalStorage.ts`)
+- `sessionStorage`: `"completedQuizWords"` — clears on tab close
+- Static data (conjugations, phrases, alphabet) imported as bundled JSON — no network call
+
+## Core Types
+```typescript
+// src/types/verbConjugation.ts
+type VerbConjugation = {
+  translation: string; infinitive: string;
+  present: { indefinite: Pronouns; definite: Pronouns | null };
+  past:    { indefinite: Pronouns; definite: Pronouns | null };
+};
+// src/types/pronouns.ts
+type Pronouns = { én: string; te: string; ő: string; mi: string; ti: string; ők: string };
+// src/types/types.ts
+type VoiceType = "indefinite" | "definite";
+type TenseType = "present" | "past";
+// FlashCard.tsx (local)
+interface MyCard extends Card { word: string; img_url: string; id: number }
+```
+
+## Supabase Tables
+
+### `flashcards`
+Fields: `id`, `created_at`, `word`, `img_url`, `state`, `due`, `stability`, `difficulty`, `elapsed_days`, `scheduled_days`, `learning_steps`, `reps`, `lapses`, `last_review`. FSRS fields may be `null` — `createEmptyCard()` fills defaults.
+
+### `review_logs`
+Persists every FSRS review event. Fields: `id`, `created_at`, `flashcard_id` (FK → `flashcards.id`, cascade delete), `rating`, `state`, `due`, `stability`, `difficulty`, `elapsed_days`, `last_elapsed_days`, `scheduled_days`, `review`. Written by `FlashCard.tsx` after each rating via `supabase.from("review_logs").insert(...)`.
+
+## Flash Card FSRS Flow (`FlashCard.tsx`)
+1. **Load**: fetch only due cards — `.or("due.is.null,due.lte.{now}").order("due", ascending)`. Cards sorted most-overdue first.
+2. **Flip**: compute `f.repeat(currentCard, now)` to get scheduling previews for all four grades.
+3. **Rate**: call `f.next(currentCard, now, grade)` → update `flashcards` row → insert `review_logs` row.
+4. **Session complete**: when no due cards remain, fetch next future `due` date and show "All caught up!" or "No flashcards yet".
+- Rating buttons display `Again / Hard / Good / Easy` (via `Rating[grade]`) with humanized interval (`10m`, `4h`, `3d`) shown below each label.
+- Progress indicator shows cards remaining in the current session.
+
+## Conventions
+- Utility: `cn()` from `src/lib/utils.ts` for Tailwind class merging
+- Grammar lesson metadata defined in `src/components/grammar/lessons.ts`
+- Supabase client: `src/lib/supabase.ts` (typed with `src/types/database.types.ts`)
+- Image paths in Storage: `{safe-word}-{uuid}.{ext}`
