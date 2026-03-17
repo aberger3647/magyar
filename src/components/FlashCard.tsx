@@ -142,6 +142,15 @@ export const FlashCard = () => {
     preloadImage.src = nextCard.img_url;
   }, [flashcards, currentIndex]);
 
+  // When the session is completed (rated through all loaded cards), fetch the
+  // next future due date so we can show "All caught up!" with the correct time.
+  useEffect(() => {
+    const sessionDone =
+      !isLoading && flashcards.length > 0 && currentIndex >= flashcards.length;
+    if (!sessionDone) return;
+    fetchNextDueDate().then(setNextDueDate).catch(console.error);
+  }, [isLoading, flashcards.length, currentIndex]);
+
   useEffect(() => {
     return () => {
       if (replacementPreviewUrl) URL.revokeObjectURL(replacementPreviewUrl);
@@ -217,7 +226,7 @@ export const FlashCard = () => {
       return;
     }
 
-    await supabase.from("review_logs").insert({
+    const { error: logError } = await supabase.from("review_logs").insert({
       flashcard_id: id,
       rating: result.log.rating,
       state: result.log.state,
@@ -229,6 +238,7 @@ export const FlashCard = () => {
       scheduled_days: result.log.scheduled_days,
       review: result.log.review.toISOString(),
     });
+    if (logError) console.error(logError);
 
     setIsFlipped(false);
     setFlashcards((prev) => {
@@ -369,7 +379,16 @@ export const FlashCard = () => {
       </p>
       <div
         className="w-full h-96 sm:max-w-md overflow-hidden rounded-lg border p-6"
+        data-testid="flashcard"
+        role="button"
+        aria-label={isFlipped ? currentCard.word : "Flip card"}
+        tabIndex={isFlipped ? -1 : 0}
         onClick={!isFlipped ? () => setIsFlipped(true) : undefined}
+        onKeyDown={
+          !isFlipped
+            ? (e) => e.key === "Enter" && setIsFlipped(true)
+            : undefined
+        }
       >
         {isFlipped ? (
           <div className="relative flex flex-col items-center justify-between h-full gap-5">
@@ -430,6 +449,7 @@ export const FlashCard = () => {
                       variant="outline"
                       size="sm"
                       key={grade}
+                      data-testid={`rate-${Rating[grade].toLowerCase()}`}
                       className="cursor-pointer flex flex-col h-auto py-1.5 px-3 gap-0.5"
                       onClick={(e) => {
                         e.stopPropagation();
