@@ -94,49 +94,38 @@ export function Nav() {
       </Link>
       <div className="flex items-center gap-2">
         <NavigationMenu viewport={false}>
-        <NavigationMenuList>
-          {simpleLinks.map((item) => (
-            <NavigationMenuItem key={item.title}>
-              <NavigationMenuLink
-                asChild
-                className={navigationMenuTriggerStyle()}
-              >
-                <Link to={item.to}>{item.title}</Link>
+          <NavigationMenuList>
+            {simpleLinks.map((item) => (
+              <NavigationMenuItem key={item.title}>
+                <NavigationMenuLink
+                  asChild
+                  className={navigationMenuTriggerStyle()}
+                >
+                  <Link to={item.to}>{item.title}</Link>
+                </NavigationMenuLink>
+              </NavigationMenuItem>
+            ))}
+
+            <NavigationMenuItem>
+              <NavigationMenuLink asChild>
+                <Link
+                  to="/flash-cards"
+                  className="whitespace-normal text-left"
+                >
+                  Study
+                </Link>
+              </NavigationMenuLink>
+              <NavigationMenuLink asChild>
+                <Link
+                  to="/flash-cards/create"
+                  className="whitespace-normal text-left"
+                >
+                  Create
+                </Link>
               </NavigationMenuLink>
             </NavigationMenuItem>
-          ))}
-
-          <NavigationMenuItem>
-            <NavigationMenuTrigger className={navigationMenuTriggerStyle()}>
-              Flash Cards
-            </NavigationMenuTrigger>
-            <NavigationMenuContent>
-              <ul className="grid gap-4">
-                <li>
-                  <NavigationMenuLink asChild>
-                    <Link
-                      to="/flash-cards"
-                      className="whitespace-normal text-left"
-                    >
-                      Study
-                    </Link>
-                  </NavigationMenuLink>
-                </li>
-                <li>
-                  <NavigationMenuLink asChild>
-                    <Link
-                      to="/flash-cards/create"
-                      className="whitespace-normal text-left"
-                    >
-                      Create
-                    </Link>
-                  </NavigationMenuLink>
-                </li>
-              </ul>
-            </NavigationMenuContent>
-          </NavigationMenuItem>
-        </NavigationMenuList>
-      </NavigationMenu>
+          </NavigationMenuList>
+        </NavigationMenu>
         <ThemeToggle />
       </div>
     </div>
