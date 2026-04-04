@@ -25,12 +25,12 @@ import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
 
 const menuItems = [
-  // { title: "Home", to: "/" },
+  { title: "Home", to: "/" },
   { title: "Conjugator", to: "/conjugator" },
   { title: "Flash Cards", to: "/flash-cards" },
   { title: "Grammar", to: "/grammar" },
   { title: "Phrasebook", to: "/phrasebook" },
-  // { title: "Blog", to: "/blog" },
+  { title: "Blog", to: "/blog" },
 ];
 
 export function Nav() {
@@ -94,38 +94,49 @@ export function Nav() {
       </Link>
       <div className="flex items-center gap-2">
         <NavigationMenu viewport={false}>
-          <NavigationMenuList>
-            {simpleLinks.map((item) => (
-              <NavigationMenuItem key={item.title}>
-                <NavigationMenuLink
-                  asChild
-                  className={navigationMenuTriggerStyle()}
-                >
-                  <Link to={item.to}>{item.title}</Link>
-                </NavigationMenuLink>
-              </NavigationMenuItem>
-            ))}
-
-            <NavigationMenuItem>
-              <NavigationMenuLink asChild>
-                <Link
-                  to="/flash-cards"
-                  className="whitespace-normal text-left"
-                >
-                  Study
-                </Link>
-              </NavigationMenuLink>
-              <NavigationMenuLink asChild>
-                <Link
-                  to="/flash-cards/create"
-                  className="whitespace-normal text-left"
-                >
-                  Create
-                </Link>
+        <NavigationMenuList>
+          {simpleLinks.map((item) => (
+            <NavigationMenuItem key={item.title}>
+              <NavigationMenuLink
+                asChild
+                className={navigationMenuTriggerStyle()}
+              >
+                <Link to={item.to}>{item.title}</Link>
               </NavigationMenuLink>
             </NavigationMenuItem>
-          </NavigationMenuList>
-        </NavigationMenu>
+          ))}
+
+          <NavigationMenuItem>
+            <NavigationMenuTrigger className={navigationMenuTriggerStyle()}>
+              Flash Cards
+            </NavigationMenuTrigger>
+            <NavigationMenuContent>
+              <ul className="grid gap-4">
+                <li>
+                  <NavigationMenuLink asChild>
+                    <Link
+                      to="/flash-cards"
+                      className="whitespace-normal text-left"
+                    >
+                      Study
+                    </Link>
+                  </NavigationMenuLink>
+                </li>
+                <li>
+                  <NavigationMenuLink asChild>
+                    <Link
+                      to="/flash-cards/create"
+                      className="whitespace-normal text-left"
+                    >
+                      Create
+                    </Link>
+                  </NavigationMenuLink>
+                </li>
+              </ul>
+            </NavigationMenuContent>
+          </NavigationMenuItem>
+        </NavigationMenuList>
+      </NavigationMenu>
         <ThemeToggle />
       </div>
     </div>
