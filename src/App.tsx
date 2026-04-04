@@ -12,6 +12,7 @@ import { Grammar } from "./components/Grammar";
 import Alphabet from "./components/grammar/Alphabet";
 import VowelHarmony from "./components/grammar/VowelHarmony";
 import Numbers from "./components/grammar/Numbers";
+import TellingTime from "./components/grammar/TellingTime";
 import Possessives from "./components/grammar/Possessives";
 import Accusative from "./components/grammar/Accusative";
 import IkVerbs from "./components/grammar/IkVerbs";
@@ -54,6 +55,7 @@ function App() {
                <Route path="/grammar/alphabet" element={<Alphabet />} />
                <Route path="/grammar/vowel-harmony" element={<VowelHarmony />} />
                <Route path="/grammar/numbers" element={<Numbers />} />
+               <Route path="/grammar/telling-time" element={<TellingTime />} />
                <Route path="/grammar/possessives" element={<Possessives />} />
                <Route path="/grammar/accusative" element={<Accusative />} />
                <Route path="/grammar/ik-verbs" element={<IkVerbs />} />

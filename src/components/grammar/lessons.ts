@@ -21,6 +21,11 @@ export const grammarLessons: GrammarLesson[] = [
     to: "/grammar/numbers",
   },
   {
+    title: "Telling Time",
+    description: "Quarters of the hour, the next-hour rule, and minutes with múlt / múlva.",
+    to: "/grammar/telling-time",
+  },
+  {
     title: "Possessives",
     description: "How Hungarian shows ownership with suffixes.",
     to: "/grammar/possessives",
