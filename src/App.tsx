@@ -14,6 +14,7 @@ import VowelHarmony from "./components/grammar/VowelHarmony";
 import Numbers from "./components/grammar/Numbers";
 import Possessives from "./components/grammar/Possessives";
 import Accusative from "./components/grammar/Accusative";
+import IkVerbs from "./components/grammar/IkVerbs";
 import { Phrasebook } from "./components/Phrasebook";
 import { CreateFlashCard } from "./components/CreateFlashCard";
 import { NotFound } from "./components/NotFound";
@@ -55,6 +56,7 @@ function App() {
                <Route path="/grammar/numbers" element={<Numbers />} />
                <Route path="/grammar/possessives" element={<Possessives />} />
                <Route path="/grammar/accusative" element={<Accusative />} />
+               <Route path="/grammar/ik-verbs" element={<IkVerbs />} />
                 <Route path="/phrasebook" element={<Phrasebook />} />
                  <Route path="/blog" element={<Blog />} />
                  <Route path="*" element={<NotFound />} />

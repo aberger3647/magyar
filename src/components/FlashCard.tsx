@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { ButtonGroup } from "./ui/button-group";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
@@ -9,13 +9,14 @@ import {
   type Card,
   createEmptyCard,
   fsrs,
+  generatorParameters,
   type Grade,
   Grades,
   Rating,
 } from "ts-fsrs";
 import type { Database } from "@/types/database.types";
 
-const f = fsrs();
+const f = fsrs(generatorParameters({ enable_fuzz: true }));
 
 interface MyCard extends Card {
   word: string;
@@ -72,9 +73,14 @@ const formatInterval = (due: Date, now: Date): string => {
   const diffMs = due.getTime() - now.getTime();
   const diffMins = Math.round(diffMs / 60_000);
   if (diffMins < 60) return `${Math.max(1, diffMins)}m`;
-  const diffHours = Math.round(diffMins / 60);
-  if (diffHours < 24) return `${diffHours}h`;
-  return `${Math.round(diffHours / 24)}d`;
+  const diffHours = diffMs / 3_600_000;
+  if (diffHours < 24) return `${Math.round(diffHours)}h`;
+  const diffDays = diffHours / 24;
+  if (diffDays < 30) {
+    const rounded = Math.round(diffDays * 10) / 10;
+    return `${rounded % 1 === 0 ? rounded.toFixed(0) : rounded}d`;
+  }
+  return `${Math.round(diffDays)}d`;
 };
 
 const fetchDueCards = async (): Promise<MyCard[]> => {
@@ -100,16 +106,21 @@ const fetchNextDueDate = async (): Promise<Date | null> => {
   return data[0].due ? new Date(data[0].due) : null;
 };
 
+const SHORT_TERM_MS = 20 * 60 * 1000;
+
 export const FlashCard = () => {
   const [isFlipped, setIsFlipped] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editWord, setEditWord] = useState("");
   const [replacementImage, setReplacementImage] = useState<File | null>(null);
   const [editErrMsg, setEditErrMsg] = useState<string | null>(null);
-  const [flashcards, setFlashcards] = useState<MyCard[]>([]);
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [queue, setQueue] = useState<MyCard[]>([]);
   const [nextDueDate, setNextDueDate] = useState<Date | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [lastRating, setLastRating] = useState<{
+    prevCard: MyCard;
+    logId: number;
+  } | null>(null);
 
   const replacementPreviewUrl = useMemo(() => {
     if (!replacementImage) return null;
@@ -121,7 +132,7 @@ export const FlashCard = () => {
       setIsLoading(true);
       try {
         const cards = await fetchDueCards();
-        setFlashcards(cards);
+        setQueue(cards);
         if (cards.length === 0) {
           const nextDue = await fetchNextDueDate();
           setNextDueDate(nextDue);
@@ -135,21 +146,20 @@ export const FlashCard = () => {
   }, []);
 
   useEffect(() => {
-    const nextCard = flashcards[currentIndex + 1];
+    const nextCard = queue[1];
     if (!nextCard) return;
     const preloadImage = new Image();
     preloadImage.decoding = "async";
     preloadImage.src = nextCard.img_url;
-  }, [flashcards, currentIndex]);
+  }, [queue]);
 
-  // When the session is completed (rated through all loaded cards), fetch the
+  // When the session queue empties after cards were loaded, fetch the
   // next future due date so we can show "All caught up!" with the correct time.
   useEffect(() => {
-    const sessionDone =
-      !isLoading && flashcards.length > 0 && currentIndex >= flashcards.length;
+    const sessionDone = !isLoading && queue.length === 0;
     if (!sessionDone) return;
     fetchNextDueDate().then(setNextDueDate).catch(console.error);
-  }, [isLoading, flashcards.length, currentIndex]);
+  }, [isLoading, queue.length]);
 
   useEffect(() => {
     return () => {
@@ -157,7 +167,7 @@ export const FlashCard = () => {
     };
   }, [replacementPreviewUrl]);
 
-  const currentCard = flashcards[currentIndex];
+  const currentCard = queue[0];
 
   const schedulingPreviews = useMemo(() => {
     if (!currentCard || !isFlipped) return null;
@@ -170,6 +180,125 @@ export const FlashCard = () => {
     return map;
   }, [currentCard, isFlipped]);
 
+  const handleRating = useCallback(async (rating: Grade, id: number) => {
+    const prevCard = currentCard;
+    const now = new Date();
+    const result = f.next(currentCard, now, rating);
+    const { data, error } = await supabase
+      .from("flashcards")
+      .update({
+        ...result.card,
+        due: result.card.due.toISOString(),
+        last_review: result.card.last_review?.toISOString(),
+      })
+      .eq("id", id)
+      .select();
+    if (error) {
+      console.error(error);
+      return;
+    }
+
+    const { data: logData, error: logError } = await supabase
+      .from("review_logs")
+      .insert({
+        flashcard_id: id,
+        rating: result.log.rating,
+        state: result.log.state,
+        due: result.log.due?.toISOString() ?? null,
+        stability: result.log.stability ?? null,
+        difficulty: result.log.difficulty ?? null,
+        elapsed_days: result.log.elapsed_days,
+        last_elapsed_days: result.log.last_elapsed_days,
+        scheduled_days: result.log.scheduled_days,
+        review: result.log.review.toISOString(),
+      })
+      .select("id")
+      .single();
+    if (logError) {
+      console.error(logError);
+    } else {
+      setLastRating({ prevCard, logId: logData.id });
+    }
+
+    const updatedCard = convertDbRow(data[0]);
+    const isShortTerm =
+      result.card.due.getTime() - now.getTime() <= SHORT_TERM_MS;
+
+    setIsFlipped(false);
+    setQueue((prev) => {
+      const rest = prev.slice(1);
+      if (isShortTerm && rest.length > 0) {
+        const insertAt = Math.min(3, rest.length);
+        const next = [...rest];
+        next.splice(insertAt, 0, updatedCard);
+        return next;
+      }
+      return rest;
+    });
+  }, [currentCard]);
+
+  const handleUndo = useCallback(async () => {
+    if (!lastRating) return;
+    const { prevCard, logId } = lastRating;
+
+    const { error: cardError } = await supabase
+      .from("flashcards")
+      .update({
+        ...prevCard,
+        due: prevCard.due.toISOString(),
+        last_review: prevCard.last_review?.toISOString() ?? null,
+      })
+      .eq("id", prevCard.id);
+    if (cardError) {
+      console.error(cardError);
+      return;
+    }
+
+    const { error: logError } = await supabase
+      .from("review_logs")
+      .delete()
+      .eq("id", logId);
+    if (logError) console.error(logError);
+
+    setQueue((prev) => {
+      const withoutRequeued = prev.filter((c) => c.id !== prevCard.id);
+      return [prevCard, ...withoutRequeued];
+    });
+    setLastRating(null);
+    setIsFlipped(false);
+  }, [lastRating]);
+
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (isEditing) return;
+      if (e.ctrlKey && e.key === "z" && lastRating) {
+        e.preventDefault();
+        handleUndo();
+        return;
+      }
+      if (!currentCard) return;
+      if (!isFlipped) {
+        if (e.key === " ") {
+          e.preventDefault();
+          setIsFlipped(true);
+        }
+      } else {
+        const gradeMap: Record<string, Grade> = {
+          "1": Grades[0],
+          "2": Grades[1],
+          "3": Grades[2],
+          "4": Grades[3],
+        };
+        const grade = gradeMap[e.key];
+        if (grade !== undefined) {
+          handleRating(grade, currentCard.id);
+        }
+      }
+    };
+    document.addEventListener("keydown", handler);
+    return () => document.removeEventListener("keydown", handler);
+  }, [isEditing, isFlipped, currentCard, lastRating, handleUndo, handleRating]);
+
   if (isLoading) {
     return (
       <>
@@ -181,7 +310,7 @@ export const FlashCard = () => {
     );
   }
 
-  if (!currentCard) {
+  if (!currentCard && !isLoading) {
     const hasMore = nextDueDate !== null;
     return (
       <>
@@ -208,46 +337,6 @@ export const FlashCard = () => {
       </>
     );
   }
-
-  const handleRating = async (rating: Grade, id: number) => {
-    const now = new Date();
-    const result = f.next(currentCard, now, rating);
-    const { data, error } = await supabase
-      .from("flashcards")
-      .update({
-        ...result.card,
-        due: result.card.due.toISOString(),
-        last_review: result.card.last_review?.toISOString(),
-      })
-      .eq("id", id)
-      .select();
-    if (error) {
-      console.error(error);
-      return;
-    }
-
-    const { error: logError } = await supabase.from("review_logs").insert({
-      flashcard_id: id,
-      rating: result.log.rating,
-      state: result.log.state,
-      due: result.log.due?.toISOString() ?? null,
-      stability: result.log.stability ?? null,
-      difficulty: result.log.difficulty ?? null,
-      elapsed_days: result.log.elapsed_days,
-      last_elapsed_days: result.log.last_elapsed_days,
-      scheduled_days: result.log.scheduled_days,
-      review: result.log.review.toISOString(),
-    });
-    if (logError) console.error(logError);
-
-    setIsFlipped(false);
-    setFlashcards((prev) => {
-      const next = [...prev];
-      next[currentIndex] = convertDbRow(data[0]);
-      return next;
-    });
-    setCurrentIndex((prev) => prev + 1);
-  };
 
   const handleStartEdit = () => {
     setEditWord(currentCard.word);
@@ -324,9 +413,9 @@ export const FlashCard = () => {
       }
     }
 
-    setFlashcards((prev) => {
+    setQueue((prev) => {
       const next = [...prev];
-      next[currentIndex] = convertDbRow(data[0]);
+      next[0] = convertDbRow(data[0]);
       return next;
     });
     setEditErrMsg(null);
@@ -359,24 +448,33 @@ export const FlashCard = () => {
       }
     }
 
-    const remaining = flashcards.filter((c) => c.id !== currentCard.id);
-    const nextIndex = Math.min(currentIndex, Math.max(0, remaining.length - 1));
-    setCurrentIndex(nextIndex);
-    setFlashcards(remaining);
+    setQueue((prev) => prev.filter((c) => c.id !== currentCard.id));
     setIsEditing(false);
     setIsFlipped(false);
     setEditErrMsg(null);
     setReplacementImage(null);
   };
 
-  const remaining = flashcards.length - currentIndex;
+  const remaining = queue.length;
 
   return (
     <>
       <PageTitle title="Flash Cards" />
-      <p className="text-sm text-muted-foreground mb-2">
-        {remaining} card{remaining !== 1 ? "s" : ""} remaining
-      </p>
+      <div className="flex items-center gap-3 mb-2">
+        <p className="text-sm text-muted-foreground">
+          {remaining} card{remaining !== 1 ? "s" : ""} remaining
+        </p>
+        {lastRating && (
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-auto py-0.5 px-2 text-xs text-muted-foreground"
+            onClick={handleUndo}
+          >
+            Undo
+          </Button>
+        )}
+      </div>
       <div
         className="w-full h-96 sm:max-w-md overflow-hidden rounded-lg border p-6"
         data-testid="flashcard"
@@ -444,7 +542,7 @@ export const FlashCard = () => {
             ) : (
               <>
                 <ButtonGroup>
-                  {Grades.map((grade) => (
+                  {Grades.map((grade, i) => (
                     <Button
                       variant="outline"
                       size="sm"
@@ -462,6 +560,9 @@ export const FlashCard = () => {
                           {schedulingPreviews.get(grade)}
                         </span>
                       )}
+                      <span className="text-[9px] text-muted-foreground/50">
+                        [{i + 1}]
+                      </span>
                     </Button>
                   ))}
                 </ButtonGroup>

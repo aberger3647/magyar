@@ -30,4 +30,9 @@ export const grammarLessons: GrammarLesson[] = [
     description: "How to mark direct objects with -t.",
     to: "/grammar/accusative",
   },
+  {
+    title: "-ik Verbs",
+    description: "Special verb class with unique singular conjugation endings.",
+    to: "/grammar/ik-verbs",
+  },
 ];
