@@ -7,6 +7,7 @@ import {
 import { Nav, Home, Conjugator } from "./components";
 import { QuizPrefsForm } from "./components/QuizPrefsForm";
 import { Blog } from "./components/Blog";
+import { BlogPost } from "./components/BlogPost";
 import { FlashCard } from "./components/FlashCard";
 import { Grammar } from "./components/Grammar";
 import Alphabet from "./components/grammar/Alphabet";
@@ -61,6 +62,7 @@ function App() {
                <Route path="/grammar/ik-verbs" element={<IkVerbs />} />
                 <Route path="/phrasebook" element={<Phrasebook />} />
                  <Route path="/blog" element={<Blog />} />
+                <Route path="/blog/:slug" element={<BlogPost />} />
                  <Route path="*" element={<NotFound />} />
           </Route>
         </Routes>
