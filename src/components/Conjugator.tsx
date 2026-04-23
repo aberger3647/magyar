@@ -21,7 +21,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Badge } from "./ui/badge";
 import { CircleCheck, CircleX } from "lucide-react";
 import { setRandomWord } from "../lib/setRandomWord";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useLocalStorage } from "@/lib/useLocalStorage";
 import { AccentedLetters } from "./AccentedLetters";
 
@@ -100,7 +100,9 @@ export const Conjugator = () => {
     voice: VoiceType;
   }>();
   const inputRefs = useRef<Record<string, HTMLInputElement | null>>({});
-  const randomWord = availableConjugations.find(
+  // Keep showing the current word even after it's marked completed;
+  // we only advance to a new word when the user clicks "Next Verb".
+  const randomWord = selectedConjugations.find(
     (conjugation) => conjugation.lemma === storedWord
   );
   const infinitive = randomWord?.infinitive;
@@ -146,9 +148,6 @@ export const Conjugator = () => {
       toast.success("Form submitted successfully");
       setIsHintDisabled(correctSubmissions.length === PRONOUN_KEYS.length);
       if (correctSubmissions.length === PRONOUN_KEYS.length) {
-        if (lemma && !isLastQuizWord) {
-          markWordAsCompleted(lemma);
-        }
         if (isLastQuizWord) {
           setReadyToFinishQuiz(true);
         }
@@ -187,12 +186,19 @@ export const Conjugator = () => {
       </>
     );
   }
-  const hasStoredWordInSelection = !!availableConjugations.find(
+  const hasStoredWordInSelection = !!selectedConjugations.find(
     (conjugation) => conjugation.lemma === storedWord
   );
-  if (!storedWord || !hasStoredWordInSelection) {
-    setRandomWord(availableConjugations, setStoredWord);
-  }
+  useEffect(() => {
+    if (!storedWord || !hasStoredWordInSelection) {
+      setRandomWord(availableConjugations, setStoredWord);
+    }
+  }, [
+    availableConjugations,
+    hasStoredWordInSelection,
+    setStoredWord,
+    storedWord,
+  ]);
   const handleCharInsert = (char: string) => {
     const currentVal = form.getFieldValue(activeField) || "";
     const targetInput = inputRefs.current[activeField];
@@ -374,6 +380,9 @@ export const Conjugator = () => {
                       markWordAsCompleted(lemma);
                     }
                     return;
+                  }
+                  if (lemma) {
+                    markWordAsCompleted(lemma);
                   }
                   setRandomWord(availableConjugations, setStoredWord);
                   setIsDisabled(true);
