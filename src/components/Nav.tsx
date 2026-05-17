@@ -1,30 +1,9 @@
 import * as React from "react";
 import { Link } from "react-router-dom";
-import { Menu } from "lucide-react"; // Import Menu icon
+import { Menu, X } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 
-import {
-  NavigationMenu,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  navigationMenuTriggerStyle,
-  NavigationMenuTrigger,
-  NavigationMenuContent,
-} from "@/components/ui/navigation-menu";
-
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
-
-import { Button } from "@/components/ui/button";
-import { ThemeToggle } from "@/components/theme-toggle";
-
-const menuItems = [
+const navItems = [
   { title: "Home", to: "/" },
   { title: "Conjugator", to: "/conjugator" },
   { title: "Flash Cards", to: "/flash-cards" },
@@ -37,106 +16,55 @@ export function Nav() {
   const isMobile = useIsMobile();
   const [isOpen, setIsOpen] = React.useState(false);
 
-  const simpleLinks = menuItems.filter((link) => link.title != "Flash Cards");
+  return (
+    <header className="sticky top-0 z-20 border-b border-black bg-[#facc15]">
+      <div className="flex h-16 items-center justify-between px-4">
+        <Link to="/" className="text-lg">
+          Learn Magyar Language
+        </Link>
 
-  // --- MOBILE VIEW ---
-  if (isMobile) {
-    return (
-      <Sheet open={isOpen} onOpenChange={setIsOpen}>
-        <SheetTrigger asChild>
-          <Button variant="ghost" size="icon-lg" aria-label="Open Menu">
-            <Menu className="h-6 w-6" />
-          </Button>
-        </SheetTrigger>
-        <SheetContent side="left" className="w-[250px] sm:w-[300px]">
-          <SheetHeader className="flex-row items-center justify-between space-y-0">
-            <SheetTitle className="text-left">Learn Magyar Language</SheetTitle>
-            <ThemeToggle />
-          </SheetHeader>
-          <div className="flex flex-col gap-4 mt-8 pl-6">
-            {simpleLinks.map((item) => (
+        {isMobile ? (
+          <button
+            type="button"
+            aria-label={isOpen ? "Close menu" : "Open menu"}
+            aria-expanded={isOpen}
+            onClick={() => setIsOpen((o) => !o)}
+            className="flex h-11 w-11 items-center justify-center"
+          >
+            {isOpen ? (
+              <X className="h-6 w-6" />
+            ) : (
+              <Menu className="h-6 w-6" />
+            )}
+          </button>
+        ) : (
+          <ul className="flex items-center gap-6 text-sm">
+            {navItems.map((item) => (
+              <li key={item.title}>
+                <Link to={item.to} className="hover:underline">
+                  {item.title}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+
+      {isMobile && isOpen && (
+        <ul className="border-t border-black bg-[#facc15]">
+          {navItems.map((item) => (
+            <li key={item.title} className="border-b border-black last:border-b-0">
               <Link
-                key={item.title}
                 to={item.to}
                 onClick={() => setIsOpen(false)}
-                className="text-lg font-medium transition-colors hover:text-primary"
+                className="block px-4 py-3 hover:bg-[#eab308]"
               >
                 {item.title}
               </Link>
-            ))}
-            <Link
-              to="/flash-cards"
-              onClick={() => setIsOpen(false)}
-              className="text-lg font-medium transition-colors hover:text-primary"
-            >
-              Study Flash Cards
-            </Link>
-            <Link
-              to="/flash-cards/create"
-              onClick={() => setIsOpen(false)}
-              className="text-lg font-medium transition-colors hover:text-primary"
-            >
-              Create Flash Cards
-            </Link>
-          </div>
-        </SheetContent>
-      </Sheet>
-    );
-  }
-
-  // --- DESKTOP VIEW ---
-  return (
-    <div className="flex items-center justify-between px-4 py-2">
-      <Link to="/" className="text-3xl font-semibold tracking-tight">
-        Learn Magyar Language
-      </Link>
-      <div className="flex items-center gap-2">
-        <NavigationMenu viewport={false}>
-        <NavigationMenuList>
-          {simpleLinks.map((item) => (
-            <NavigationMenuItem key={item.title}>
-              <NavigationMenuLink
-                asChild
-                className={navigationMenuTriggerStyle()}
-              >
-                <Link to={item.to}>{item.title}</Link>
-              </NavigationMenuLink>
-            </NavigationMenuItem>
+            </li>
           ))}
-
-          <NavigationMenuItem>
-            <NavigationMenuTrigger className={navigationMenuTriggerStyle()}>
-              Flash Cards
-            </NavigationMenuTrigger>
-            <NavigationMenuContent>
-              <ul className="grid gap-4">
-                <li>
-                  <NavigationMenuLink asChild>
-                    <Link
-                      to="/flash-cards"
-                      className="whitespace-normal text-left"
-                    >
-                      Study
-                    </Link>
-                  </NavigationMenuLink>
-                </li>
-                <li>
-                  <NavigationMenuLink asChild>
-                    <Link
-                      to="/flash-cards/create"
-                      className="whitespace-normal text-left"
-                    >
-                      Create
-                    </Link>
-                  </NavigationMenuLink>
-                </li>
-              </ul>
-            </NavigationMenuContent>
-          </NavigationMenuItem>
-        </NavigationMenuList>
-      </NavigationMenu>
-        <ThemeToggle />
-      </div>
-    </div>
+        </ul>
+      )}
+    </header>
   );
 }
