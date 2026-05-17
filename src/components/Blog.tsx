@@ -1,16 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { sanityClient } from "@/lib/sanity";
-import type { BlogPostListItem } from "@/types/blog";
+import { listPosts, type StrapiPost } from "@/lib/strapi";
 import { PageTitle } from "./PageTitle";
-
-const POSTS_QUERY = `*[_type == "post" && defined(slug.current)] | order(coalesce(publishedAt, _updatedAt) desc) {
-  _id,
-  title,
-  "slug": slug.current,
-  publishedAt,
-  excerpt
-}`;
 
 function formatDate(iso: string | null) {
   if (!iso) return null;
@@ -24,13 +15,12 @@ function formatDate(iso: string | null) {
 }
 
 export const Blog = () => {
-  const [posts, setPosts] = useState<BlogPostListItem[] | null>(null);
+  const [posts, setPosts] = useState<StrapiPost[] | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
-    sanityClient
-      .fetch<BlogPostListItem[]>(POSTS_QUERY)
+    listPosts()
       .then((data) => {
         if (!cancelled) {
           setError(null);
@@ -39,9 +29,7 @@ export const Blog = () => {
       })
       .catch(() => {
         if (!cancelled) {
-          setError(
-            "Could not load posts. Check Sanity CORS (add this site’s URL) and that posts are published.",
-          );
+          setError("Could not load posts.");
           setPosts([]);
         }
       });
@@ -63,31 +51,24 @@ export const Blog = () => {
       )}
       {posts && posts.length === 0 && !error && (
         <p className="text-center text-muted-foreground">
-          No posts yet. Add and publish one in Sanity Studio.
+          No posts yet.
         </p>
       )}
       {posts && posts.length > 0 && (
         <ul className="flex w-full flex-col gap-6 border-t border-border pt-6">
           {posts.map((post) => {
-            const slug = post.slug;
             const date = formatDate(post.publishedAt);
             return (
-              <li key={post._id} className="flex flex-col gap-1">
-                {slug ? (
-                  <Link
-                    to={`/blog/${slug}`}
-                    className="text-lg font-semibold text-foreground hover:text-primary"
-                  >
-                    {post.title ?? "Untitled"}
-                  </Link>
-                ) : (
-                  <span className="text-lg font-semibold">
-                    {post.title ?? "Untitled"}
-                  </span>
-                )}
+              <li key={post.documentId} className="flex flex-col gap-1">
+                <Link
+                  to={`/blog/${post.slug}`}
+                  className="text-lg font-semibold text-foreground hover:text-primary"
+                >
+                  {post.title}
+                </Link>
                 {date && (
                   <time
-                    dateTime={post.publishedAt ?? undefined}
+                    dateTime={post.publishedAt}
                     className="text-sm text-muted-foreground"
                   >
                     {date}

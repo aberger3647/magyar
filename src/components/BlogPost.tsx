@@ -1,19 +1,10 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { PortableText } from "@portabletext/react";
-import { sanityClient } from "@/lib/sanity";
-import { blogPortableTextComponents } from "@/lib/blogPortableText";
-import type { BlogPostDetail } from "@/types/blog";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import { getPostBySlug, type StrapiPost } from "@/lib/strapi";
+import { blogMarkdownComponents } from "@/lib/blogMarkdown";
 import { PageTitle } from "./PageTitle";
-
-const POST_QUERY = `*[_type == "post" && slug.current == $slug][0]{
-  _id,
-  title,
-  "slug": slug.current,
-  publishedAt,
-  excerpt,
-  body
-}`;
 
 function formatDate(iso: string | null) {
   if (!iso) return null;
@@ -26,29 +17,22 @@ function formatDate(iso: string | null) {
   }
 }
 
-type BlogPostLoadedProps = { slug: string };
-
-function BlogPostLoaded({ slug }: BlogPostLoadedProps) {
-  const [post, setPost] = useState<BlogPostDetail | null | undefined>(
-    undefined,
-  );
+function BlogPostLoaded({ slug }: { slug: string }) {
+  const [post, setPost] = useState<StrapiPost | null | undefined>(undefined);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
-    sanityClient
-      .fetch<BlogPostDetail | null>(POST_QUERY, { slug })
+    getPostBySlug(slug)
       .then((data) => {
         if (!cancelled) {
           setError(null);
-          setPost(data ?? null);
+          setPost(data);
         }
       })
       .catch(() => {
         if (!cancelled) {
-          setError(
-            "Could not load this post. Check CORS and that the post is published.",
-          );
+          setError("Could not load this post.");
           setPost(null);
         }
       });
@@ -104,22 +88,24 @@ function BlogPostLoaded({ slug }: BlogPostLoadedProps) {
   return (
     <article className="flex w-full max-w-2xl flex-col gap-6">
       <div className="flex flex-col gap-2">
-        <PageTitle title={post.title ?? "Untitled"} />
+        <PageTitle title={post.title} />
         {date && (
           <time
-            dateTime={post.publishedAt ?? undefined}
+            dateTime={post.publishedAt}
             className="text-center text-sm text-muted-foreground"
           >
             {date}
           </time>
         )}
       </div>
-      {post.body && post.body.length > 0 ? (
+      {post.body ? (
         <div className="w-full border-t border-border pt-6">
-          <PortableText
-            value={post.body}
-            components={blogPortableTextComponents}
-          />
+          <ReactMarkdown
+            remarkPlugins={[remarkGfm]}
+            components={blogMarkdownComponents}
+          >
+            {post.body}
+          </ReactMarkdown>
         </div>
       ) : (
         <p className="text-muted-foreground">No content yet.</p>
