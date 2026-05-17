@@ -3,8 +3,6 @@ type PageTitleProps = {
 };
 export const PageTitle = ({ title }: PageTitleProps) => {
   return (
-    <h1 className="my-4 mb-6 text-center text-3xl leading-tight text-balance md:text-6xl">
-      {title}
-    </h1>
+    <h1 className="ba-h1 my-4 mb-6 text-balance">{title}</h1>
   );
 };

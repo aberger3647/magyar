@@ -19,8 +19,8 @@ export function Nav() {
   return (
     <header className="sticky top-0 z-20 border-b border-black bg-[#facc15]">
       <div className="flex h-16 items-center justify-between px-4">
-        <Link to="/" className="text-lg">
-          Learn Magyar Language
+        <Link to="/" className="ba-wordmark" aria-label="Magyar — home">
+          Magyar
         </Link>
 
         {isMobile ? (
