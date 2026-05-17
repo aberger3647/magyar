@@ -44,7 +44,7 @@ export function Nav() {
     return (
       <Sheet open={isOpen} onOpenChange={setIsOpen}>
         <SheetTrigger asChild>
-          <Button variant="ghost" size="icon" aria-label="Open Menu">
+          <Button variant="ghost" size="icon-lg" aria-label="Open Menu">
             <Menu className="h-6 w-6" />
           </Button>
         </SheetTrigger>
@@ -87,10 +87,8 @@ export function Nav() {
   // --- DESKTOP VIEW ---
   return (
     <div className="flex items-center justify-between px-4 py-2">
-      <Link to="/">
-        <h2 className="scroll-m-20 pb-2 text-3xl font-semibold  first:mt-0">
-          Learn Magyar Language
-        </h2>
+      <Link to="/" className="text-3xl font-semibold tracking-tight">
+        Learn Magyar Language
       </Link>
       <div className="flex items-center gap-2">
         <NavigationMenu viewport={false}>

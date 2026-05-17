@@ -10,34 +10,34 @@ export const blogMarkdownComponents: Components = {
     </p>
   ),
   h1: ({ children }) => (
-    <h1 className={`mt-8 mb-4 text-3xl sm:text-4xl ${headingTight}`}>
+    <h2 className={`mt-8 mb-4 text-3xl sm:text-4xl ${headingTight}`}>
       {children}
-    </h1>
+    </h2>
   ),
   h2: ({ children }) => (
-    <h2 className={`mt-8 mb-3 text-2xl ${headingTight}`}>{children}</h2>
+    <h3 className={`mt-8 mb-3 text-2xl ${headingTight}`}>{children}</h3>
   ),
   h3: ({ children }) => (
-    <h3 className={`mt-6 mb-2 text-xl font-semibold ${headingTight}`}>
-      {children}
-    </h3>
-  ),
-  h4: ({ children }) => (
-    <h4 className={`mt-6 mb-2 text-lg font-semibold ${headingTight}`}>
+    <h4 className={`mt-6 mb-2 text-xl font-semibold ${headingTight}`}>
       {children}
     </h4>
   ),
-  h5: ({ children }) => (
-    <h5 className={`mt-5 mb-2 text-base font-semibold ${headingTight}`}>
+  h4: ({ children }) => (
+    <h5 className={`mt-6 mb-2 text-lg font-semibold ${headingTight}`}>
       {children}
     </h5>
   ),
-  h6: ({ children }) => (
-    <h6
-      className={`mt-5 mb-2 text-sm font-semibold uppercase tracking-wider text-muted-foreground ${headingTight}`}
-    >
+  h5: ({ children }) => (
+    <h6 className={`mt-5 mb-2 text-base font-semibold ${headingTight}`}>
       {children}
     </h6>
+  ),
+  h6: ({ children }) => (
+    <p
+      className={`mt-5 mb-2 text-sm font-semibold uppercase tracking-wider text-muted-foreground`}
+    >
+      {children}
+    </p>
   ),
   blockquote: ({ children }) => (
     <blockquote className="mb-4 border-l-4 border-primary/30 pl-4 text-base italic leading-relaxed text-muted-foreground">
