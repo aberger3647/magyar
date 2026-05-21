@@ -82,7 +82,9 @@ export const Home = () => {
   return (
     <div className="flex w-full max-w-5xl flex-col">
       <section className="mx-4 mt-4 mb-6 flex flex-col items-center gap-4 text-center">
-        <h1 className="ba-h1">Learn Magyar</h1>
+        <h1 className="text-3xl leading-tight md:text-6xl">
+          Learn Magyar
+        </h1>
         <p className="max-w-2xl text-xl leading-normal md:text-2xl">
           Grammar lessons, conjugation drills, flash cards, and a phrasebook.
           Pick a tool and start.
@@ -90,7 +92,9 @@ export const Home = () => {
       </section>
 
       <section className="mb-12">
-        <h2 className="ba-h1-section mb-6">Training Tools</h2>
+        <h2 className="mb-6 text-center text-2xl md:text-5xl">
+          Training Tools
+        </h2>
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           {sections.map((s) => {
             const { bg, divider } = variantStyles[s.variant];
@@ -99,7 +103,7 @@ export const Home = () => {
                 key={s.to}
                 className={`${bg} flex flex-col border border-black p-6 text-white md:p-8`}
               >
-                <h3 className="ba-h2-card mb-4">{s.title}</h3>
+                <h3 className="mb-4 text-center text-2xl">{s.title}</h3>
                 <hr className={`my-4 border-t ${divider}`} />
                 <p className="text-center text-base leading-normal">
                   {s.blurb}
@@ -117,7 +121,7 @@ export const Home = () => {
 
       <section className="mb-12 flex flex-col gap-6">
         <div className="flex items-baseline justify-between border-b border-black pb-3">
-          <h2 className="text-2xl font-bold">From the Blog</h2>
+          <h2 className="text-2xl">From the Blog</h2>
           <Link to="/blog" className="text-sm underline underline-offset-4">
             All posts
           </Link>
