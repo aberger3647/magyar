@@ -18,6 +18,7 @@ import Possessives from "./components/grammar/Possessives";
 import Accusative from "./components/grammar/Accusative";
 import IkVerbs from "./components/grammar/IkVerbs";
 import { Phrasebook } from "./components/Phrasebook";
+import { Erzes } from "./components/Erzes";
 import { CreateFlashCard } from "./components/CreateFlashCard";
 import { NotFound } from "./components/NotFound";
 
@@ -61,6 +62,7 @@ function App() {
                <Route path="/grammar/accusative" element={<Accusative />} />
                <Route path="/grammar/ik-verbs" element={<IkVerbs />} />
                 <Route path="/phrasebook" element={<Phrasebook />} />
+                <Route path="/erzes" element={<Erzes />} />
                  <Route path="/blog" element={<Blog />} />
                 <Route path="/blog/:slug" element={<BlogPost />} />
                  <Route path="*" element={<NotFound />} />

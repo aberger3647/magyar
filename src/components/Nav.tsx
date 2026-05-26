@@ -30,6 +30,7 @@ const menuItems = [
   { title: "Flash Cards", to: "/flash-cards" },
   { title: "Grammar", to: "/grammar" },
   { title: "Phrasebook", to: "/phrasebook" },
+  { title: "Érzés", to: "/erzes" },
   { title: "Blog", to: "/blog" },
 ];
 

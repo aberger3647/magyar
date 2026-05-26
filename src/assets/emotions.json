@@ -1,0 +1,682 @@
+{
+  "cores": [
+    {
+      "id": "happy",
+      "en": "HAPPY",
+      "hu": "BOLDOG",
+      "color": {
+        "base": "#F5D033",
+        "light": "#FFF8DC"
+      },
+      "secondary": [
+        {
+          "id": "happy.joyful",
+          "en": "JOYFUL",
+          "hu": "ÖRÖMTELI",
+          "tertiary": [
+            {
+              "id": "happy.joyful.liberated",
+              "en": "LIBERATED",
+              "hu": "FELSZABADULT"
+            },
+            {
+              "id": "happy.joyful.ecstatic",
+              "en": "ECSTATIC",
+              "hu": "EXTÁZISBAN LÉVŐ"
+            }
+          ]
+        },
+        {
+          "id": "happy.interested",
+          "en": "INTERESTED",
+          "hu": "ÉRDEKLŐDŐ",
+          "tertiary": [
+            {
+              "id": "happy.interested.inquisitive",
+              "en": "INQUISITIVE",
+              "hu": "KÍVÁNCSI"
+            },
+            {
+              "id": "happy.interested.amused",
+              "en": "AMUSED",
+              "hu": "MEGVÁLTOZOTT"
+            }
+          ]
+        },
+        {
+          "id": "happy.proud",
+          "en": "PROUD",
+          "hu": "BÜSZKE",
+          "tertiary": [
+            {
+              "id": "happy.proud.confident",
+              "en": "CONFIDENT",
+              "hu": "MAGABIZTOS"
+            },
+            {
+              "id": "happy.proud.important",
+              "en": "IMPORTANT",
+              "hu": "FONTOS"
+            }
+          ]
+        },
+        {
+          "id": "happy.accepted",
+          "en": "ACCEPTED",
+          "hu": "ELFOGADOTT",
+          "tertiary": [
+            {
+              "id": "happy.accepted.fulfilled",
+              "en": "FULFILLED",
+              "hu": "BETELJESÜLT"
+            },
+            {
+              "id": "happy.accepted.respected",
+              "en": "RESPECTED",
+              "hu": "TISZTELT"
+            }
+          ]
+        },
+        {
+          "id": "happy.powerful",
+          "en": "POWERFUL",
+          "hu": "HATALMAS",
+          "tertiary": [
+            {
+              "id": "happy.powerful.courageous",
+              "en": "COURAGEOUS",
+              "hu": "BÁTOR"
+            },
+            {
+              "id": "happy.powerful.provocative",
+              "en": "PROVOCATIVE",
+              "hu": "PROVOKATÍV"
+            }
+          ]
+        },
+        {
+          "id": "happy.peaceful",
+          "en": "PEACEFUL",
+          "hu": "BÉKÉS",
+          "tertiary": [
+            {
+              "id": "happy.peaceful.loving",
+              "en": "LOVING",
+              "hu": "SZERETŐ"
+            },
+            {
+              "id": "happy.peaceful.hopeful",
+              "en": "HOPEFUL",
+              "hu": "REMÉNYTELI"
+            }
+          ]
+        },
+        {
+          "id": "happy.intimate",
+          "en": "INTIMATE",
+          "hu": "INTIM",
+          "tertiary": [
+            {
+              "id": "happy.intimate.sensitive",
+              "en": "SENSITIVE",
+              "hu": "ÉRZÉKENY"
+            },
+            {
+              "id": "happy.intimate.playful",
+              "en": "PLAYFUL",
+              "hu": "JÁTÉKOS"
+            }
+          ]
+        },
+        {
+          "id": "happy.optimistic",
+          "en": "OPTIMISTIC",
+          "hu": "OPTIMISTA",
+          "tertiary": [
+            {
+              "id": "happy.optimistic.open",
+              "en": "OPEN",
+              "hu": "NYITOTT"
+            },
+            {
+              "id": "happy.optimistic.inspired",
+              "en": "INSPIRED",
+              "hu": "INSPIRÁLT"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sad",
+      "en": "SAD",
+      "hu": "SZOMORÚ",
+      "color": {
+        "base": "#4A90D9",
+        "light": "#E8F2FC"
+      },
+      "secondary": [
+        {
+          "id": "sad.lonely",
+          "en": "LONELY",
+          "hu": "MAGÁNYOS",
+          "tertiary": [
+            {
+              "id": "sad.lonely.isolated",
+              "en": "ISOLATED",
+              "hu": "ELSZIGETELT"
+            },
+            {
+              "id": "sad.lonely.abandoned",
+              "en": "ABANDONED",
+              "hu": "ELHAGYOTT"
+            }
+          ]
+        },
+        {
+          "id": "sad.bored",
+          "en": "BORED",
+          "hu": "UNATKOZÓ",
+          "tertiary": [
+            {
+              "id": "sad.bored.apathetic",
+              "en": "APATHETIC",
+              "hu": "APÁTIKUS"
+            },
+            {
+              "id": "sad.bored.indifferent",
+              "en": "INDIFFERENT",
+              "hu": "KÖZÖMBÖS"
+            }
+          ]
+        },
+        {
+          "id": "sad.depressed",
+          "en": "DEPRESSED",
+          "hu": "DEPRESSZÍV",
+          "tertiary": [
+            {
+              "id": "sad.depressed.inferior",
+              "en": "INFERIOR",
+              "hu": "ALÁBORDINÁLT"
+            },
+            {
+              "id": "sad.depressed.empty",
+              "en": "EMPTY",
+              "hu": "ÜRES"
+            }
+          ]
+        },
+        {
+          "id": "sad.despair",
+          "en": "DESPAIR",
+          "hu": "KÉTSÉGBEESETT",
+          "tertiary": [
+            {
+              "id": "sad.despair.powerless",
+              "en": "POWERLESS",
+              "hu": "ERŐTLEN"
+            },
+            {
+              "id": "sad.despair.vulnerable",
+              "en": "VULNERABLE",
+              "hu": "SEBÉLYES"
+            }
+          ]
+        },
+        {
+          "id": "sad.abandoned",
+          "en": "ABANDONED",
+          "hu": "ELHAGYOTT",
+          "tertiary": [
+            {
+              "id": "sad.abandoned.ignored",
+              "en": "IGNORED",
+              "hu": "IGNORÁLT"
+            },
+            {
+              "id": "sad.abandoned.victimized",
+              "en": "VICTIMIZED",
+              "hu": "ÁLDOZAT"
+            }
+          ]
+        },
+        {
+          "id": "sad.guilty",
+          "en": "GUILTY",
+          "hu": "BŰNÖS",
+          "tertiary": [
+            {
+              "id": "sad.guilty.remorseful",
+              "en": "REMORSEFUL",
+              "hu": "BŰNBÁNATOS"
+            },
+            {
+              "id": "sad.guilty.ashamed",
+              "en": "ASHAMED",
+              "hu": "SZÉGYENLŐS"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "disgust",
+      "en": "DISGUST",
+      "hu": "UTÁLAT",
+      "color": {
+        "base": "#7B5EA7",
+        "light": "#EDE8F5"
+      },
+      "secondary": [
+        {
+          "id": "disgust.disapproval",
+          "en": "DISAPPROVAL",
+          "hu": "ELUTASÍTÁS",
+          "tertiary": [
+            {
+              "id": "disgust.disapproval.judgmental",
+              "en": "JUDGMENTAL",
+              "hu": "ÍTÉLKEZŐ"
+            },
+            {
+              "id": "disgust.disapproval.loathing",
+              "en": "LOATHING",
+              "hu": "UTÁLÓ"
+            }
+          ]
+        },
+        {
+          "id": "disgust.disappointed",
+          "en": "DISAPPOINTED",
+          "hu": "CSALÓDOTT",
+          "tertiary": [
+            {
+              "id": "disgust.disappointed.repugnant",
+              "en": "REPUGNANT",
+              "hu": "UNDORÍTÓ"
+            },
+            {
+              "id": "disgust.disappointed.revolted",
+              "en": "REVOLTED",
+              "hu": "LÁZADÓ"
+            }
+          ]
+        },
+        {
+          "id": "disgust.awful",
+          "en": "AWFUL",
+          "hu": "SZÖRNYŰ",
+          "tertiary": [
+            {
+              "id": "disgust.awful.revulsion",
+              "en": "REVULSION",
+              "hu": "UNDOR"
+            },
+            {
+              "id": "disgust.awful.detestable",
+              "en": "DETESTABLE",
+              "hu": "UTÁLATOS"
+            }
+          ]
+        },
+        {
+          "id": "disgust.avoidance",
+          "en": "AVOIDANCE",
+          "hu": "KERÜLŐ",
+          "tertiary": [
+            {
+              "id": "disgust.avoidance.aversion",
+              "en": "AVERSION",
+              "hu": "TÁVOLSÁGTARTÓ"
+            },
+            {
+              "id": "disgust.avoidance.hesitant",
+              "en": "HESITANT",
+              "hu": "HESITÁLÓ"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "anger",
+      "en": "ANGER",
+      "hu": "HARAGOS",
+      "color": {
+        "base": "#D94A4A",
+        "light": "#FCE8E8"
+      },
+      "secondary": [
+        {
+          "id": "anger.hurt",
+          "en": "HURT",
+          "hu": "MEGSÉRÜLT",
+          "tertiary": [
+            {
+              "id": "anger.hurt.embarrassed",
+              "en": "EMBARRASSED",
+              "hu": "ZAVARBAN"
+            },
+            {
+              "id": "anger.hurt.devastated",
+              "en": "DEVASTATED",
+              "hu": "ÖSSZETÖRT"
+            }
+          ]
+        },
+        {
+          "id": "anger.threatened",
+          "en": "THREATENED",
+          "hu": "FENYEGETETT",
+          "tertiary": [
+            {
+              "id": "anger.threatened.insecure",
+              "en": "INSECURE",
+              "hu": "BIZONYTALAN"
+            },
+            {
+              "id": "anger.threatened.jealous",
+              "en": "JEALOUS",
+              "hu": "IRIGY"
+            }
+          ]
+        },
+        {
+          "id": "anger.hateful",
+          "en": "HATEFUL",
+          "hu": "GYŰLÖLETES",
+          "tertiary": [
+            {
+              "id": "anger.hateful.resentful",
+              "en": "RESENTFUL",
+              "hu": "GYŰLÖLETES"
+            },
+            {
+              "id": "anger.hateful.violated",
+              "en": "VIOLATED",
+              "hu": "MEGSÉRTETT"
+            }
+          ]
+        },
+        {
+          "id": "anger.mad",
+          "en": "MAD",
+          "hu": "DÜHÖS",
+          "tertiary": [
+            {
+              "id": "anger.mad.furious",
+              "en": "FURIOUS",
+              "hu": "DÜHÖS"
+            },
+            {
+              "id": "anger.mad.enraged",
+              "en": "ENRAGED",
+              "hu": "FELHÁBORODOTT"
+            }
+          ]
+        },
+        {
+          "id": "anger.aggressive",
+          "en": "AGGRESSIVE",
+          "hu": "AGRESSZÍV",
+          "tertiary": [
+            {
+              "id": "anger.aggressive.provoked",
+              "en": "PROVOKED",
+              "hu": "PROVOKÁLT"
+            },
+            {
+              "id": "anger.aggressive.hostile",
+              "en": "HOSTILE",
+              "hu": "ELLENSÉGES"
+            }
+          ]
+        },
+        {
+          "id": "anger.frustrated",
+          "en": "FRUSTRATED",
+          "hu": "FRUSZTRÁLT",
+          "tertiary": [
+            {
+              "id": "anger.frustrated.infuriated",
+              "en": "INFURIATED",
+              "hu": "DÜHÖS"
+            },
+            {
+              "id": "anger.frustrated.irritated",
+              "en": "IRRITATED",
+              "hu": "IRRITÁLT"
+            }
+          ]
+        },
+        {
+          "id": "anger.distant",
+          "en": "DISTANT",
+          "hu": "TÁVOLSÁGTARTÓ",
+          "tertiary": [
+            {
+              "id": "anger.distant.withdrawn",
+              "en": "WITHDRAWN",
+              "hu": "VISSZAHÚZÓDÓ"
+            },
+            {
+              "id": "anger.distant.suspicious",
+              "en": "SUSPICIOUS",
+              "hu": "GYANÚS"
+            }
+          ]
+        },
+        {
+          "id": "anger.critical",
+          "en": "CRITICAL",
+          "hu": "KRITIKUS",
+          "tertiary": [
+            {
+              "id": "anger.critical.skeptical",
+              "en": "SKEPTICAL",
+              "hu": "SZKEPTIKUS"
+            },
+            {
+              "id": "anger.critical.sarcastic",
+              "en": "SARCASTIC",
+              "hu": "SZARKASZTIKUS"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fear",
+      "en": "FEAR",
+      "hu": "FÉLELEM",
+      "color": {
+        "base": "#3D7A4A",
+        "light": "#E8F5EC"
+      },
+      "secondary": [
+        {
+          "id": "fear.scared",
+          "en": "SCARED",
+          "hu": "RÉMÜLT",
+          "tertiary": [
+            {
+              "id": "fear.scared.terrified",
+              "en": "TERRIFIED",
+              "hu": "MEGRÉMÜLT"
+            },
+            {
+              "id": "fear.scared.frightened",
+              "en": "FRIGHTENED",
+              "hu": "IJEDT"
+            }
+          ]
+        },
+        {
+          "id": "fear.anxious",
+          "en": "ANXIOUS",
+          "hu": "SZORONGÓ",
+          "tertiary": [
+            {
+              "id": "fear.anxious.overwhelmed",
+              "en": "OVERWHELMED",
+              "hu": "TÚLTELTETETT"
+            },
+            {
+              "id": "fear.anxious.worried",
+              "en": "WORRIED",
+              "hu": "AGGÓDÓ"
+            }
+          ]
+        },
+        {
+          "id": "fear.insecure",
+          "en": "INSECURE",
+          "hu": "BIZONYTALAN",
+          "tertiary": [
+            {
+              "id": "fear.insecure.inadequate",
+              "en": "INADEQUATE",
+              "hu": "KÉPTELEN"
+            },
+            {
+              "id": "fear.insecure.inferior",
+              "en": "INFERIOR",
+              "hu": "ALACSONYABBRENDŰ"
+            }
+          ]
+        },
+        {
+          "id": "fear.submissive",
+          "en": "SUBMISSIVE",
+          "hu": "ALÁZATOS",
+          "tertiary": [
+            {
+              "id": "fear.submissive.worthless",
+              "en": "WORTHLESS",
+              "hu": "ÉRTÉKTELEN"
+            },
+            {
+              "id": "fear.submissive.insignificant",
+              "en": "INSIGNIFICANT",
+              "hu": "JELENTÉKTELEN"
+            }
+          ]
+        },
+        {
+          "id": "fear.rejected",
+          "en": "REJECTED",
+          "hu": "ELUTASÍTOTT",
+          "tertiary": [
+            {
+              "id": "fear.rejected.inadequate-rejected",
+              "en": "INADEQUATE",
+              "hu": "KÉPTELEN"
+            },
+            {
+              "id": "fear.rejected.alienated",
+              "en": "ALIENATED",
+              "hu": "ELIDEGENEDETT"
+            }
+          ]
+        },
+        {
+          "id": "fear.humiliated",
+          "en": "HUMILIATED",
+          "hu": "MEGALÁZOTT",
+          "tertiary": [
+            {
+              "id": "fear.humiliated.disrespected",
+              "en": "DISRESPECTED",
+              "hu": "MEGVETETT"
+            },
+            {
+              "id": "fear.humiliated.ridiculed",
+              "en": "RIDICULED",
+              "hu": "KINEVETETT"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "surprise",
+      "en": "SURPRISE",
+      "hu": "MEGLEPETT",
+      "color": {
+        "base": "#4ABFBF",
+        "light": "#E8F8F8"
+      },
+      "secondary": [
+        {
+          "id": "surprise.startled",
+          "en": "STARTLED",
+          "hu": "MEGLEPŐ",
+          "tertiary": [
+            {
+              "id": "surprise.startled.shocked",
+              "en": "SHOCKED",
+              "hu": "MEGDÖBBENT"
+            },
+            {
+              "id": "surprise.startled.dismayed",
+              "en": "DISMAYED",
+              "hu": "CSÜGGEDETT"
+            }
+          ]
+        },
+        {
+          "id": "surprise.confused",
+          "en": "CONFUSED",
+          "hu": "ZAVARODOTT",
+          "tertiary": [
+            {
+              "id": "surprise.confused.disillusioned",
+              "en": "DISILLUSIONED",
+              "hu": "KIÁBRÁNDULT"
+            },
+            {
+              "id": "surprise.confused.perplexed",
+              "en": "PERPLEXED",
+              "hu": "CSODÁLKOZÓ"
+            }
+          ]
+        },
+        {
+          "id": "surprise.amazed",
+          "en": "AMAZED",
+          "hu": "CSODÁLAT",
+          "tertiary": [
+            {
+              "id": "surprise.amazed.astonished",
+              "en": "ASTONISHED",
+              "hu": "LENYŰGÖZÖTT"
+            },
+            {
+              "id": "surprise.amazed.awe",
+              "en": "AWE",
+              "hu": "CSODÁLAT"
+            }
+          ]
+        },
+        {
+          "id": "surprise.excited",
+          "en": "EXCITED",
+          "hu": "IZGATOTT",
+          "tertiary": [
+            {
+              "id": "surprise.excited.eager",
+              "en": "EAGER",
+              "hu": "LELKES"
+            },
+            {
+              "id": "surprise.excited.energetic",
+              "en": "ENERGETIC",
+              "hu": "ENERGIKUS"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
