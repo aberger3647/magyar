@@ -62,6 +62,18 @@ export function degToRad(deg: number): number {
   return deg * DEG;
 }
 
+/** Angle in degrees from wheel center to a point (0° = 3 o'clock, clockwise). */
+export function angleDegFromCenter(x: number, y: number, cx: number, cy: number): number {
+  return (Math.atan2(y - cy, x - cx) * 180) / Math.PI;
+}
+
+export function normalizeAngleDelta(deltaDeg: number): number {
+  let d = deltaDeg;
+  while (d > 180) d -= 360;
+  while (d < -180) d += 360;
+  return d;
+}
+
 export const WHEEL = {
   cx: 500,
   cy: 500,

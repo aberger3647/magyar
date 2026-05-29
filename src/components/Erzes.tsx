@@ -4,7 +4,7 @@ import { EmotionsWheel } from "./emotions/EmotionsWheel";
 export function Erzes() {
   return (
     <>
-      <PageTitle title="Érzés" />
+      <PageTitle title="Érzem…" />
       <EmotionsWheel />
     </>
   );

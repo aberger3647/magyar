@@ -1,9 +1,11 @@
 import * as React from "react";
 import emotionsData from "@/assets/emotions.json";
 import {
+  angleDegFromCenter,
   arcSpec,
   degToRad,
   mixCoreColor,
+  normalizeAngleDelta,
   polarToCartesian,
   WHEEL,
   type ArcSpec,
@@ -197,6 +199,17 @@ function buildSegments(): WheelSegment[] {
 
 const ALL_SEGMENTS = buildSegments();
 
+const DRAG_THRESHOLD_DEG = 4;
+
+function clientToSvgPoint(svg: SVGSVGElement, clientX: number, clientY: number) {
+  const pt = svg.createSVGPoint();
+  pt.x = clientX;
+  pt.y = clientY;
+  const matrix = svg.getScreenCTM();
+  if (!matrix) return null;
+  return pt.matrixTransform(matrix.inverse());
+}
+
 /** Radial orientation along each wedge (90° from tangential). */
 function labelRotation(midAngleRad: number): number {
   let deg = (midAngleRad * 180) / Math.PI;
@@ -267,7 +280,15 @@ function SegmentLabel({
 
 export function EmotionsWheel() {
   const [activeId, setActiveId] = React.useState<string | null>(null);
-  const containerRef = React.useRef<HTMLDivElement>(null);
+  const [rotationDeg, setRotationDeg] = React.useState(0);
+  const svgRef = React.useRef<SVGSVGElement>(null);
+  const dragRef = React.useRef<{
+    pointerId: number;
+    startAngleDeg: number;
+    startRotationDeg: number;
+  } | null>(null);
+  const isDraggingRef = React.useRef(false);
+  const suppressClickRef = React.useRef(false);
 
   const active = React.useMemo(
     () => ALL_SEGMENTS.find((s) => s.id === activeId) ?? null,
@@ -286,26 +307,99 @@ export function EmotionsWheel() {
     return [...rest, ...hovered];
   }, [activeId]);
 
+  const pointerAngleDeg = React.useCallback((clientX: number, clientY: number) => {
+    const svg = svgRef.current;
+    if (!svg) return 0;
+    const local = clientToSvgPoint(svg, clientX, clientY);
+    if (!local) return 0;
+    return angleDegFromCenter(local.x, local.y, WHEEL.cx, WHEEL.cy);
+  }, []);
+
+  const endDrag = React.useCallback((pointerId: number) => {
+    const svg = svgRef.current;
+    if (svg?.hasPointerCapture(pointerId)) {
+      svg.releasePointerCapture(pointerId);
+    }
+    const wasDragging = isDraggingRef.current;
+    dragRef.current = null;
+    isDraggingRef.current = false;
+    if (wasDragging) {
+      suppressClickRef.current = true;
+      window.setTimeout(() => {
+        suppressClickRef.current = false;
+      }, 0);
+    }
+  }, []);
+
+  const onWheelPointerDown = React.useCallback(
+    (e: React.PointerEvent<SVGSVGElement>) => {
+      if (e.button !== 0) return;
+      dragRef.current = {
+        pointerId: e.pointerId,
+        startAngleDeg: pointerAngleDeg(e.clientX, e.clientY),
+        startRotationDeg: rotationDeg,
+      };
+      isDraggingRef.current = false;
+      e.currentTarget.setPointerCapture(e.pointerId);
+    },
+    [pointerAngleDeg, rotationDeg],
+  );
+
+  const onWheelPointerMove = React.useCallback(
+    (e: React.PointerEvent<SVGSVGElement>) => {
+      const drag = dragRef.current;
+      if (!drag || drag.pointerId !== e.pointerId) return;
+      const angle = pointerAngleDeg(e.clientX, e.clientY);
+      const delta = normalizeAngleDelta(angle - drag.startAngleDeg);
+      if (!isDraggingRef.current && Math.abs(delta) >= DRAG_THRESHOLD_DEG) {
+        isDraggingRef.current = true;
+        setActiveId(null);
+      }
+      if (isDraggingRef.current) {
+        e.preventDefault();
+        setRotationDeg(drag.startRotationDeg + delta);
+      }
+    },
+    [pointerAngleDeg],
+  );
+
+  const onWheelPointerUp = React.useCallback(
+    (e: React.PointerEvent<SVGSVGElement>) => {
+      if (dragRef.current?.pointerId === e.pointerId) {
+        endDrag(e.pointerId);
+      }
+    },
+    [endDrag],
+  );
+
+  const selectSegment = React.useCallback((id: string) => {
+    if (suppressClickRef.current || isDraggingRef.current) return;
+    setActiveId(id);
+  }, []);
+
   return (
     <div className="flex w-full max-w-4xl flex-col items-center gap-6">
       <div
-        ref={containerRef}
         className="w-full"
         onPointerDown={(e) => {
           if (e.target === e.currentTarget) setActiveId(null);
         }}
       >
         <svg
+          ref={svgRef}
           viewBox="0 0 1000 1000"
-          className="mx-auto h-auto w-full max-h-[min(90vh,800px)]"
+          className="mx-auto h-auto w-full max-h-[min(90vh,800px)] cursor-grab touch-none active:cursor-grabbing"
           role="img"
-          aria-label="Emotions wheel"
-          onMouseLeave={() => setActiveId(null)}
-          onPointerDown={(e) => {
-            const target = e.target as SVGElement;
-            if (target.tagName === "svg") setActiveId(null);
+          aria-label="Emotions wheel — drag to rotate"
+          onMouseLeave={() => {
+            if (!isDraggingRef.current) setActiveId(null);
           }}
+          onPointerDown={onWheelPointerDown}
+          onPointerMove={onWheelPointerMove}
+          onPointerUp={onWheelPointerUp}
+          onPointerCancel={onWheelPointerUp}
         >
+          <g transform={`rotate(${rotationDeg} ${WHEEL.cx} ${WHEEL.cy})`}>
           {renderOrder.map((segment) => {
             const isActive = activeId === segment.id;
             const hoverArc = isActive ? activeArc(segment) : null;
@@ -326,13 +420,15 @@ export function EmotionsWheel() {
                   role="button"
                   tabIndex={0}
                   aria-label={`${segment.en} — ${displayHungarian(segment.hu, segment.en)}`}
-                  onMouseEnter={() => setActiveId(segment.id)}
-                  onFocus={() => setActiveId(segment.id)}
-                  onClick={() => setActiveId(segment.id)}
+                  onMouseEnter={() => {
+                    if (!isDraggingRef.current) setActiveId(segment.id);
+                  }}
+                  onFocus={() => selectSegment(segment.id)}
+                  onClick={() => selectSegment(segment.id)}
                   onKeyDown={(e) => {
                     if (e.key === "Enter" || e.key === " ") {
                       e.preventDefault();
-                      setActiveId(segment.id);
+                      selectSegment(segment.id);
                     }
                   }}
                 />
@@ -364,6 +460,7 @@ export function EmotionsWheel() {
               </g>
             );
           })}
+          </g>
         </svg>
       </div>
 
@@ -385,7 +482,9 @@ export function EmotionsWheel() {
             )}
           </div>
         ) : (
-          <p className="text-muted-foreground">Hover or tap an emotion</p>
+          <p className="text-muted-foreground">
+            Drag to rotate · hover or tap an emotion
+          </p>
         )}
       </div>
     </div>
