@@ -1,4 +1,5 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import { cn } from "@/lib/utils";
 import { grammarLessons } from "./lessons";
 
 type GrammarLessonLinksProps = {
@@ -9,13 +10,55 @@ type GrammarLessonLinksProps = {
 const baseLinkClass =
   "rounded-md px-3 py-2 transition-colors hover:bg-muted";
 
+const selectClassName = cn(
+  "border-input h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none md:text-sm",
+  "focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]",
+);
+
 export const GrammarLessonLinks = ({
   compact = false,
   vertical = false,
 }: GrammarLessonLinksProps) => {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  if (compact && vertical) {
+    return (
+      <>
+        <select
+          className={cn(selectClassName, "md:hidden")}
+          value={location.pathname}
+          onChange={(e) => navigate(e.target.value)}
+          aria-label="Select lesson"
+        >
+          {grammarLessons.map((lesson) => (
+            <option key={lesson.to} value={lesson.to}>
+              {lesson.title}
+            </option>
+          ))}
+        </select>
+        <div className="hidden flex-col gap-1 md:flex">
+          {grammarLessons.map((lesson) => (
+            <NavLink
+              key={lesson.to}
+              to={lesson.to}
+              className={({ isActive }) =>
+                `${baseLinkClass} text-sm font-medium ${
+                  isActive ? "bg-muted text-foreground" : "text-muted-foreground"
+                }`
+              }
+            >
+              {lesson.title}
+            </NavLink>
+          ))}
+        </div>
+      </>
+    );
+  }
+
   if (compact) {
     return (
-      <div className={vertical ? "flex flex-col gap-1" : "flex flex-wrap gap-2"}>
+      <div className="flex flex-wrap gap-2">
         {grammarLessons.map((lesson) => (
           <NavLink
             key={lesson.to}
