@@ -16,6 +16,21 @@ export const grammarLessons: GrammarLesson[] = [
     to: "/grammar/vowel-harmony",
   },
   {
+    title: "Present Tense",
+    description: "Present indefinite conjugation of regular verbs by vowel harmony.",
+    to: "/grammar/present-tense",
+  },
+  {
+    title: "Past Tense",
+    description: "Past indefinite conjugation of regular verbs by vowel harmony.",
+    to: "/grammar/past-tense",
+  },
+  {
+    title: "Future Tense",
+    description: "Future with fog + infinitive and lesz for states.",
+    to: "/grammar/future-tense",
+  },
+  {
     title: "Numbers",
     description: "Core numbers and common counting patterns.",
     to: "/grammar/numbers",
@@ -34,6 +49,16 @@ export const grammarLessons: GrammarLesson[] = [
     title: "Accusative Case",
     description: "How to mark direct objects with -t.",
     to: "/grammar/accusative",
+  },
+  {
+    title: "Instrumental Case",
+    description: "How Hungarian expresses \"with\" using -val/-vel.",
+    to: "/grammar/instrumental",
+  },
+  {
+    title: "Location",
+    description: "Suffixes for hol? (where) and hova? (where to).",
+    to: "/grammar/location",
   },
   {
     title: "-ik Verbs",

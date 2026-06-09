@@ -69,47 +69,42 @@ const Accusative = () => {
             <CardHeader>
               <BilingualCardHeader english="Accusative Case" hungarian="Tárgyeset" />
               <CardDescription>
-                Use the accusative to mark the <strong>direct object</strong>: the person or thing that
-                directly receives the action.
+                Use the accusative to mark the <strong>direct object</strong>: the person or thing
+                that directly receives the action.
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="rounded-lg border-l-4 border-primary bg-muted/40 p-4 text-sm">
-                <p>
-                  Add <strong>-t</strong> after words ending in a vowel. For words ending in a consonant,
-                  use the correct linking vowel before <strong>-t</strong>.
-                </p>
-              </div>
-              <div className="space-y-4 text-sm leading-relaxed sm:text-base">
-                <p>
-                  An <strong>object</strong> is the person or thing that receives the action of a verb.
-                </p>
-                <p>
-                  In the sentence &quot;I read <strong>a book</strong>,&quot; the phrase &quot;a book&quot; is
-                  the object.
-                </p>
-                <p>
-                  Use the accusative when the verb acts on something directly: read a book, drink coffee,
-                  see the dog.
-                </p>
-                <p>
-                  If the verb does not take a direct object (for example, sleep, arrive, run), there is no
-                  accusative object to mark.
-                </p>
-              </div>
-              <ExampleTable rows={directObjectRows} />
-              <div className="rounded-lg border-l-4 border-primary bg-muted/40 p-4 text-sm">
-                <p>
-                For many words ending in a single consonant, you can skip the linking vowel and add the{" "}
-                <strong>-t</strong> directly if the word ends in one of these "stable" consonants:
-                <p className="mt-3 p-2 font-mono text-sm wrap-break-word">
-                j, l, n, ny, r, s, sz, z, zs
+            <CardContent className="space-y-6 text-sm leading-relaxed sm:text-base">
+              <p>
+                An <strong>object</strong> is the person or thing that receives the action of a verb.
+                In the sentence &quot;I read a book,&quot; the phrase &quot;a book&quot; is the object.
               </p>
+              <p>
+                Use the accusative when the verb acts on something directly: read a book, drink
+                coffee, see the dog. If the verb does not take a direct object (for example, sleep,
+                arrive, run), there is no accusative object to mark.
+              </p>
+
+              <div className="rounded-lg border-l-4 border-primary bg-muted/40 p-4 text-sm">
+                <p>
+                  To form the accusative, add <strong>-t</strong> after words ending in a vowel. For
+                  words ending in a consonant, use the correct linking vowel before <strong>-t</strong>.
+                </p>
+              </div>
+
+              <ExampleTable rows={directObjectRows} />
+
+              <div className="rounded-lg border-l-4 border-primary bg-muted/40 p-4 text-sm">
+                <p>
+                  For many words ending in a single consonant, you can skip the linking vowel and add
+                  the <strong>-t</strong> directly if the word ends in one of these &quot;stable&quot;
+                  consonants:
+                </p>
+                <p className="mt-3 p-2 font-mono text-sm wrap-break-word">
+                  j, l, n, ny, r, s, sz, z, zs
                 </p>
               </div>
             </CardContent>
           </Card>
-
         </div>
       </div>
     </div>
