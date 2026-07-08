@@ -4,11 +4,11 @@ import {
   angleDegFromCenter,
   arcSpec,
   degToRad,
+  familyCentroid,
   mixCoreColor,
   normalizeAngleDelta,
   polarToCartesian,
   WHEEL,
-  type ArcSpec,
 } from "@/lib/wheelGeometry";
 import {
   displayHungarian,
@@ -22,6 +22,8 @@ type Ring = "core" | "secondary" | "tertiary";
 
 export type WheelSegment = EmotionLeaf & {
   ring: Ring;
+  coreId: string;
+  coreIndex: number;
   path: string;
   fill: string;
   startRad: number;
@@ -65,49 +67,15 @@ function fontSizeForRing(ring: Ring): number {
   }
 }
 
-function maxOuterForRing(ring: Ring): number {
-  switch (ring) {
-    case "core":
-      return WHEEL.rCoreOuter;
-    case "secondary":
-      return WHEEL.rSecondaryOuter;
-    case "tertiary":
-      return WHEEL.rTertiaryOuter;
-  }
-}
-
-/** Grow wedge outward (and slightly wider); inner edge stays fixed — no gaps. */
-const HOVER_OUTER_EXPAND: Record<Ring, number> = {
-  core: 22,
-  secondary: 26,
-  tertiary: 0,
-};
-const HOVER_ANGLE_EXPAND_RAD = 0.022;
-const HOVER_FONT_SCALE = 1.38;
-
-function activeArc(segment: WheelSegment): ArcSpec {
-  const { cx, cy } = WHEEL;
-  let { startRad, endRad, innerR, outerR } = segment;
-  const maxOuter = maxOuterForRing(segment.ring);
-  outerR = Math.min(outerR + HOVER_OUTER_EXPAND[segment.ring], maxOuter);
-  const anglePad =
-    outerR >= maxOuter - 0.5
-      ? HOVER_ANGLE_EXPAND_RAD
-      : HOVER_ANGLE_EXPAND_RAD * 0.35;
-  return arcSpec(
-    cx,
-    cy,
-    innerR,
-    outerR,
-    startRad - anglePad,
-    endRad + anglePad,
-  );
-}
+/** How far the wheel scales up when zoomed into a hovered family. */
+const FAMILY_ZOOM_SCALE = 1.9;
 
 function pushSegment(
   segments: WheelSegment[],
   leaf: EmotionLeaf,
   ring: Ring,
+  coreId: string,
+  coreIndex: number,
   fill: string,
   inner: number,
   outer: number,
@@ -125,6 +93,8 @@ function pushSegment(
   segments.push({
     ...leaf,
     ring,
+    coreId,
+    coreIndex,
     path: arc.path,
     fill,
     startRad: degToRad(startDeg),
@@ -151,6 +121,8 @@ function buildSegments(): WheelSegment[] {
       segments,
       core,
       "core",
+      core.id,
+      coreIndex,
       ringColor(core, "core"),
       WHEEL.rCoreInner,
       WHEEL.rCoreOuter,
@@ -167,6 +139,8 @@ function buildSegments(): WheelSegment[] {
         segments,
         sec,
         "secondary",
+        core.id,
+        coreIndex,
         ringColor(core, "secondary"),
         inner,
         outer,
@@ -184,6 +158,8 @@ function buildSegments(): WheelSegment[] {
           segments,
           tert,
           "tertiary",
+          core.id,
+          coreIndex,
           ringColor(core, "tertiary"),
           tertRadii.inner,
           tertRadii.outer,
@@ -210,10 +186,10 @@ function clientToSvgPoint(svg: SVGSVGElement, clientX: number, clientY: number) 
   return pt.matrixTransform(matrix.inverse());
 }
 
-/** Radial orientation along each wedge (90° from tangential). */
-function labelRotation(midAngleRad: number): number {
-  let deg = (midAngleRad * 180) / Math.PI;
-  if (deg > 90 && deg < 270) deg += 180;
+/** Radial orientation (degrees) for a label at the given on-screen angle. */
+function labelRotation(absAngleDeg: number): number {
+  let deg = ((absAngleDeg % 360) + 360) % 360; // normalize to [0,360)
+  if (deg > 90 && deg < 270) deg += 180; // flip left-half so text isn't upside down
   return deg;
 }
 
@@ -228,23 +204,30 @@ function SegmentLabel({
   midAngle,
   midRadius,
   fontSize,
+  rotationDeg,
   ring,
   hu,
   en,
   isActive,
+  inActiveFamily,
 }: {
   midAngle: number;
   midRadius: number;
   fontSize: number;
+  rotationDeg: number;
   ring: Ring;
   hu: string;
   en: string;
   isActive: boolean;
+  inActiveFamily: boolean;
 }) {
   const { x, y } = polarToCartesian(WHEEL.cx, WHEEL.cy, midRadius, midAngle);
-  const rotation = labelRotation(midAngle);
+  // Orient from the label's current on-screen angle, then cancel the group
+  // rotation the text inherits — so words stay readable at any wheel rotation.
+  const absAngleDeg = (midAngle * 180) / Math.PI + rotationDeg;
+  const rotation = labelRotation(absAngleDeg) - rotationDeg;
   const huLabel = displayHungarian(hu, en);
-  const showHu = isActive && hu.trim() !== "";
+  const showHu = (isActive || inActiveFamily) && hu.trim() !== "";
   const size = labelFontSize(ring, fontSize, en);
   const huSize = size * (ring === "core" ? 0.78 : 0.72);
   const lineGap = size * 1.1;
@@ -300,12 +283,27 @@ export function EmotionsWheel() {
     : null;
   const isFallback = active !== null && active.hu.trim() === "";
 
+  const activeCoreId = active?.coreId ?? null;
+
   const renderOrder = React.useMemo(() => {
-    if (!activeId) return ALL_SEGMENTS;
+    if (!activeCoreId) return ALL_SEGMENTS;
+    const others = ALL_SEGMENTS.filter((s) => s.coreId !== activeCoreId);
+    const family = ALL_SEGMENTS.filter(
+      (s) => s.coreId === activeCoreId && s.id !== activeId,
+    );
     const hovered = ALL_SEGMENTS.filter((s) => s.id === activeId);
-    const rest = ALL_SEGMENTS.filter((s) => s.id !== activeId);
-    return [...rest, ...hovered];
-  }, [activeId]);
+    return [...others, ...family, ...hovered];
+  }, [activeCoreId, activeId]);
+
+  // Camera zoom: move the hovered family's centroid to the SVG centre and scale
+  // up. The translate target is the rotation pivot, so this composes cleanly
+  // with drag-rotation regardless of the current angle.
+  const zoomTransform = React.useMemo(() => {
+    if (!active) return "translate(0px, 0px) scale(1)";
+    const k = FAMILY_ZOOM_SCALE;
+    const { x: px, y: py } = familyCentroid(active.coreIndex);
+    return `translate(${WHEEL.cx - k * px}px, ${WHEEL.cy - k * py}px) scale(${k})`;
+  }, [active]);
 
   const pointerAngleDeg = React.useCallback((clientX: number, clientY: number) => {
     const svg = svgRef.current;
@@ -388,7 +386,7 @@ export function EmotionsWheel() {
         <svg
           ref={svgRef}
           viewBox="0 0 1000 1000"
-          className="mx-auto h-auto w-full max-h-[min(90vh,800px)] cursor-grab touch-none active:cursor-grabbing"
+          className="mx-auto h-auto w-full max-h-[min(90vh,800px)] cursor-grab touch-none overflow-hidden active:cursor-grabbing"
           role="img"
           aria-label="Emotions wheel — drag to rotate"
           onMouseLeave={() => {
@@ -400,66 +398,71 @@ export function EmotionsWheel() {
           onPointerCancel={onWheelPointerUp}
         >
           <g transform={`rotate(${rotationDeg} ${WHEEL.cx} ${WHEEL.cy})`}>
-          {renderOrder.map((segment) => {
-            const isActive = activeId === segment.id;
-            const hoverArc = isActive ? activeArc(segment) : null;
-            const displayPath = hoverArc?.path ?? segment.path;
-            const labelAngle = hoverArc?.midAngle ?? segment.midAngle;
-            const labelRadius = hoverArc?.midRadius ?? segment.midRadius;
-            const labelSize = isActive
-              ? segment.fontSize * HOVER_FONT_SCALE
-              : segment.fontSize;
+            <g
+              style={{
+                transform: zoomTransform,
+                transformBox: "view-box",
+                transformOrigin: "0px 0px",
+                transition: "transform 320ms cubic-bezier(0.22, 1, 0.36, 1)",
+                willChange: "transform",
+              }}
+            >
+              {renderOrder.map((segment) => {
+                const isActive = activeId === segment.id;
+                const inActiveFamily =
+                  activeCoreId != null && segment.coreId === activeCoreId;
 
-            return (
-              <g key={segment.id}>
-                <path
-                  d={segment.path}
-                  fill="transparent"
-                  stroke="none"
-                  className="cursor-pointer outline-none focus:outline-none focus-visible:outline-none"
-                  role="button"
-                  tabIndex={0}
-                  aria-label={`${segment.en} — ${displayHungarian(segment.hu, segment.en)}`}
-                  onMouseEnter={() => {
-                    if (!isDraggingRef.current) setActiveId(segment.id);
-                  }}
-                  onFocus={() => selectSegment(segment.id)}
-                  onClick={() => selectSegment(segment.id)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" || e.key === " ") {
-                      e.preventDefault();
-                      selectSegment(segment.id);
-                    }
-                  }}
-                />
-                <path
-                  d={displayPath}
-                  fill={segment.fill}
-                  stroke="#000"
-                  strokeWidth={isActive ? 1.5 : 0.5}
-                  pointerEvents="none"
-                  className={cn(
-                    "transition-[filter,stroke-width] duration-150",
-                    isActive && "brightness-110",
-                  )}
-                  style={
-                    isActive
-                      ? { filter: "brightness(1.08)" }
-                      : undefined
-                  }
-                />
-                <SegmentLabel
-                  midAngle={labelAngle}
-                  midRadius={labelRadius}
-                  fontSize={labelSize}
-                  ring={segment.ring}
-                  hu={segment.hu}
-                  en={segment.en}
-                  isActive={isActive}
-                />
-              </g>
-            );
-          })}
+                return (
+                  <g key={segment.id}>
+                    <path
+                      d={segment.path}
+                      fill="transparent"
+                      stroke="none"
+                      className="cursor-pointer outline-none focus:outline-none focus-visible:outline-none"
+                      role="button"
+                      tabIndex={0}
+                      aria-label={`${segment.en} — ${displayHungarian(segment.hu, segment.en)}`}
+                      onMouseEnter={() => {
+                        if (!isDraggingRef.current) setActiveId(segment.id);
+                      }}
+                      onFocus={() => selectSegment(segment.id)}
+                      onClick={() => selectSegment(segment.id)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          selectSegment(segment.id);
+                        }
+                      }}
+                    />
+                    <path
+                      d={segment.path}
+                      fill={segment.fill}
+                      stroke="#000"
+                      strokeWidth={isActive ? 1.5 : 0.5}
+                      pointerEvents="none"
+                      className={cn(
+                        "transition-[filter,stroke-width] duration-150",
+                        isActive && "brightness-110",
+                      )}
+                      style={
+                        isActive ? { filter: "brightness(1.08)" } : undefined
+                      }
+                    />
+                    <SegmentLabel
+                      midAngle={segment.midAngle}
+                      midRadius={segment.midRadius}
+                      fontSize={segment.fontSize}
+                      rotationDeg={rotationDeg}
+                      ring={segment.ring}
+                      hu={segment.hu}
+                      en={segment.en}
+                      isActive={isActive}
+                      inActiveFamily={inActiveFamily}
+                    />
+                  </g>
+                );
+              })}
+            </g>
           </g>
         </svg>
       </div>

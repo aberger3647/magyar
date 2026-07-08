@@ -86,6 +86,24 @@ export const WHEEL = {
   startDeg: -120,
 } as const;
 
+/** Radius at which a core family is centered when the wheel zooms into it. */
+export const FAMILY_FOCUS_RADIUS = 310;
+
+/** Mid-angle (degrees) of a core family's 60° wedge, by core index. */
+export function familyMidAngleDeg(coreIndex: number): number {
+  return WHEEL.startDeg + coreIndex * WHEEL.coreSpanDeg + WHEEL.coreSpanDeg / 2;
+}
+
+/** Point to center the camera on when zooming into a core family. */
+export function familyCentroid(coreIndex: number): { x: number; y: number } {
+  return polarToCartesian(
+    WHEEL.cx,
+    WHEEL.cy,
+    FAMILY_FOCUS_RADIUS,
+    degToRad(familyMidAngleDeg(coreIndex)),
+  );
+}
+
 /** Interpolate hex color between base (inner) and light (outer) by ring 0–1. */
 export function mixCoreColor(base: string, light: string, t: number): string {
   const parse = (hex: string) => {
