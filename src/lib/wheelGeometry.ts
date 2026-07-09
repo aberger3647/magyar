@@ -104,20 +104,35 @@ export function familyCentroid(coreIndex: number): { x: number; y: number } {
   );
 }
 
+function parseHex(hex: string): readonly [number, number, number] {
+  const h = hex.replace("#", "");
+  return [
+    parseInt(h.slice(0, 2), 16),
+    parseInt(h.slice(2, 4), 16),
+    parseInt(h.slice(4, 6), 16),
+  ] as const;
+}
+
 /** Interpolate hex color between base (inner) and light (outer) by ring 0–1. */
 export function mixCoreColor(base: string, light: string, t: number): string {
-  const parse = (hex: string) => {
-    const h = hex.replace("#", "");
-    return [
-      parseInt(h.slice(0, 2), 16),
-      parseInt(h.slice(2, 4), 16),
-      parseInt(h.slice(4, 6), 16),
-    ] as const;
-  };
-  const [r0, g0, b0] = parse(base);
-  const [r1, g1, b1] = parse(light);
+  const [r0, g0, b0] = parseHex(base);
+  const [r1, g1, b1] = parseHex(light);
   const r = Math.round(r0 + (r1 - r0) * t);
   const g = Math.round(g0 + (g1 - g0) * t);
   const b = Math.round(b0 + (b1 - b0) * t);
   return `#${[r, g, b].map((n) => n.toString(16).padStart(2, "0")).join("")}`;
+}
+
+/** WCAG relative luminance of a hex color, for contrast decisions. */
+export function relativeLuminance(hex: string): number {
+  const [r, g, b] = parseHex(hex).map((c) => {
+    const s = c / 255;
+    return s <= 0.03928 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4;
+  });
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+}
+
+/** Best-contrast label color (near-black or near-white) for a wedge fill. */
+export function contrastTextColor(hex: string): string {
+  return relativeLuminance(hex) > 0.42 ? "#171310" : "#f5f2ec";
 }

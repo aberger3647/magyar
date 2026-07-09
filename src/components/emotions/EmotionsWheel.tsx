@@ -3,6 +3,7 @@ import emotionsData from "@/assets/emotions.json";
 import {
   angleDegFromCenter,
   arcSpec,
+  contrastTextColor,
   degToRad,
   familyCentroid,
   mixCoreColor,
@@ -17,6 +18,7 @@ import {
   type EmotionsData,
 } from "@/types/emotions";
 import { cn } from "@/lib/utils";
+import { useTheme } from "@/components/theme-provider";
 
 type Ring = "core" | "secondary" | "tertiary";
 
@@ -25,7 +27,8 @@ export type WheelSegment = EmotionLeaf & {
   coreId: string;
   coreIndex: number;
   path: string;
-  fill: string;
+  fillLight: string;
+  fillDark: string;
   startRad: number;
   endRad: number;
   innerR: number;
@@ -37,12 +40,31 @@ export type WheelSegment = EmotionLeaf & {
 
 const data = emotionsData as EmotionsData;
 
-function ringColor(
-  core: EmotionCore,
-  ring: Ring,
-): string {
-  const t = ring === "core" ? 0 : ring === "secondary" ? 0.45 : 1;
-  return mixCoreColor(core.color.base, core.color.light, t);
+/** How far each ring's color shifts toward the theme's light extreme. */
+const RING_MIX_T_LIGHT: Record<Ring, number> = {
+  core: 0,
+  secondary: 0.45,
+  tertiary: 1,
+};
+
+/** How far each ring shifts toward black in dark mode — capped below 1 so
+ * outer rings stay tinted by the core hue instead of collapsing to the same
+ * near-black shade across every family. */
+const RING_MIX_T_DARK: Record<Ring, number> = {
+  core: 0,
+  secondary: 0.35,
+  tertiary: 0.65,
+};
+
+/** Near-black tone the outer rings mix toward in dark mode. */
+const DARK_MIX_TARGET = "#0b1120";
+
+function ringColorLight(core: EmotionCore, ring: Ring): string {
+  return mixCoreColor(core.color.base, core.color.light, RING_MIX_T_LIGHT[ring]);
+}
+
+function ringColorDark(core: EmotionCore, ring: Ring): string {
+  return mixCoreColor(core.color.base, DARK_MIX_TARGET, RING_MIX_T_DARK[ring]);
 }
 
 function ringRadii(ring: Ring): { inner: number; outer: number } {
@@ -76,7 +98,7 @@ function pushSegment(
   ring: Ring,
   coreId: string,
   coreIndex: number,
-  fill: string,
+  core: EmotionCore,
   inner: number,
   outer: number,
   startDeg: number,
@@ -96,7 +118,8 @@ function pushSegment(
     coreId,
     coreIndex,
     path: arc.path,
-    fill,
+    fillLight: ringColorLight(core, ring),
+    fillDark: ringColorDark(core, ring),
     startRad: degToRad(startDeg),
     endRad: degToRad(endDeg),
     innerR: inner,
@@ -123,7 +146,7 @@ function buildSegments(): WheelSegment[] {
       "core",
       core.id,
       coreIndex,
-      ringColor(core, "core"),
+      core,
       WHEEL.rCoreInner,
       WHEEL.rCoreOuter,
       coreStartDeg,
@@ -141,7 +164,7 @@ function buildSegments(): WheelSegment[] {
         "secondary",
         core.id,
         coreIndex,
-        ringColor(core, "secondary"),
+        core,
         inner,
         outer,
         secStartDeg,
@@ -160,7 +183,7 @@ function buildSegments(): WheelSegment[] {
           "tertiary",
           core.id,
           coreIndex,
-          ringColor(core, "tertiary"),
+          core,
           tertRadii.inner,
           tertRadii.outer,
           tertStartDeg,
@@ -210,6 +233,7 @@ function SegmentLabel({
   en,
   isActive,
   inActiveFamily,
+  textColor,
 }: {
   midAngle: number;
   midRadius: number;
@@ -220,6 +244,7 @@ function SegmentLabel({
   en: string;
   isActive: boolean;
   inActiveFamily: boolean;
+  textColor: string;
 }) {
   const { x, y } = polarToCartesian(WHEEL.cx, WHEEL.cy, midRadius, midAngle);
   // Orient from the label's current on-screen angle, then cancel the group
@@ -241,9 +266,9 @@ function SegmentLabel({
       transform={`rotate(${rotation}, ${x}, ${y})`}
       fontSize={size}
       fontWeight={ring === "core" ? 700 : 500}
-      fill="#000"
+      fill={textColor}
       pointerEvents="none"
-      style={{ fontFamily: "system-ui, sans-serif" }}
+      style={{ fontFamily: "system-ui, sans-serif", transition: "fill 150ms" }}
     >
       {showHu ? (
         <>
@@ -262,6 +287,8 @@ function SegmentLabel({
 }
 
 export function EmotionsWheel() {
+  const { resolved } = useTheme();
+  const isDark = resolved === "dark";
   const [activeId, setActiveId] = React.useState<string | null>(null);
   const [rotationDeg, setRotationDeg] = React.useState(0);
   const svgRef = React.useRef<SVGSVGElement>(null);
@@ -411,6 +438,7 @@ export function EmotionsWheel() {
                 const isActive = activeId === segment.id;
                 const inActiveFamily =
                   activeCoreId != null && segment.coreId === activeCoreId;
+                const fill = isDark ? segment.fillDark : segment.fillLight;
 
                 return (
                   <g key={segment.id}>
@@ -436,12 +464,13 @@ export function EmotionsWheel() {
                     />
                     <path
                       d={segment.path}
-                      fill={segment.fill}
-                      stroke="#000"
+                      fill={fill}
+                      stroke={isDark ? "#e8e6e1" : "#000"}
+                      strokeOpacity={isDark ? 0.35 : 1}
                       strokeWidth={isActive ? 1.5 : 0.5}
                       pointerEvents="none"
                       className={cn(
-                        "transition-[filter,stroke-width] duration-150",
+                        "transition-[fill,filter,stroke,stroke-width] duration-150",
                         isActive && "brightness-110",
                       )}
                       style={
@@ -458,6 +487,7 @@ export function EmotionsWheel() {
                       en={segment.en}
                       isActive={isActive}
                       inActiveFamily={inActiveFamily}
+                      textColor={contrastTextColor(fill)}
                     />
                   </g>
                 );
