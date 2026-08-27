@@ -72,8 +72,10 @@ export const blogMarkdownComponents: Components = {
   ul: ({ children }) => (
     <ul className="mb-4 list-disc space-y-1 pl-6">{children}</ul>
   ),
-  ol: ({ children }) => (
-    <ol className="mb-4 list-decimal space-y-1 pl-6">{children}</ol>
+  ol: ({ children, start }) => (
+    <ol start={start} className="mb-4 list-decimal space-y-1 pl-6">
+      {children}
+    </ol>
   ),
   li: ({ children }) => <li className="leading-relaxed">{children}</li>,
   table: ({ children }) => (

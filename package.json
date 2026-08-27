@@ -7,6 +7,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
+    "test": "tsx --tsconfig tsconfig.app.json --test tests/*.test.tsx",
     "preview": "vite preview",
     "import-anki": "tsx scripts/import-anki.ts"
   },
