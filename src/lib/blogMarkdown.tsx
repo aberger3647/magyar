@@ -1,12 +1,45 @@
+import { Children, type ReactNode } from "react";
 import type { Components } from "react-markdown";
 
 const headingTight =
   "scroll-m-20 font-bold tracking-tight text-foreground first:mt-0";
 
+function renderUnderlines(children: ReactNode) {
+  const rendered: ReactNode[] = [];
+  let underlined: ReactNode[] | null = null;
+  let underlineIndex = 0;
+
+  for (const child of Children.toArray(children)) {
+    if (child === "<u>" && underlined === null) {
+      underlined = [];
+      continue;
+    }
+
+    if (child === "</u>" && underlined !== null) {
+      rendered.push(
+        <u key={`underline-${underlineIndex}`} className="underline underline-offset-2">
+          {underlined}
+        </u>,
+      );
+      underlineIndex += 1;
+      underlined = null;
+      continue;
+    }
+
+    (underlined ?? rendered).push(child);
+  }
+
+  if (underlined !== null) {
+    rendered.push("<u>", ...underlined);
+  }
+
+  return rendered;
+}
+
 export const blogMarkdownComponents: Components = {
   p: ({ children }) => (
     <p className="mb-4 text-base leading-relaxed text-foreground last:mb-0">
-      {children}
+      {renderUnderlines(children)}
     </p>
   ),
   h1: ({ children }) => (

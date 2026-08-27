@@ -28,3 +28,14 @@ More details.
 
   assert.deepEqual(renderedStarts, [1, 2, 3]);
 });
+
+test("Strapi underline tags render as underlined text instead of literal HTML", () => {
+  const html = renderToStaticMarkup(
+    <ReactMarkdown components={blogMarkdownComponents}>
+      {'While <u>ilyen</u> means "like this."'}
+    </ReactMarkdown>,
+  );
+
+  assert.match(html, /While <u[^>]*>ilyen<\/u> means/);
+  assert.doesNotMatch(html, /&lt;\/?u&gt;/);
+});
