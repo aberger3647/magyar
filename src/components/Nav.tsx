@@ -1,7 +1,6 @@
 import * as React from "react";
 import { Link } from "react-router-dom";
-import { Menu } from "lucide-react"; // Import Menu icon
-import { useIsMobile } from "@/hooks/use-mobile";
+import { Menu } from "lucide-react";
 
 import {
   NavigationMenu,
@@ -23,6 +22,7 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { SearchTrigger } from "@/components/SearchDialog";
 
 const menuItems = [
   { title: "Home", to: "/" },
@@ -35,109 +35,114 @@ const menuItems = [
 ];
 
 export function Nav() {
-  const isMobile = useIsMobile();
   const [isOpen, setIsOpen] = React.useState(false);
-
   const simpleLinks = menuItems.filter((link) => link.title != "Flash Cards");
 
-  // --- MOBILE VIEW ---
-  if (isMobile) {
-    return (
-      <Sheet open={isOpen} onOpenChange={setIsOpen}>
-        <SheetTrigger asChild>
-          <Button variant="ghost" size="icon-lg" aria-label="Open Menu">
-            <Menu className="h-6 w-6" />
-          </Button>
-        </SheetTrigger>
-        <SheetContent side="left" className="w-[250px] sm:w-[300px]">
-          <SheetHeader className="flex-row items-center justify-between space-y-0">
-            <SheetTitle className="text-left">Learn Magyar Language</SheetTitle>
-            <ThemeToggle />
-          </SheetHeader>
-          <div className="flex flex-col gap-4 mt-8 pl-6">
-            {simpleLinks.map((item) => (
+  return (
+    <>
+      <div className="flex items-center justify-between px-2 py-2 md:hidden">
+        <Sheet open={isOpen} onOpenChange={setIsOpen}>
+          <SheetTrigger asChild>
+            <Button variant="ghost" size="icon-lg" aria-label="Open Menu">
+              <Menu className="h-6 w-6" />
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="left" className="w-[250px] sm:w-[300px]">
+            <SheetHeader className="flex-row items-center justify-between space-y-0">
+              <SheetTitle className="text-left">Learn Magyar Language</SheetTitle>
+              <ThemeToggle />
+            </SheetHeader>
+            <div className="mt-8 flex flex-col gap-4 pl-6">
+              {simpleLinks.map((item) => (
+                <Link
+                  key={item.title}
+                  to={item.to}
+                  onClick={() => setIsOpen(false)}
+                  className="text-lg font-medium transition-colors hover:text-primary"
+                >
+                  {item.title}
+                </Link>
+              ))}
               <Link
-                key={item.title}
-                to={item.to}
+                to="/search"
                 onClick={() => setIsOpen(false)}
                 className="text-lg font-medium transition-colors hover:text-primary"
               >
-                {item.title}
+                Search
               </Link>
-            ))}
-            <Link
-              to="/flash-cards"
-              onClick={() => setIsOpen(false)}
-              className="text-lg font-medium transition-colors hover:text-primary"
-            >
-              Study Flash Cards
-            </Link>
-            <Link
-              to="/flash-cards/create"
-              onClick={() => setIsOpen(false)}
-              className="text-lg font-medium transition-colors hover:text-primary"
-            >
-              Create Flash Cards
-            </Link>
-          </div>
-        </SheetContent>
-      </Sheet>
-    );
-  }
-
-  // --- DESKTOP VIEW ---
-  return (
-    <div className="flex items-center justify-between px-4 py-2">
-      <Link to="/" className="text-3xl font-semibold tracking-tight">
-        Learn Magyar Language
-      </Link>
-      <div className="flex items-center gap-2">
-        <NavigationMenu viewport={false}>
-        <NavigationMenuList>
-          {simpleLinks.map((item) => (
-            <NavigationMenuItem key={item.title}>
-              <NavigationMenuLink
-                asChild
-                className={navigationMenuTriggerStyle()}
+              <Link
+                to="/flash-cards"
+                onClick={() => setIsOpen(false)}
+                className="text-lg font-medium transition-colors hover:text-primary"
               >
-                <Link to={item.to}>{item.title}</Link>
-              </NavigationMenuLink>
-            </NavigationMenuItem>
-          ))}
-
-          <NavigationMenuItem>
-            <NavigationMenuTrigger className={navigationMenuTriggerStyle()}>
-              Flash Cards
-            </NavigationMenuTrigger>
-            <NavigationMenuContent>
-              <ul className="grid gap-4">
-                <li>
-                  <NavigationMenuLink asChild>
-                    <Link
-                      to="/flash-cards"
-                      className="whitespace-normal text-left"
-                    >
-                      Study
-                    </Link>
-                  </NavigationMenuLink>
-                </li>
-                <li>
-                  <NavigationMenuLink asChild>
-                    <Link
-                      to="/flash-cards/create"
-                      className="whitespace-normal text-left"
-                    >
-                      Create
-                    </Link>
-                  </NavigationMenuLink>
-                </li>
-              </ul>
-            </NavigationMenuContent>
-          </NavigationMenuItem>
-        </NavigationMenuList>
-      </NavigationMenu>
-        <ThemeToggle />
+                Study Flash Cards
+              </Link>
+              <Link
+                to="/flash-cards/create"
+                onClick={() => setIsOpen(false)}
+                className="text-lg font-medium transition-colors hover:text-primary"
+              >
+                Create Flash Cards
+              </Link>
+            </div>
+          </SheetContent>
+        </Sheet>
+        <SearchTrigger />
       </div>
-    </div>
+
+      <div className="hidden items-center justify-between px-4 py-2 md:flex">
+        <Link to="/" className="text-3xl font-semibold tracking-tight">
+          Learn Magyar Language
+        </Link>
+        <div className="flex items-center gap-2">
+          <NavigationMenu viewport={false}>
+            <NavigationMenuList>
+              {simpleLinks.map((item) => (
+                <NavigationMenuItem key={item.title}>
+                  <NavigationMenuLink
+                    asChild
+                    className={navigationMenuTriggerStyle()}
+                  >
+                    <Link to={item.to}>{item.title}</Link>
+                  </NavigationMenuLink>
+                </NavigationMenuItem>
+              ))}
+
+              <NavigationMenuItem>
+                <NavigationMenuTrigger className={navigationMenuTriggerStyle()}>
+                  Flash Cards
+                </NavigationMenuTrigger>
+                <NavigationMenuContent>
+                  <ul className="grid gap-4">
+                    <li>
+                      <NavigationMenuLink asChild>
+                        <Link
+                          to="/flash-cards"
+                          className="whitespace-normal text-left"
+                        >
+                          Study
+                        </Link>
+                      </NavigationMenuLink>
+                    </li>
+                    <li>
+                      <NavigationMenuLink asChild>
+                        <Link
+                          to="/flash-cards/create"
+                          className="whitespace-normal text-left"
+                        >
+                          Create
+                        </Link>
+                      </NavigationMenuLink>
+                    </li>
+                  </ul>
+                </NavigationMenuContent>
+              </NavigationMenuItem>
+            </NavigationMenuList>
+          </NavigationMenu>
+          <SearchTrigger />
+          <ThemeToggle />
+        </div>
+      </div>
+    </>
   );
 }
