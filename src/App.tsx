@@ -26,15 +26,17 @@ import { Phrasebook } from "./components/Phrasebook";
 import { Erzes } from "./components/Erzes";
 import { CreateFlashCard } from "./components/CreateFlashCard";
 import { NotFound } from "./components/NotFound";
+import { SearchPage } from "./components/SearchPage";
+import { SearchProvider } from "./components/SearchDialog";
 
 function Layout() {
   return (
-    <>
+    <SearchProvider>
       <Nav />
-        <main className="flex flex-col items-center gap-4 p-4">
-      <Outlet />
+      <main className="flex flex-col items-center gap-4 p-4">
+        <Outlet />
       </main>
-    </>
+    </SearchProvider>
   );
 }
 
@@ -45,6 +47,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Layout />}>
             <Route index element={<Home />} />
+            <Route path="/search" element={<SearchPage />} />
             <Route
               path="/conjugator/:tense/:voice/"
               element={<Conjugator/>}

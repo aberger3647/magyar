@@ -13,6 +13,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { listPosts, type StrapiPost } from "@/lib/strapi";
+import { SearchTrigger } from "@/components/SearchDialog";
 
 type Section = {
   title: string;
@@ -89,6 +90,7 @@ export const Home = () => {
           Grammar lessons, conjugation drills, flash cards, and a phrasebook.
           Pick a tool and start.
         </p>
+        <SearchTrigger size="hero" className="mt-2" />
       </section>
 
       <section className="grid grid-cols-1 gap-4 sm:grid-cols-2">

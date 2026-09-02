@@ -23,6 +23,7 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { SearchTrigger } from "@/components/SearchDialog";
 
 const menuItems = [
   { title: "Home", to: "/" },
@@ -43,45 +44,55 @@ export function Nav() {
   // --- MOBILE VIEW ---
   if (isMobile) {
     return (
-      <Sheet open={isOpen} onOpenChange={setIsOpen}>
-        <SheetTrigger asChild>
-          <Button variant="ghost" size="icon-lg" aria-label="Open Menu">
-            <Menu className="h-6 w-6" />
-          </Button>
-        </SheetTrigger>
-        <SheetContent side="left" className="w-[250px] sm:w-[300px]">
-          <SheetHeader className="flex-row items-center justify-between space-y-0">
-            <SheetTitle className="text-left">Learn Magyar Language</SheetTitle>
-            <ThemeToggle />
-          </SheetHeader>
-          <div className="flex flex-col gap-4 mt-8 pl-6">
-            {simpleLinks.map((item) => (
+      <div className="flex items-center justify-between px-2 py-2">
+        <Sheet open={isOpen} onOpenChange={setIsOpen}>
+          <SheetTrigger asChild>
+            <Button variant="ghost" size="icon-lg" aria-label="Open Menu">
+              <Menu className="h-6 w-6" />
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="left" className="w-[250px] sm:w-[300px]">
+            <SheetHeader className="flex-row items-center justify-between space-y-0">
+              <SheetTitle className="text-left">Learn Magyar Language</SheetTitle>
+              <ThemeToggle />
+            </SheetHeader>
+            <div className="flex flex-col gap-4 mt-8 pl-6">
+              {simpleLinks.map((item) => (
+                <Link
+                  key={item.title}
+                  to={item.to}
+                  onClick={() => setIsOpen(false)}
+                  className="text-lg font-medium transition-colors hover:text-primary"
+                >
+                  {item.title}
+                </Link>
+              ))}
               <Link
-                key={item.title}
-                to={item.to}
+                to="/search"
                 onClick={() => setIsOpen(false)}
                 className="text-lg font-medium transition-colors hover:text-primary"
               >
-                {item.title}
+                Search
               </Link>
-            ))}
-            <Link
-              to="/flash-cards"
-              onClick={() => setIsOpen(false)}
-              className="text-lg font-medium transition-colors hover:text-primary"
-            >
-              Study Flash Cards
-            </Link>
-            <Link
-              to="/flash-cards/create"
-              onClick={() => setIsOpen(false)}
-              className="text-lg font-medium transition-colors hover:text-primary"
-            >
-              Create Flash Cards
-            </Link>
-          </div>
-        </SheetContent>
-      </Sheet>
+              <Link
+                to="/flash-cards"
+                onClick={() => setIsOpen(false)}
+                className="text-lg font-medium transition-colors hover:text-primary"
+              >
+                Study Flash Cards
+              </Link>
+              <Link
+                to="/flash-cards/create"
+                onClick={() => setIsOpen(false)}
+                className="text-lg font-medium transition-colors hover:text-primary"
+              >
+                Create Flash Cards
+              </Link>
+            </div>
+          </SheetContent>
+        </Sheet>
+        <SearchTrigger />
+      </div>
     );
   }
 
@@ -136,6 +147,7 @@ export function Nav() {
           </NavigationMenuItem>
         </NavigationMenuList>
       </NavigationMenu>
+        <SearchTrigger />
         <ThemeToggle />
       </div>
     </div>
