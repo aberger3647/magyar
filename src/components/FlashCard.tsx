@@ -4,7 +4,7 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Pencil } from "lucide-react";
 import { PageTitle } from "./PageTitle";
-import { supabase } from "@/lib/supabase";
+import { getSupabaseClient, isSupabaseConfigured } from "@/lib/supabase";
 import {
   type Card,
   createEmptyCard,
@@ -84,6 +84,7 @@ const formatInterval = (due: Date, now: Date): string => {
 };
 
 const fetchDueCards = async (): Promise<MyCard[]> => {
+  const supabase = getSupabaseClient();
   const now = new Date().toISOString();
   const { data, error } = await supabase
     .from("flashcards")
@@ -95,6 +96,7 @@ const fetchDueCards = async (): Promise<MyCard[]> => {
 };
 
 const fetchNextDueDate = async (): Promise<Date | null> => {
+  const supabase = getSupabaseClient();
   const now = new Date().toISOString();
   const { data, error } = await supabase
     .from("flashcards")
@@ -108,7 +110,8 @@ const fetchNextDueDate = async (): Promise<Date | null> => {
 
 const SHORT_TERM_MS = 20 * 60 * 1000;
 
-export const FlashCard = () => {
+const ConfiguredFlashCard = () => {
+  const supabase = getSupabaseClient();
   const [isFlipped, setIsFlipped] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editWord, setEditWord] = useState("");
@@ -235,7 +238,7 @@ export const FlashCard = () => {
       }
       return rest;
     });
-  }, [currentCard]);
+  }, [currentCard, supabase]);
 
   const handleUndo = useCallback(async () => {
     if (!lastRating) return;
@@ -266,7 +269,7 @@ export const FlashCard = () => {
     });
     setLastRating(null);
     setIsFlipped(false);
-  }, [lastRating]);
+  }, [lastRating, supabase]);
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -595,4 +598,20 @@ export const FlashCard = () => {
       </div>
     </>
   );
+};
+
+export const FlashCard = () => {
+  if (!isSupabaseConfigured()) {
+    return (
+      <>
+        <PageTitle title="Flash Cards" />
+        <p role="alert" className="max-w-md text-center text-muted-foreground">
+          Flash Cards require Supabase configuration. Add the project URL and
+          an anon or publishable key, then restart Magyar.
+        </p>
+      </>
+    );
+  }
+
+  return <ConfiguredFlashCard />;
 };

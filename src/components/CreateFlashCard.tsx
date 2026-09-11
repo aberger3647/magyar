@@ -5,7 +5,7 @@ import { useForm } from "@tanstack/react-form";
 import { Button } from "./ui/button";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { PageTitle } from "./PageTitle";
-import { supabase } from "@/lib/supabase";
+import { getSupabaseClient, isSupabaseConfigured } from "@/lib/supabase";
 import { toast } from "sonner";
 import { Toaster } from "sonner";
 
@@ -26,7 +26,8 @@ const makeSafeStorageKey = (text: string) => {
   return normalized || "card";
 };
 
-export const CreateFlashCard = () => {
+const ConfiguredCreateFlashCard = () => {
+  const supabase = getSupabaseClient();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [errMsg, setErrMsg] = useState<string | null>(null);
   const [isDraggingImage, setIsDraggingImage] = useState(false);
@@ -195,4 +196,20 @@ export const CreateFlashCard = () => {
       <Toaster />
     </>
   );
+};
+
+export const CreateFlashCard = () => {
+  if (!isSupabaseConfigured()) {
+    return (
+      <>
+        <PageTitle title="Create Flash Cards" />
+        <p role="alert" className="max-w-md text-center text-muted-foreground">
+          Creating Flash Cards requires Supabase configuration. Add the project
+          URL and an anon or publishable key, then restart Magyar.
+        </p>
+      </>
+    );
+  }
+
+  return <ConfiguredCreateFlashCard />;
 };

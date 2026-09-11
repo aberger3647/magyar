@@ -1,0 +1,189 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+usage() {
+  printf '%s\n' \
+    'Usage:' \
+    '  control-magyar launch [port]' \
+    '  control-magyar doctor [port]' \
+    '  control-magyar evidence-dir [port]' \
+    '  control-magyar artifact [port] <source-file> <artifact-name>' \
+    '  control-magyar cleanup [port]'
+}
+
+die() {
+  printf 'control-magyar: %s\n' "$*" >&2
+  exit 1
+}
+
+script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+repo_root="$(cd "${script_dir}/../../../.." && pwd)"
+
+validate_port() {
+  local candidate="$1"
+  [[ "$candidate" =~ ^[0-9]+$ ]] || die "port must be numeric"
+  (( candidate >= 1024 && candidate <= 65535 )) || die "port must be between 1024 and 65535"
+}
+
+set_paths() {
+  port="${1:-4173}"
+  validate_port "$port"
+  state_dir="/tmp/verify-magyar-${port}"
+  pid_file="${state_dir}/pid"
+  repo_file="${state_dir}/repo-root"
+  revision_file="${state_dir}/revision"
+  url_file="${state_dir}/base-url"
+  evidence_file="${state_dir}/evidence-dir"
+  log_file="${state_dir}/vite.log"
+}
+
+read_required_file() {
+  local path="$1"
+  [[ -f "$path" ]] || die "missing state file: ${path}; launch the instance first"
+  tr -d '\n' < "$path"
+}
+
+process_matches() {
+  local pid="$1"
+  [[ -r "/proc/${pid}/cmdline" ]] || return 1
+  local command_line
+  command_line="$(tr '\0' ' ' < "/proc/${pid}/cmdline")"
+  [[ "$command_line" == *"${repo_root}/node_modules/"* ]] && [[ "$command_line" == *"vite"* ]]
+}
+
+doctor_impl() {
+  [[ -d "$state_dir" ]] || die "no controller state for port ${port}; run launch first"
+
+  local recorded_repo pid revision base_url current_revision
+  recorded_repo="$(read_required_file "$repo_file")"
+  pid="$(read_required_file "$pid_file")"
+  revision="$(read_required_file "$revision_file")"
+  base_url="$(read_required_file "$url_file")"
+
+  [[ "$recorded_repo" == "$repo_root" ]] || die "state belongs to a different checkout: ${recorded_repo}"
+  [[ "$pid" =~ ^[0-9]+$ ]] || die "recorded PID is invalid"
+  kill -0 "$pid" 2>/dev/null || die "recorded process ${pid} is not running"
+  process_matches "$pid" || die "PID ${pid} no longer matches this checkout's Vite process"
+  ss -ltnpH "sport = :${port}" | grep -Fq "pid=${pid}," || die "PID ${pid} does not own port ${port}"
+
+  current_revision="$(git -C "$repo_root" rev-parse HEAD)"
+  [[ "$current_revision" == "$revision" ]] || die "checkout revision changed after launch (${revision} -> ${current_revision})"
+  curl --fail --silent --show-error "$base_url" | grep -Fq '<title>Learn Magyar Language</title>' || die "Magyar HTML is not healthy at ${base_url}"
+
+  printf 'healthy pid=%s port=%s revision=%s url=%s\n' "$pid" "$port" "$revision" "$base_url"
+}
+
+remove_state_files() {
+  rm -f "$pid_file" "$repo_file" "$revision_file" "$url_file" "$evidence_file" "$log_file"
+  rmdir "$state_dir" 2>/dev/null || true
+}
+
+action="${1:-}"
+[[ -n "$action" ]] || { usage; exit 1; }
+shift
+
+case "$action" in
+  launch)
+    set_paths "${1:-4173}"
+    vite_bin="${repo_root}/node_modules/.bin/vite"
+    [[ -x "$vite_bin" ]] || die "${vite_bin} is missing; run npm ci"
+
+    if [[ -d "$state_dir" ]]; then
+      if doctor_impl >/dev/null 2>&1; then
+        doctor_impl
+        printf 'evidence=%s\n' "$(read_required_file "$evidence_file")"
+        exit 0
+      fi
+      stale_pid="$(tr -d '\n' < "$pid_file" 2>/dev/null || true)"
+      if [[ "$stale_pid" =~ ^[0-9]+$ ]] && kill -0 "$stale_pid" 2>/dev/null; then
+        die "stale state points at a live process; inspect ${state_dir} instead of replacing it"
+      fi
+      remove_state_files
+    fi
+
+    if ss -ltnH "sport = :${port}" | grep -q .; then
+      die "port ${port} is already occupied; choose another port"
+    fi
+
+    run_stamp="$(date -u +%Y%m%dT%H%M%SZ)"
+    evidence_dir="${repo_root}/.verification-evidence/${run_stamp}-port-${port}"
+    mkdir -p "$state_dir" "$evidence_dir"
+    revision="$(git -C "$repo_root" rev-parse HEAD)"
+    base_url="http://127.0.0.1:${port}"
+    allowed_host="${VERIFY_MAGYAR_ALLOWED_HOST:-}"
+    if [[ -z "$allowed_host" ]] && command -v tailscale >/dev/null && command -v jq >/dev/null; then
+      if detected_host="$(tailscale status --json 2>/dev/null | jq -r '.Self.DNSName // empty' | sed 's/\.$//')"; then
+        allowed_host="$detected_host"
+      fi
+    fi
+    if [[ -n "$allowed_host" ]]; then
+      export __VITE_ADDITIONAL_SERVER_ALLOWED_HOSTS="$allowed_host"
+    fi
+
+    pid="$$"
+    printf '%s\n' "$pid" > "$pid_file"
+    printf '%s\n' "$repo_root" > "$repo_file"
+    printf '%s\n' "$revision" > "$revision_file"
+    printf '%s\n' "$base_url" > "$url_file"
+    printf '%s\n' "$evidence_dir" > "$evidence_file"
+
+    printf 'starting pid=%s port=%s revision=%s url=%s\n' "$pid" "$port" "$revision" "$base_url"
+    printf 'evidence=%s\n' "$evidence_dir"
+    printf 'keep this terminal/session open; run doctor from a second one\n'
+    exec "$vite_bin" --host 0.0.0.0 --port "$port" --strictPort >"$log_file" 2>&1
+    ;;
+  doctor)
+    set_paths "${1:-4173}"
+    doctor_impl
+    ;;
+  evidence-dir)
+    set_paths "${1:-4173}"
+    doctor_impl >/dev/null
+    read_required_file "$evidence_file"
+    printf '\n'
+    ;;
+  artifact)
+    set_paths "${1:-4173}"
+    source_file="${2:-}"
+    artifact_name="${3:-}"
+    [[ -n "$source_file" && -n "$artifact_name" ]] || { usage; exit 1; }
+    doctor_impl >/dev/null
+    [[ -f "$source_file" ]] || die "artifact source is not a file: ${source_file}"
+    [[ "$artifact_name" != */* && "$artifact_name" != .* ]] || die "artifact name must be a plain filename"
+    evidence_dir="$(read_required_file "$evidence_file")"
+    cp "$source_file" "${evidence_dir}/${artifact_name}"
+    printf '%s\n' "${evidence_dir}/${artifact_name}"
+    ;;
+  cleanup)
+    set_paths "${1:-4173}"
+    if [[ ! -d "$state_dir" ]]; then
+      printf 'no controller state for port %s\n' "$port"
+      exit 0
+    fi
+
+    pid="$(read_required_file "$pid_file")"
+    [[ "$pid" =~ ^[0-9]+$ ]] || die "recorded PID is invalid"
+    if kill -0 "$pid" 2>/dev/null; then
+      process_matches "$pid" || die "refusing to signal PID ${pid}: command no longer matches this checkout's Vite process"
+      kill "$pid"
+      for _ in $(seq 1 50); do
+        if ! kill -0 "$pid" 2>/dev/null; then
+          break
+        fi
+        sleep 0.1
+      done
+      if kill -0 "$pid" 2>/dev/null; then
+        process_matches "$pid" || die "refusing to force-stop PID ${pid}: command identity changed"
+        kill -KILL "$pid"
+      fi
+    fi
+
+    evidence_dir="$(read_required_file "$evidence_file")"
+    remove_state_files
+    printf 'stopped port=%s evidence-preserved=%s\n' "$port" "$evidence_dir"
+    ;;
+  *)
+    usage
+    exit 1
+    ;;
+esac
