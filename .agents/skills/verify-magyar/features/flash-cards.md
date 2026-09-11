@@ -19,7 +19,7 @@ Flash Cards lets a user study due cards with FSRS scheduling, undo a rating, edi
 - Choose the `Flash Cards` card on Home to study.
 - Open `/flash-cards` or `/flash-cards/create` directly.
 
-## Driving it with T3 Code collaborative browser
+## Driving it with the browser harness
 
 Preconditions:
 
@@ -34,7 +34,7 @@ Preconditions:
 - **Flip only with caution.** If a due card exists, choosing `Flip card` is UI-local and reveals its word, image, four rating buttons, and `Edit card`; stop before rating unless authorized.
 - **Authorized rating.** Choose one grade or key `1`-`4`; require the visible queue to advance, then read the affected `flashcards` row and new `review_logs` row through a read-only second view. If testing Undo, require both records to return to their prior state.
 - **Authorized create/edit/delete.** Capture the exact row and storage object before and after. A success toast or changed card alone is not enough proof.
-- **Proof.** For read-only reconnaissance, record route load and visible controls. For mutations, preserve the before/after UI plus database and storage evidence and execute the recorded reversal when the scenario is meant to be temporary.
+- **Proof.** For read-only reconnaissance, capture route load and visible controls with screenshots, semantic snapshots, and an action transcript. For mutations, preserve the before/after UI plus database and storage evidence and execute the documented reversal when the scenario is meant to be temporary. Add video when the chosen harness supports it.
 
 ## Gotchas
 

@@ -18,7 +18,7 @@ Grammar presents a lesson index and lets a user move among Hungarian grammar les
 - Open `/grammar` directly.
 - Search for a grammar topic and open its result.
 
-## Driving it with T3 Code collaborative browser
+## Driving it with the browser harness
 
 Preconditions:
 
@@ -28,8 +28,8 @@ Preconditions:
 - **Inspect the index.** Require heading `Grammar`, text `Choose a lesson:`, and links including `Alphabet`, `Vowel Harmony`, `Present Tense`, `Past Tense`, `Future Tense`, `Numbers`, `Telling Time`, `Possessives`, `Accusative Case`, `Instrumental Case`, `Location`, and `-ik Verbs`.
 - **Open a lesson.** Choose `Alphabet`. Require URL `/grammar/alphabet`, heading `Alphabet and Pronunciation`, and content `The Hungarian Alphabet` / `A magyar ábécé`.
 - **Desktop lesson navigation.** At desktop width, choose `Vowel Harmony` from the sidebar. Require `/grammar/vowel-harmony` and that lesson's heading before asserting success.
-- **Mobile lesson navigation.** Resize to a mobile preset, click combobox `Select lesson`, press `Home`, press `ArrowDown` twice, then press `Enter` to choose the third option, `Present Tense`. Require `/grammar/present-tense` and the Present Tense content to update.
-- **Proof.** Record index-to-lesson navigation and save screenshots of the index and final lesson with the route visible in evidence notes.
+- **Mobile lesson navigation.** Resize to a mobile viewport. With T3, click combobox `Select lesson`, press `Home`, press `ArrowDown` twice, then press `Enter`. With `agent-browser`, snapshot and run `select <combobox-ref> "/grammar/present-tense"`. Require `/grammar/present-tense` and the Present Tense content to update.
+- **Proof.** Capture index-to-lesson navigation with before/after screenshots, semantic snapshots, and an action transcript. Add video when the chosen harness supports it, and put the final route in the evidence notes.
 
 ## Gotchas
 

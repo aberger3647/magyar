@@ -18,7 +18,7 @@ Site search lets a user search Magyar's pages, grammar, verbs, phrases, emotions
 - Press Control-K or Command-K anywhere in the app.
 - Open `/search` directly.
 
-## Driving it with T3 Code collaborative browser
+## Driving it with the browser harness
 
 Preconditions:
 
@@ -31,7 +31,7 @@ Preconditions:
 - **View all.** Reopen the dialog, search `vowel harmony`, and choose `View all results for “vowel harmony”`. Require `/search?q=vowel%20harmony` or equivalent encoding.
 - **Filter the page.** On the full page, choose tab `Grammar`. Require `aria-selected=true`, a count ending in `in Grammar`, and only Grammar result groups.
 - **Empty result.** Search `volcano-never-matches`. Require `No results for “volcano-never-matches”.`.
-- **Proof.** Record dialog open, query, full-page transition, category selection, and empty result. Save a screenshot with the query, selected category, count, and grouped result or empty message.
+- **Proof.** Capture dialog open, query, full-page transition, category selection, and empty result with screenshots, semantic snapshots, and an action transcript. Add video when the chosen harness supports it. The evidence must show the query, selected category, count, and grouped result or empty message.
 
 ## Gotchas
 

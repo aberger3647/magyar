@@ -18,7 +18,7 @@ Phrasebook lets a user add a Hungarian/English phrase pair to local browser stor
 - Open `/phrasebook` directly.
 - Open a phrase result from global or full-page search.
 
-## Driving it with T3 Code collaborative browser
+## Driving it with the browser harness
 
 Preconditions:
 
@@ -31,7 +31,7 @@ Preconditions:
 - **Filter in English.** Fill `Search phrases` with `Happy testing`. Only matching phrase rows remain and the URL contains `?q=Happy+testing` or its equivalent encoding.
 - **Filter without accents.** Replace the query with a built-in Hungarian term without diacritics when applicable. A matching accented phrase remains visible.
 - **Prove the empty state.** Search `volcano-never-matches`. Require `No phrases match “volcano-never-matches”.`.
-- **Proof.** Record add, reload, match, and empty state. Save screenshots of the persisted pair and empty result.
+- **Proof.** Capture add, reload, match, and empty state with screenshots, semantic snapshots, and an action transcript. Add video when the chosen harness supports it. The evidence must include the persisted pair and empty result.
 
 ## Gotchas
 

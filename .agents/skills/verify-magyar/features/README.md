@@ -13,7 +13,7 @@ This directory is the maintained source for verifying Magyar's user-facing behav
 
 ## Driving conventions
 
-- Use the T3 Code collaborative browser: `preview_status`, `preview_open` if needed, `preview_navigate`, `preview_snapshot`, then semantic interaction tools.
+- Use one harness for the full run: T3 Code preview when automation-capable, otherwise the controller's isolated `agent-browser` fallback. Never use the unnamed default `agent-browser` session.
 - Prefer ARIA roles, accessible names, labels, route paths, and visible headings over CSS selectors, DOM position, or coordinates.
 - Start each recipe from its named route and baseline state.
 - Treat quoted control names and Hungarian accents as exact.
@@ -21,9 +21,9 @@ This directory is the maintained source for verifying Magyar's user-facing behav
 
 ## Proof and skip reporting
 
-- Capture the user action and resulting state in a recording, plus before/after screenshots.
+- Always capture before/after screenshots, semantic snapshots, and an action transcript. Capture a T3 recording when T3 is the harness; with `agent-browser`, video is optional and requires `ffmpeg`.
 - Put artifacts in the path printed by `control-magyar evidence-dir <port>`.
-- Record the feature ID, route, port, and asserted end state alongside the artifacts.
+- Record the feature ID, route, port, harness, asserted end state, and video availability alongside the artifacts.
 - A route loading is not enough: exercise the feature's actual user path.
 - For remote mutations, require explicit authorization and prove both the UI result and the Supabase table/storage side effect through a read-only second view.
 - Report any untested entry point as skipped; do not claim it was covered through a different route.
@@ -34,7 +34,7 @@ Each feature file starts with an H1 title and one paragraph describing the visib
 
 1. `Sub-features` lists short IDs and behaviors.
 2. `How to get to it (user POV)` lists user entry points.
-3. `Driving it with T3 Code collaborative browser` gives preconditions, exact actions, and observable results.
+3. `Driving it with the browser harness` gives preconditions, exact actions, and observable results.
 4. `Gotchas` records traps that can invalidate proof.
 
 ## Features

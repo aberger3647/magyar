@@ -54,21 +54,27 @@ Doctor is read-only. It requires all of the following: the recorded PID is alive
 
 ## Drive
 
-Use the T3 Code collaborative browser on Codex:
+Choose one browser harness for the entire run:
 
-1. Call `preview_status`. If no automation-capable preview is attached, call `preview_open`.
-2. Navigate with `preview_navigate` using the environment-port target for the controller's port. Supply a route path when the feature recipe names one.
-3. Set a desktop viewport such as `1440x900` unless the recipe is explicitly testing the mobile menu. For mobile navigation, use a named mobile preset and the `Open Menu` button.
-4. Call `preview_snapshot` before interacting. Use its role/name locators with `preview_click`, `preview_type`, `preview_press`, and `preview_wait_for`; do not use coordinates when a semantic locator exists.
-5. Prefer the repository's stable handles: headings such as `Conjugator Quiz`, labels such as `Magyar`, `English`, `Search phrases`, and the six pronouns, and controls such as `Clear all`, `Start Quiz`, `Submit`, `Finish Quiz`, `Open Menu`, and `Select lesson`.
+1. **T3 Code, when available.** Call `preview_status`; call `preview_open` if no tab is attached. If the preview becomes automation-capable, navigate with `preview_navigate` using the environment-port target, call `preview_snapshot`, and interact through semantic preview tools. Do not switch controllers after T3 has opened the verification page.
+2. **Standalone fallback.** If T3 preview tools are absent or explicitly unavailable, require `agent-browser` and run `agent-browser doctor`. The controller wraps every command in a named session derived from this worktree and port, preventing the default shared browser from being hijacked:
+
+   ```bash
+   ./.agents/skills/verify-magyar/scripts/control-magyar browser 4173 open http://127.0.0.1:4173/conjugator
+   ./.agents/skills/verify-magyar/scripts/control-magyar browser 4173 snapshot -i
+   ```
+
+3. If neither harness is available, report browser acceptance as unavailable. Do not substitute component rendering, curl, or unit tests for a user-flow claim.
+
+With either harness, use a desktop viewport such as `1440x900` unless the recipe explicitly tests mobile navigation. Prefer snapshot refs, ARIA roles, accessible names, labels, route paths, and visible headings over coordinates. Stable handles include `Conjugator Quiz`, `Magyar`, `English`, `Search phrases`, the six pronouns, `Clear all`, `Start Quiz`, `Submit`, `Finish Quiz`, `Open Menu`, and `Select lesson`.
 
 For the safe Conjugator smoke path:
 
-1. Navigate to `/conjugator`.
-2. Choose `Clear all`, click the stable checkbox selector `#word-lát` in the row labeled `lát`, and choose `Start Quiz`.
+1. Navigate to `/conjugator` and snapshot the page.
+2. Choose `Clear all`, select the checkbox named `lát`, and choose `Start Quiz`. With `agent-browser`, use `find role button click --name "Clear all"`, `find role checkbox click --name "lát"`, and `find role button click --name "Start Quiz"`. If T3 cannot resolve the checkbox semantically, use the stable selector `#word-lát` in the row labeled `lát`.
 3. Require the URL to include `/conjugator/present/indefinite` and the page to show `Word 1 of 1`.
-4. Fill the labeled inputs with `én=látok`, `te=látsz`, `ő=lát`, `mi=látunk`, `ti=láttok`, and `ők=látnak`.
-5. Choose `Submit`. Immediately capture the transient success toast, then require an enabled button named `Finish Quiz` and six correct indicators.
+4. Fill the labeled inputs with `én=látok`, `te=látsz`, `ő=lát`, `mi=látunk`, `ti=láttok`, and `ők=látnak`. With `agent-browser`, use `find label "én" fill "látok"` and the equivalent command for each remaining label.
+5. Choose `Submit`. Immediately capture the transient success toast, then require an enabled button named `Finish Quiz` and six correct indicators. With `agent-browser`, use `find role button click --name "Submit"`, `wait --text "Finish Quiz"`, then re-snapshot.
 
 This is a real user path: select preferences, start the quiz, enter answers, submit, and observe the result. Do not seed the answer form through JavaScript or call internal functions.
 
@@ -76,25 +82,38 @@ This is a real user path: select preferences, start the quiz, enter answers, sub
 
 Record the action and the resulting state, not only the final screen.
 
-1. Start a browser recording before the first user action and stop it after the result is visible.
-2. Save a screenshot before the action and another after the observable end state with `preview_snapshot(save=true)`.
-3. Copy every returned screenshot or recording into the run's evidence directory:
+1. Get the evidence directory before browser actions:
 
    ```bash
-   ./.agents/skills/verify-magyar/scripts/control-magyar artifact 4173 /path/returned/by/preview conjugator-after.png
+   EVIDENCE="$(./.agents/skills/verify-magyar/scripts/control-magyar evidence-dir 4173)"
    ```
 
-4. Record the feature ID, route, port, and expected end state in `notes.txt` inside the same evidence directory. Get the directory with:
+2. Save a screenshot and semantic snapshot before the first user action and after the observable end state. Keep an `actions.txt` transcript of the semantic commands and their observed results.
+3. With T3, start a preview recording before the first user action and stop it after the result is visible. Use `preview_snapshot(save=true)`, then copy every returned file with `control-magyar artifact`.
+4. With `agent-browser`, write artifacts directly into the evidence directory. Video is additional evidence only: run `record start` and `record stop` when `ffmpeg` is available, but do not fail or skip the browser proof when it is absent.
 
    ```bash
-   ./.agents/skills/verify-magyar/scripts/control-magyar evidence-dir 4173
+   ./.agents/skills/verify-magyar/scripts/control-magyar browser 4173 screenshot "$EVIDENCE/conjugator-before.png"
+   ./.agents/skills/verify-magyar/scripts/control-magyar browser 4173 snapshot -i > "$EVIDENCE/conjugator-before.txt"
+   # Perform the real user flow and append its semantic actions/results to "$EVIDENCE/actions.txt".
+   ./.agents/skills/verify-magyar/scripts/control-magyar browser 4173 screenshot "$EVIDENCE/conjugator-after.png"
+   ./.agents/skills/verify-magyar/scripts/control-magyar browser 4173 snapshot -i > "$EVIDENCE/conjugator-after.txt"
    ```
+
+5. Record the feature ID, route, port, harness, expected end state, and whether video was captured or unavailable in `notes.txt` inside the same evidence directory.
 
 Proof must exercise the production UI, not internal setters or test-only endpoints. For local persistence such as Phrasebook entries, reload or revisit the route and prove the value remains visible. For Flash Cards, visible UI is insufficient: ratings, edits, creates, and deletes write to shared Supabase tables or storage and require explicit authorization plus a read-only second view of the affected row/object. Mocks are acceptable only where the production boundary already provides isolation. Do not infer safety from a label such as dry-run; observe the database, storage, network, or filesystem boundary it claims to skip.
 
 ## Cleanup
 
-First remove only the browser scratch state created on the verification origin. In the verification tab, use `preview_evaluate` to remove `quizWords`, `randomWord`, `completedQuizWords`, and any feature-specific local state such as `phrasebook.customPhrases`; do not clear storage on a different port or a user-owned tab.
+First remove only the browser scratch state created on the verification origin. With T3, use `preview_evaluate`. With the standalone fallback, run:
+
+```bash
+./.agents/skills/verify-magyar/scripts/control-magyar browser 4173 eval "localStorage.removeItem('quizWords'); localStorage.removeItem('randomWord'); localStorage.removeItem('phrasebook.customPhrases'); sessionStorage.removeItem('completedQuizWords'); true"
+./.agents/skills/verify-magyar/scripts/control-magyar browser 4173 close
+```
+
+Do not clear storage on a different port, the unnamed default `agent-browser` session, or a user-owned tab.
 
 Then stop only the controller-owned instance:
 
@@ -113,7 +132,8 @@ The controller validates the recorded PID and command before signaling it. It ne
 ./.agents/skills/verify-magyar/scripts/control-magyar doctor 4173
 ./.agents/skills/verify-magyar/scripts/control-magyar evidence-dir 4173
 ./.agents/skills/verify-magyar/scripts/control-magyar artifact 4173 /source/file proof.png
+./.agents/skills/verify-magyar/scripts/control-magyar browser 4173 snapshot -i
 ./.agents/skills/verify-magyar/scripts/control-magyar cleanup 4173
 ```
 
-It manages the exact Vite process it starts, checks readiness and ownership, and copies browser-produced evidence into the persistent run directory. It does not drive the browser or mutate application data.
+It manages the exact Vite process it starts, checks readiness and ownership, copies browser-produced evidence, and proxies `agent-browser` through an isolated worktree-and-port session. Browser commands still act on the real UI and may mutate application data; follow the feature map's boundary rules.

@@ -18,7 +18,7 @@ Conjugator lets a user choose tense, voice, and verbs, then answer six pronoun f
 - Choose the `Conjugator` card on Home.
 - Open `/conjugator` directly.
 
-## Driving it with T3 Code collaborative browser
+## Driving it with the browser harness
 
 Preconditions:
 
@@ -26,12 +26,12 @@ Preconditions:
 - The tab is on `/conjugator` at the same port.
 - The browser origin belongs to this verification run.
 
-- **Isolate one verb.** Choose `Clear all`, then click the stable selector `#word-lát` in the row labeled `lát`. The custom checkbox currently exposes no accessible name of its own. The preferences summary reads `1 selected`, and `Start Quiz` is enabled.
+- **Isolate one verb.** Choose `Clear all`, then select the checkbox named `lát`. With `agent-browser`, use `find role checkbox click --name "lát"`; if T3 cannot resolve it semantically, use the stable selector `#word-lát` in the row labeled `lát`. The preferences summary reads `1 selected`, and `Start Quiz` is enabled.
 - **Start defaults.** Choose `Start Quiz`. The URL includes `/conjugator/present/indefinite`; a card shows the lemma `lát`, badges `present` and `indefinite`, and `Word 1 of 1`.
 - **Submit a wrong answer.** Fill all six labeled inputs with a non-empty wrong value and choose `Submit`. Incorrect indicators appear and `Hint` becomes enabled.
 - **Use a hint.** Focus the `én` input and choose `Hint`. Its value advances toward `látok` by one correct character from the first mismatch.
 - **Submit correct answers.** Fill `én=látok`, `te=látsz`, `ő=lát`, `mi=látunk`, `ti=láttok`, and `ők=látnak`; choose `Submit`. Capture the transient success toast immediately, then require all six inputs to have correct indicators and the enabled progression control to be named `Finish Quiz`.
-- **Proof.** Record from the preference selection through the correct result. Save before/after screenshots that show the app identity, `Word 1 of 1`, the six fields, and `Finish Quiz`.
+- **Proof.** Capture the preference selection through the correct result with before/after screenshots, semantic snapshots, and an action transcript. Add video when the chosen harness supports it. The evidence must show the app identity, `Word 1 of 1`, the six fields, and `Finish Quiz`.
 
 ## Gotchas
 

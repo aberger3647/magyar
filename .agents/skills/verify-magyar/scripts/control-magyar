@@ -8,6 +8,7 @@ usage() {
     '  control-magyar doctor [port]' \
     '  control-magyar evidence-dir [port]' \
     '  control-magyar artifact [port] <source-file> <artifact-name>' \
+    '  control-magyar browser <port> <agent-browser arguments...>' \
     '  control-magyar cleanup [port]'
 }
 
@@ -153,6 +154,17 @@ case "$action" in
     evidence_dir="$(read_required_file "$evidence_file")"
     cp "$source_file" "${evidence_dir}/${artifact_name}"
     printf '%s\n' "${evidence_dir}/${artifact_name}"
+    ;;
+  browser)
+    browser_port="${1:-}"
+    [[ -n "$browser_port" ]] || { usage; exit 1; }
+    set_paths "$browser_port"
+    shift
+    (( $# > 0 )) || { usage; exit 1; }
+    doctor_impl >/dev/null
+    command -v agent-browser >/dev/null || die "agent-browser is unavailable; install it before using the standalone fallback"
+    browser_session="$(cd "$repo_root" && agent-browser session id --scope worktree --prefix "verify-magyar-${port}")"
+    AGENT_BROWSER_SESSION="$browser_session" agent-browser "$@"
     ;;
   cleanup)
     set_paths "${1:-4173}"
