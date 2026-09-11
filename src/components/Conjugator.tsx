@@ -24,6 +24,7 @@ import { setRandomWord } from "../lib/setRandomWord";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useLocalStorage } from "@/lib/useLocalStorage";
 import { AccentedLetters } from "./AccentedLetters";
+import { isConjugationAnswerCorrect } from "@/lib/conjugatorQuiz";
 
 const COMPLETED_WORDS_SESSION_KEY = "completedQuizWords";
 const PRONOUN_KEYS = ["én", "te", "ő", "mi", "ti", "ők"] as const;
@@ -157,11 +158,38 @@ export const Conjugator = () => {
   });
 
   const FormField = form.Field;
+  const resetAnswerForm = () => {
+    setIsDisabled(true);
+    setIsHintDisabled(true);
+    setReadyToFinishQuiz(false);
+    form.reset();
+  };
+  const showRandomWord = () => {
+    setRandomWord({
+      words: availableConjugations,
+      excludedWord: lemma,
+      setStoredWord,
+    });
+    resetAnswerForm();
+  };
   const resetSessionProgress = () => {
     sessionStorage.removeItem(COMPLETED_WORDS_SESSION_KEY);
     setCompletedWords([]);
     setStoredWord(null);
   };
+  const hasStoredWordInSelection = !!selectedConjugations.find(
+    (conjugation) => conjugation.lemma === storedWord
+  );
+  useEffect(() => {
+    if (!storedWord || !hasStoredWordInSelection) {
+      setRandomWord({ words: availableConjugations, setStoredWord });
+    }
+  }, [
+    availableConjugations,
+    hasStoredWordInSelection,
+    setStoredWord,
+    storedWord,
+  ]);
   if (availableConjugations.length === 0) {
     return (
       <>
@@ -186,19 +214,6 @@ export const Conjugator = () => {
       </>
     );
   }
-  const hasStoredWordInSelection = !!selectedConjugations.find(
-    (conjugation) => conjugation.lemma === storedWord
-  );
-  useEffect(() => {
-    if (!storedWord || !hasStoredWordInSelection) {
-      setRandomWord(availableConjugations, setStoredWord);
-    }
-  }, [
-    availableConjugations,
-    hasStoredWordInSelection,
-    setStoredWord,
-    storedWord,
-  ]);
   const handleCharInsert = (char: string) => {
     const currentVal = form.getFieldValue(activeField) || "";
     const targetInput = inputRefs.current[activeField];
@@ -358,7 +373,7 @@ export const Conjugator = () => {
                 );
               })}
             </FieldGroup>
-            <div className="flex gap-3">
+            <div className="flex flex-wrap justify-center gap-3">
               <Button type="submit">Submit</Button>
               <Button
                 type="button"
@@ -369,6 +384,9 @@ export const Conjugator = () => {
                 }}
               >
                 Hint
+              </Button>
+              <Button type="button" variant="outline" onClick={showRandomWord}>
+                Random Word
               </Button>
               <Button
                 type="button"
@@ -384,11 +402,12 @@ export const Conjugator = () => {
                   if (lemma) {
                     markWordAsCompleted(lemma);
                   }
-                  setRandomWord(availableConjugations, setStoredWord);
-                  setIsDisabled(true);
-                  setIsHintDisabled(true);
-                  setReadyToFinishQuiz(false);
-                  form.reset();
+                  setRandomWord({
+                    words: availableConjugations,
+                    excludedWord: lemma,
+                    setStoredWord,
+                  });
+                  resetAnswerForm();
                 }}
               >
                 {readyToFinishQuiz ? "Finish Quiz" : "Next Verb"}
@@ -412,7 +431,7 @@ function getCorrectSubmissions(
     const voiceGroup = randomWord[tense][voice];
     const correctWord = voiceGroup ? voiceGroup[pronoun] : undefined;
     const userWord = userAnswers[pronoun];
-    if (correctWord === userWord) {
+    if (isConjugationAnswerCorrect(userWord, correctWord)) {
       return [pronoun];
     }
     return [];

@@ -1,16 +1,35 @@
 import conjugations from "../assets/conjugations.json";
 
-export const setRandomWord = (
-  words: typeof conjugations,
-  setStoredWord: (newValue: string | null) => void
-) => {
-  if (words.length === 0) {
-    setStoredWord(null);
-    return;
-  }
-  const numOfWords = words.length;
-  const randomNum = Math.floor(Math.random() * numOfWords);
-  const randomWordObj = words[randomNum];
-  const randomWord = randomWordObj.lemma;
-  setStoredWord(randomWord);
+type RandomWordOptions = {
+  words: typeof conjugations;
+  excludedWord?: string | null;
+  random?: () => number;
+};
+
+type SetRandomWordOptions = Omit<RandomWordOptions, "random"> & {
+  setStoredWord: (newValue: string | null) => void;
+};
+
+export const getRandomWord = ({
+  words,
+  excludedWord,
+  random = Math.random,
+}: RandomWordOptions): string | null => {
+  const alternatives = excludedWord
+    ? words.filter((word) => word.lemma !== excludedWord)
+    : words;
+  const candidates = alternatives.length > 0 ? alternatives : words;
+
+  if (candidates.length === 0) return null;
+
+  const randomIndex = Math.floor(random() * candidates.length);
+  return candidates[randomIndex]?.lemma ?? null;
+};
+
+export const setRandomWord = ({
+  words,
+  excludedWord,
+  setStoredWord,
+}: SetRandomWordOptions) => {
+  setStoredWord(getRandomWord({ words, excludedWord }));
 };
