@@ -20,6 +20,7 @@ import {
   CardContent,
 } from "./ui/card";
 import { PageTitle } from "./PageTitle";
+import { setRandomWord } from "@/lib/setRandomWord";
 
 export const QuizPrefsForm = () => {
   const navigate = useNavigate();
@@ -28,6 +29,7 @@ export const QuizPrefsForm = () => {
     "quizWords",
     allWords
   );
+  const [, setStoredWord] = useLocalStorage<string | null>("randomWord", null);
 
   const toggleWord = (word: string, checked: boolean) => {
     if (checked) {
@@ -51,6 +53,15 @@ export const QuizPrefsForm = () => {
   });
 
   const FormField = form.Field;
+  const startRandomQuiz = () => {
+    const tense = form.getFieldValue("tense");
+    const voice = form.getFieldValue("voice");
+    if (!tense || !voice) return;
+
+    sessionStorage.removeItem("completedQuizWords");
+    setRandomWord({ words: conjugations, setStoredWord });
+    navigate(`/conjugator/${tense}/${voice}?mode=random`);
+  };
 
   return (
     <>
@@ -59,7 +70,8 @@ export const QuizPrefsForm = () => {
         <CardHeader>
           <CardTitle>Choose Quiz Preferences</CardTitle>
           <CardDescription>
-            Select one tense, one voice, and at least one word
+            Choose a tense and voice, then use your word bank or get one random
+            word.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -256,9 +268,18 @@ export const QuizPrefsForm = () => {
                 </div>
               </FieldSet>
             </FieldGroup>
-            <Button className="mt-4" disabled={selectedWords.length === 0}>
-              Start Quiz
-            </Button>
+            <div className="mt-4 flex flex-wrap justify-center gap-3">
+              <Button disabled={selectedWords.length === 0}>
+                Start Quiz
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={startRandomQuiz}
+              >
+                Random Word
+              </Button>
+            </div>
           </form>
         </CardContent>
       </Card>

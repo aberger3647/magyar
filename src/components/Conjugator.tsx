@@ -17,7 +17,7 @@ import type { VerbConjugation } from "../types/verbConjugation";
 import type { Pronouns } from "../types/pronouns";
 import type { VoiceType } from "../types/types";
 import type { TenseType } from "../types/types";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { Badge } from "./ui/badge";
 import { CircleCheck, CircleX } from "lucide-react";
 import { setRandomWord } from "../lib/setRandomWord";
@@ -41,6 +41,8 @@ const formSchema = z.object({
 
 export const Conjugator = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const isRandomQuiz = searchParams.get("mode") === "random";
   const [storedWord, setStoredWord] = useLocalStorage<string | null>(
     "randomWord",
     null
@@ -67,12 +69,17 @@ export const Conjugator = () => {
     });
   };
   const selectedConjugations = useMemo(() => {
+    if (isRandomQuiz) {
+      return conjugations.filter(
+        (conjugation) => conjugation.lemma === storedWord
+      );
+    }
     if (selectedWords.length === 0) return conjugations;
     const selectedWordSet = new Set(selectedWords);
     return conjugations.filter((conjugation) =>
       selectedWordSet.has(conjugation.lemma)
     );
-  }, [selectedWords]);
+  }, [isRandomQuiz, selectedWords, storedWord]);
   const completedWordSet = useMemo(
     () => new Set(completedWords),
     [completedWords]
@@ -163,14 +170,6 @@ export const Conjugator = () => {
     setIsHintDisabled(true);
     setReadyToFinishQuiz(false);
     form.reset();
-  };
-  const showRandomWord = () => {
-    setRandomWord({
-      words: availableConjugations,
-      excludedWord: lemma,
-      setStoredWord,
-    });
-    resetAnswerForm();
   };
   const resetSessionProgress = () => {
     sessionStorage.removeItem(COMPLETED_WORDS_SESSION_KEY);
@@ -357,6 +356,9 @@ export const Conjugator = () => {
                             } w-64 md:w-96`}
                             aria-invalid={isInvalid}
                             autoComplete="off"
+                            autoCorrect="off"
+                            autoCapitalize="none"
+                            spellCheck={false}
                           />
                           <span className="flex h-8 w-6 shrink-0 items-center justify-center">
                             {isCorrect && (
@@ -384,9 +386,6 @@ export const Conjugator = () => {
                 }}
               >
                 Hint
-              </Button>
-              <Button type="button" variant="outline" onClick={showRandomWord}>
-                Random Word
               </Button>
               <Button
                 type="button"

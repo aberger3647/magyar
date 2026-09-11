@@ -27,7 +27,7 @@ Read `features/README.md` before driving a feature. Use the matching feature fil
 3. Start an isolated verification instance on port `4173` in a persistent terminal or an exec command that can yield a live session:
 
    ```bash
-   ./.claude/skills/verify-magyar/scripts/control-magyar launch 4173
+   ./.agents/skills/verify-magyar/scripts/control-magyar launch 4173
    ```
 
    The controller refuses an occupied port, records the exact process it owns, prints the loopback health URL and evidence directory, and then stays attached to this checkout's Vite process. Vite listens on `0.0.0.0` so the T3 environment-port preview can reach it; doctor still checks through `127.0.0.1`. The helper adds the machine's exact Tailscale DNS name to Vite's allowed hosts when it can detect one; set `VERIFY_MAGYAR_ALLOWED_HOST` explicitly if the preview uses a different hostname. In Codex, retain the yielded exec session ID. Runtime state lives in `/tmp/verify-magyar-4173`; evidence lives under `.verification-evidence/` and survives cleanup.
@@ -37,7 +37,7 @@ Read `features/README.md` before driving a feature. Use the matching feature fil
 Teardown is:
 
 ```bash
-./.claude/skills/verify-magyar/scripts/control-magyar cleanup 4173
+./.agents/skills/verify-magyar/scripts/control-magyar cleanup 4173
 ```
 
 Use the same port for every command in one run.
@@ -47,7 +47,7 @@ Use the same port for every command in one run.
 Run this first whenever the browser, route, or stored state looks wrong:
 
 ```bash
-./.claude/skills/verify-magyar/scripts/control-magyar doctor 4173
+./.agents/skills/verify-magyar/scripts/control-magyar doctor 4173
 ```
 
 Doctor is read-only. It requires all of the following: the recorded PID is alive, its command belongs to this checkout's Vite installation, that PID owns the requested listening port, the current Git revision matches the revision recorded at launch, and the served HTML contains Magyar's page title. Never drive an instance that fails doctor or was not started by this controller.
@@ -81,13 +81,13 @@ Record the action and the resulting state, not only the final screen.
 3. Copy every returned screenshot or recording into the run's evidence directory:
 
    ```bash
-   ./.claude/skills/verify-magyar/scripts/control-magyar artifact 4173 /path/returned/by/preview conjugator-after.png
+   ./.agents/skills/verify-magyar/scripts/control-magyar artifact 4173 /path/returned/by/preview conjugator-after.png
    ```
 
 4. Record the feature ID, route, port, and expected end state in `notes.txt` inside the same evidence directory. Get the directory with:
 
    ```bash
-   ./.claude/skills/verify-magyar/scripts/control-magyar evidence-dir 4173
+   ./.agents/skills/verify-magyar/scripts/control-magyar evidence-dir 4173
    ```
 
 Proof must exercise the production UI, not internal setters or test-only endpoints. For local persistence such as Phrasebook entries, reload or revisit the route and prove the value remains visible. For Flash Cards, visible UI is insufficient: ratings, edits, creates, and deletes write to shared Supabase tables or storage and require explicit authorization plus a read-only second view of the affected row/object. Mocks are acceptable only where the production boundary already provides isolation. Do not infer safety from a label such as dry-run; observe the database, storage, network, or filesystem boundary it claims to skip.
@@ -99,7 +99,7 @@ First remove only the browser scratch state created on the verification origin. 
 Then stop only the controller-owned instance:
 
 ```bash
-./.claude/skills/verify-magyar/scripts/control-magyar cleanup 4173
+./.agents/skills/verify-magyar/scripts/control-magyar cleanup 4173
 ```
 
 The controller validates the recorded PID and command before signaling it. It never kills by process name. Cleanup removes `/tmp/verify-magyar-4173` but intentionally leaves `.verification-evidence/<run>/` intact. After cleanup, confirm the evidence directory and its artifacts still exist.
@@ -109,11 +109,11 @@ The controller validates the recorded PID and command before signaling it. It ne
 `scripts/control-magyar` is executable and is the only shipped helper:
 
 ```bash
-./.claude/skills/verify-magyar/scripts/control-magyar launch 4173
-./.claude/skills/verify-magyar/scripts/control-magyar doctor 4173
-./.claude/skills/verify-magyar/scripts/control-magyar evidence-dir 4173
-./.claude/skills/verify-magyar/scripts/control-magyar artifact 4173 /source/file proof.png
-./.claude/skills/verify-magyar/scripts/control-magyar cleanup 4173
+./.agents/skills/verify-magyar/scripts/control-magyar launch 4173
+./.agents/skills/verify-magyar/scripts/control-magyar doctor 4173
+./.agents/skills/verify-magyar/scripts/control-magyar evidence-dir 4173
+./.agents/skills/verify-magyar/scripts/control-magyar artifact 4173 /source/file proof.png
+./.agents/skills/verify-magyar/scripts/control-magyar cleanup 4173
 ```
 
 It manages the exact Vite process it starts, checks readiness and ownership, and copies browser-produced evidence into the persistent run directory. It does not drive the browser or mutate application data.
