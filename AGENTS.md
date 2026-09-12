@@ -16,3 +16,13 @@ Single frontend service. Standard scripts live in `package.json`:
 - `npm run lint` currently reports pre-existing errors (in `src/components/ui/*` and `src/hooks/use-mobile.ts`) unrelated to environment setup — do not treat these as environment breakage.
 - The `import-anki` script (`npm run import-anki`) uses `better-sqlite3` (a native module) and is a maintenance tool, not part of the app runtime.
 - Flash Cards write to the shared remote Supabase `flashcards`/`review_logs` tables and upload images to the `cardimages` bucket — avoid creating/reviewing cards in tests unless you intend to mutate shared data. The Conjugator quiz is a safe, fully-local flow for end-to-end verification.
+
+### Verification and completion
+
+Local Conjugator, Grammar, and Phrasebook checks may be run, fixed, and rerun without asking at
+each step. Start with the focused test or browser flow for the changed behavior, then run the
+relevant build and lint scripts. Treat the documented pre-existing lint baseline separately, but
+do not add new findings. Shared Flash Card data changes remain explicit operations.
+
+The task is done when the requested behavior is visible, the affected local or shared-data boundary
+is verified, relevant checks pass, and the final diff contains no unrelated changes.
