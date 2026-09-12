@@ -109,7 +109,7 @@ Proof must exercise the production UI, not internal setters or test-only endpoin
 First remove only the browser scratch state created on the verification origin. With T3, use `preview_evaluate`. With the standalone fallback, run:
 
 ```bash
-./.agents/skills/verify-magyar/scripts/control-magyar browser 4173 eval "localStorage.removeItem('quizWords'); localStorage.removeItem('randomWord'); localStorage.removeItem('phrasebook.customPhrases'); sessionStorage.removeItem('completedQuizWords'); true"
+./.agents/skills/verify-magyar/scripts/control-magyar browser 4173 eval "localStorage.removeItem('quizWords'); localStorage.removeItem('quizPreferences'); localStorage.removeItem('randomWord'); localStorage.removeItem('phrasebook.customPhrases'); sessionStorage.removeItem('completedQuizWords'); true"
 ./.agents/skills/verify-magyar/scripts/control-magyar browser 4173 close
 ```
 

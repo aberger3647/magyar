@@ -176,6 +176,14 @@ export const Conjugator = () => {
     setCompletedWords([]);
     setStoredWord(null);
   };
+  const chooseRandomWord = () => {
+    setRandomWord({
+      words: isRandomQuiz ? conjugations : selectedConjugations,
+      excludedWord: lemma,
+      setStoredWord,
+    });
+    resetAnswerForm();
+  };
   const hasStoredWordInSelection = !!selectedConjugations.find(
     (conjugation) => conjugation.lemma === storedWord
   );
@@ -389,13 +397,22 @@ export const Conjugator = () => {
               </Button>
               <Button
                 type="button"
+                variant="outline"
+                onClick={(e) => {
+                  e.preventDefault();
+                  chooseRandomWord();
+                }}
+              >
+                Random Word
+              </Button>
+              <Button
+                type="button"
                 disabled={isDisabled || availableConjugations.length === 0}
                 onClick={(e) => {
                   e.preventDefault();
                   if (readyToFinishQuiz) {
-                    if (lemma) {
-                      markWordAsCompleted(lemma);
-                    }
+                    resetSessionProgress();
+                    navigate("/conjugator");
                     return;
                   }
                   if (lemma) {

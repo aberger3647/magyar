@@ -21,6 +21,27 @@ import {
 } from "./ui/card";
 import { PageTitle } from "./PageTitle";
 import { setRandomWord } from "@/lib/setRandomWord";
+import type { TenseType, VoiceType } from "@/types/types";
+
+type QuizPreferences = {
+  tense: TenseType;
+  voice: VoiceType;
+};
+
+const DEFAULT_QUIZ_PREFERENCES = {
+  tense: "present",
+  voice: "indefinite",
+} satisfies QuizPreferences;
+
+const isQuizPreferences = (value: unknown): value is QuizPreferences => {
+  if (typeof value !== "object" || value === null) return false;
+  if (!("tense" in value) || !("voice" in value)) return false;
+
+  return (
+    (value.tense === "present" || value.tense === "past") &&
+    (value.voice === "indefinite" || value.voice === "definite")
+  );
+};
 
 export const QuizPrefsForm = () => {
   const navigate = useNavigate();
@@ -29,7 +50,12 @@ export const QuizPrefsForm = () => {
     "quizWords",
     allWords
   );
+  const [storedQuizPreferences, setStoredQuizPreferences] =
+    useLocalStorage<unknown>("quizPreferences", DEFAULT_QUIZ_PREFERENCES);
   const [, setStoredWord] = useLocalStorage<string | null>("randomWord", null);
+  const quizPreferences = isQuizPreferences(storedQuizPreferences)
+    ? storedQuizPreferences
+    : DEFAULT_QUIZ_PREFERENCES;
 
   const toggleWord = (word: string, checked: boolean) => {
     if (checked) {
@@ -43,11 +69,9 @@ export const QuizPrefsForm = () => {
   };
 
   const form = useForm({
-    defaultValues: {
-      tense: "present",
-      voice: "indefinite",
-    },
+    defaultValues: quizPreferences,
     onSubmit: async ({ value: quizPrefs }) => {
+      setStoredQuizPreferences(quizPrefs);
       navigate(`/conjugator/${quizPrefs.tense}/${quizPrefs.voice}`);
     },
   });
@@ -108,9 +132,14 @@ export const QuizPrefsForm = () => {
                             name="tense"
                             value="present"
                             checked={field.state.value === "present"}
-                            onCheckedChange={(checked) =>
-                              field.handleChange(checked ? "present" : "")
-                            }
+                            onCheckedChange={(checked) => {
+                              if (!checked) return;
+                              field.handleChange("present");
+                              setStoredQuizPreferences({
+                                ...quizPreferences,
+                                tense: "present",
+                              });
+                            }}
                             onBlur={field.handleBlur}
                             aria-invalid={isInvalid}
                           />
@@ -138,9 +167,14 @@ export const QuizPrefsForm = () => {
                             name="tense"
                             value="past"
                             checked={field.state.value === "past"}
-                            onCheckedChange={(checked) =>
-                              field.handleChange(checked ? "past" : "")
-                            }
+                            onCheckedChange={(checked) => {
+                              if (!checked) return;
+                              field.handleChange("past");
+                              setStoredQuizPreferences({
+                                ...quizPreferences,
+                                tense: "past",
+                              });
+                            }}
                             onBlur={field.handleBlur}
                             aria-invalid={isInvalid}
                           />
@@ -178,9 +212,14 @@ export const QuizPrefsForm = () => {
                               name="voice"
                               value="indefinite"
                               checked={field.state.value === "indefinite"}
-                              onCheckedChange={(checked) =>
-                                field.handleChange(checked ? "indefinite" : "")
-                              }
+                              onCheckedChange={(checked) => {
+                                if (!checked) return;
+                                field.handleChange("indefinite");
+                                setStoredQuizPreferences({
+                                  ...quizPreferences,
+                                  voice: "indefinite",
+                                });
+                              }}
                               onBlur={field.handleBlur}
                               aria-invalid={isInvalid}
                             />
@@ -209,9 +248,14 @@ export const QuizPrefsForm = () => {
                               name="voice"
                               value="definite"
                               checked={field.state.value === "definite"}
-                              onCheckedChange={(checked) =>
-                                field.handleChange(checked ? "definite" : "")
-                              }
+                              onCheckedChange={(checked) => {
+                                if (!checked) return;
+                                field.handleChange("definite");
+                                setStoredQuizPreferences({
+                                  ...quizPreferences,
+                                  voice: "definite",
+                                });
+                              }}
                               onBlur={field.handleBlur}
                               aria-invalid={isInvalid}
                             />
