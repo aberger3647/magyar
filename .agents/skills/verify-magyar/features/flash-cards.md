@@ -25,7 +25,7 @@ Preconditions:
 
 - Controller doctor passes for the verification port.
 - `VITE_SUPABASE_URL` and an anon/publishable key were present when Vite launched.
-- Any create, rate, edit, or delete action has explicit user authorization because it mutates shared remote data.
+- Any create, rate, edit, or delete action has explicit user authorization because it mutates shared data.
 - The exact target card and cleanup/reversal plan are recorded before a mutation.
 
 - **Missing configuration.** When the Supabase environment is absent, open `/flash-cards` and require the alert `Flash Cards require Supabase configuration`; open `/flash-cards/create` and require the corresponding create alert. Stop there and report the production boundary as unavailable.
@@ -38,7 +38,7 @@ Preconditions:
 
 ## Gotchas
 
-- Flash Cards is the only app feature backed by shared Supabase; there is no local database, auth boundary, or disposable test tenant.
+- Flash Cards and Phrasebook are backed by the shared self-hosted Supabase stack; there is no auth boundary or disposable test tenant.
 - Rating updates `flashcards` and inserts `review_logs`. Create uploads to `cardimages` before inserting. Edit may upload a replacement and delete the old image. Delete is explicitly irreversible in the UI.
 - A card can be requeued soon after a low rating, so queue order alone does not prove the schedule write.
 - Control-Z/Command-Z is not the implementation: Undo is Control-Z and only after a successful rating, or the visible `Undo` button.

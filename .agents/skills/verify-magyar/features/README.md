@@ -8,7 +8,7 @@ This directory is the maintained source for verifying Magyar's user-facing behav
 - Require `npm run build` and `npm test` to pass before browser verification.
 - Launch with `scripts/control-magyar launch <port>` and require `doctor <port>` to pass.
 - Drive only the exact environment port started by this run. A unique port creates an isolated browser origin for localStorage and sessionStorage.
-- Magyar has no authentication. Conjugator, Grammar, Érzés, and the static portion of Search are local. Blog reads remote Strapi. Flash Cards and Phrasebook read and write the shared Supabase project.
+- Magyar has no authentication. Conjugator, Grammar, Érzés, and the static portion of Search are local. Blog reads remote Strapi. Flash Cards and Phrasebook read and write the shared self-hosted Supabase stack at `https://supabase.csbod.com`.
 - Never create, rate, edit, or delete a Flash Card or Phrasebook entry merely to smoke-test the UI. Those actions mutate shared tables or storage.
 
 ## Driving conventions

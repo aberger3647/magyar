@@ -1,6 +1,6 @@
 ---
 name: verify-magyar
-description: Verify Magyar's React web UI through the real browser when changing routes, learning tools, local persistence, or shared Supabase flash-card behavior.
+description: Verify Magyar's React web UI through the real browser when changing routes, learning tools, local persistence, or shared self-hosted Supabase behavior.
 ---
 
 # Verify Magyar
@@ -102,7 +102,7 @@ Record the action and the resulting state, not only the final screen.
 
 5. Record the feature ID, route, port, harness, expected end state, and whether video was captured or unavailable in `notes.txt` inside the same evidence directory.
 
-Proof must exercise the production UI, not internal setters or test-only endpoints. For local persistence such as Phrasebook entries, reload or revisit the route and prove the value remains visible. For Flash Cards, visible UI is insufficient: ratings, edits, creates, and deletes write to shared Supabase tables or storage and require explicit authorization plus a read-only second view of the affected row/object. Mocks are acceptable only where the production boundary already provides isolation. Do not infer safety from a label such as dry-run; observe the database, storage, network, or filesystem boundary it claims to skip.
+Proof must exercise the production UI, not internal setters or test-only endpoints. Phrasebook and Flash Cards write to shared self-hosted Supabase tables or storage. Their creates, edits, ratings, and deletes require explicit authorization plus a read-only second view of the affected row/object. Mocks are acceptable only where the production boundary already provides isolation. Do not infer safety from a label such as dry-run; observe the database, storage, network, or filesystem boundary it claims to skip.
 
 ## Cleanup
 

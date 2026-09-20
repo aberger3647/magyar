@@ -24,6 +24,7 @@ dist-ssr
 *.sw?
 
 .env
+supabase/.temp/
 
 # Local user-flow verification evidence
 .verification-evidence/

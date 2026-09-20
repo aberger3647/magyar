@@ -2,7 +2,7 @@
 
 **Learn Hungarian through conjugation quizzes, grammar lessons, flash cards, and useful everyday phrases.**
 
-🔗 **Live site:** [**magyar.netlify.app**](https://magyar.netlify.app/)
+🔗 **Live site:** [**magyar.alexberger.dev**](https://magyar.alexberger.dev/)
 
 ---
 
@@ -28,7 +28,7 @@ Anyone learning Hungarian who wants to:
 - ⚛️ **React 19 + Vite + TypeScript** - fast, modern front end
 - 🎨 **Tailwind CSS + Radix UI** - responsive, accessible UI components
 - 🧠 **TanStack Form + Zod** - form state and validation
-- ☁️ **Supabase** - flashcard storage, image hosting, and typed DB access
+- ☁️ **Self-hosted Supabase** - phrasebook and flashcard persistence, image hosting, and typed DB access
 - 🔁 **ts-fsrs** - spaced repetition scheduling for study cards
 
 ---

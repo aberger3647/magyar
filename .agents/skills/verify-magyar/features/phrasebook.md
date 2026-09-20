@@ -24,7 +24,7 @@ Phrasebook lets a user add and edit Hungarian/English phrase pairs stored in sha
 Preconditions:
 
 - Controller doctor passes for the verification port.
-- Supabase environment variables point to the intended shared project.
+- Supabase environment variables point to the intended shared self-hosted stack at `https://supabase.csbod.com`.
 - Start at `/phrasebook` on the isolated verification origin.
 - No existing custom phrase equals `Jó tesztelést!` / `Happy testing!`.
 - Explicit authorization was given to create, edit, and delete a temporary shared row.
