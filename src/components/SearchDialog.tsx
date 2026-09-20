@@ -15,11 +15,11 @@ import {
   blogDocuments,
   groupSearchResults,
   phraseDocuments,
-  readCustomPhrasesFromStorage,
   searchSite,
   type RankedSearchResult,
   type SearchDocument,
 } from "@/lib/search";
+import { listPhrasebookEntries } from "@/lib/phrasebook";
 import { cn } from "@/lib/utils";
 
 type SearchContextValue = {
@@ -31,8 +31,12 @@ const SearchContext = React.createContext<SearchContextValue | null>(null);
 
 let blogDocsCache: SearchDocument[] | null = null;
 
-function loadCustomPhraseDocuments(): SearchDocument[] {
-  return phraseDocuments(readCustomPhrasesFromStorage(), "custom-phrase");
+async function loadCustomPhraseDocuments(): Promise<SearchDocument[]> {
+  try {
+    return phraseDocuments(await listPhrasebookEntries(), "custom-phrase");
+  } catch {
+    return [];
+  }
 }
 
 async function loadBlogDocuments(): Promise<SearchDocument[]> {
@@ -99,8 +103,11 @@ function SearchDialog() {
     if (!open) return;
     setQuery("");
     setActiveIndex(0);
-    setExtras(loadCustomPhraseDocuments());
+    setExtras([]);
     let cancelled = false;
+    loadCustomPhraseDocuments().then((docs) => {
+      if (!cancelled) setExtras((current) => [...current, ...docs]);
+    });
     loadBlogDocuments().then((docs) => {
       if (!cancelled && docs.length > 0) {
         setExtras((current) => {

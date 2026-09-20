@@ -24,7 +24,7 @@ export const isSupabaseConfigured = () => configuration.kind === "configured";
 export const getSupabaseClient = (): SupabaseClient<Database> => {
   if (configuration.kind === "missing") {
     throw new Error(
-      "Flash Cards require VITE_SUPABASE_URL and a Supabase anon or publishable key.",
+      "This feature requires VITE_SUPABASE_URL and a Supabase anon or publishable key.",
     );
   }
 

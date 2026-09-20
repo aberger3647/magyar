@@ -65,6 +65,27 @@ export type Database = {
         }
         Relationships: []
       }
+      phrasebook_entries: {
+        Row: {
+          created_at: string
+          english: string
+          hungarian: string
+          id: number
+        }
+        Insert: {
+          created_at?: string
+          english: string
+          hungarian: string
+          id?: number
+        }
+        Update: {
+          created_at?: string
+          english?: string
+          hungarian?: string
+          id?: number
+        }
+        Relationships: []
+      }
       review_logs: {
         Row: {
           created_at: string

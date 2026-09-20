@@ -164,30 +164,6 @@ function verbForms(entry: ConjugationEntry): string[] {
   ];
 }
 
-const CUSTOM_PHRASES_KEY = "phrasebook.customPhrases";
-
-export function readCustomPhrasesFromStorage(): {
-  hungarian: string;
-  english: string;
-}[] {
-  if (typeof localStorage === "undefined") return [];
-  try {
-    const raw = localStorage.getItem(CUSTOM_PHRASES_KEY);
-    if (!raw) return [];
-    const parsed = JSON.parse(raw) as unknown;
-    if (!Array.isArray(parsed)) return [];
-    return parsed.filter(
-      (item): item is { hungarian: string; english: string } =>
-        typeof item === "object" &&
-        item !== null &&
-        typeof (item as { hungarian?: unknown }).hungarian === "string" &&
-        typeof (item as { english?: unknown }).english === "string",
-    );
-  } catch {
-    return [];
-  }
-}
-
 export function phraseDocuments(
   items: { hungarian: string; english: string }[],
   idPrefix = "phrase",

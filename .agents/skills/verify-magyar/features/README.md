@@ -8,8 +8,8 @@ This directory is the maintained source for verifying Magyar's user-facing behav
 - Require `npm run build` and `npm test` to pass before browser verification.
 - Launch with `scripts/control-magyar launch <port>` and require `doctor <port>` to pass.
 - Drive only the exact environment port started by this run. A unique port creates an isolated browser origin for localStorage and sessionStorage.
-- Magyar has no authentication. Conjugator, Grammar, Phrasebook, Érzés, and the static portion of Search are local. Blog reads remote Strapi. Flash Cards reads and writes the shared remote Supabase project.
-- Never create, rate, edit, or delete a Flash Card merely to smoke-test the UI. Those actions mutate shared tables or storage.
+- Magyar has no authentication. Conjugator, Grammar, Érzés, and the static portion of Search are local. Blog reads remote Strapi. Flash Cards and Phrasebook read and write the shared Supabase project.
+- Never create, rate, edit, or delete a Flash Card or Phrasebook entry merely to smoke-test the UI. Those actions mutate shared tables or storage.
 
 ## Driving conventions
 
@@ -41,7 +41,7 @@ Each feature file starts with an H1 title and one paragraph describing the visib
 
 - [Conjugator quiz](./conjugator.md) covers preferences, word selection, answering, hints, and completion.
 - [Grammar lessons](./grammar.md) covers the lesson index and desktop/mobile lesson navigation.
-- [Phrasebook](./phrasebook.md) covers adding locally persisted phrases, filtering, URLs, and empty states.
+- [Phrasebook](./phrasebook.md) covers shared phrase persistence, editing, filtering, URLs, and empty states.
 - [Site search](./search.md) covers the global dialog, full results page, keyboard entry, categories, and result navigation.
 - [Flash Cards](./flash-cards.md) covers study and create surfaces with mandatory shared-data safeguards.
 

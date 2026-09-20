@@ -10,11 +10,11 @@ import {
   blogDocuments,
   groupSearchResults,
   phraseDocuments,
-  readCustomPhrasesFromStorage,
   searchSite,
   type SearchCategory,
   type SearchDocument,
 } from "@/lib/search";
+import { listPhrasebookEntries } from "@/lib/phrasebook";
 import { cn } from "@/lib/utils";
 
 const FILTERS: { value: "all" | SearchCategory; label: string }[] = [
@@ -28,18 +28,12 @@ const FILTERS: { value: "all" | SearchCategory; label: string }[] = [
   { value: "blog", label: SEARCH_CATEGORY_LABELS.blog },
 ];
 
-function loadCustomPhraseDocuments(): SearchDocument[] {
-  return phraseDocuments(readCustomPhrasesFromStorage(), "custom-phrase");
-}
-
 export function SearchPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const urlQuery = searchParams.get("q") ?? "";
   const [query, setQuery] = React.useState(urlQuery);
   const [category, setCategory] = React.useState<"all" | SearchCategory>("all");
-  const [extras, setExtras] = React.useState<SearchDocument[]>(() =>
-    loadCustomPhraseDocuments(),
-  );
+  const [extras, setExtras] = React.useState<SearchDocument[]>([]);
   const inputRef = React.useRef<HTMLInputElement>(null);
 
   React.useEffect(() => {
@@ -52,6 +46,18 @@ export function SearchPage() {
 
   React.useEffect(() => {
     let cancelled = false;
+    listPhrasebookEntries()
+      .then((entries) => {
+        if (!cancelled) {
+          setExtras((current) => [
+            ...current.filter((doc) => doc.category !== "phrase"),
+            ...phraseDocuments(entries, "custom-phrase"),
+          ]);
+        }
+      })
+      .catch(() => {
+        /* Synced phrases are optional for search; keep static results. */
+      });
     listPosts()
       .then((posts) => {
         if (cancelled) return;

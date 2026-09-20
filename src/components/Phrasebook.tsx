@@ -4,43 +4,78 @@ import * as React from "react";
 import { useSearchParams } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useLocalStorage } from "@/lib/useLocalStorage";
 import { textMatchesQuery } from "@/lib/search";
+import {
+  createPhrasebookEntry,
+  deletePhrasebookEntry,
+  listPhrasebookEntries,
+  migrateLocalPhrasebookEntries,
+  updatePhrasebookEntry,
+  type PhrasebookEntry,
+} from "@/lib/phrasebook";
+import { isSupabaseConfigured } from "@/lib/supabase";
 import { cn } from "@/lib/utils";
-
-type CustomPhrase = { hungarian: string; english: string };
 
 export const Phrasebook = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const filter = searchParams.get("q") ?? "";
-  const [customPhrases, setCustomPhrases] = useLocalStorage<CustomPhrase[]>(
-    "phrasebook.customPhrases",
-    [],
-  );
-
+  const [customPhrases, setCustomPhrases] = React.useState<PhrasebookEntry[]>([]);
   const [hungarian, setHungarian] = React.useState("");
   const [english, setEnglish] = React.useState("");
   const [isEditing, setIsEditing] = React.useState(false);
+  const [isLoading, setIsLoading] = React.useState(true);
+  const [isSaving, setIsSaving] = React.useState(false);
+  const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
+
+  React.useEffect(() => {
+    let cancelled = false;
+
+    const load = async () => {
+      if (!isSupabaseConfigured()) {
+        setErrorMessage("Phrasebook sync is not configured.");
+        setIsLoading(false);
+        return;
+      }
+
+      try {
+        await migrateLocalPhrasebookEntries();
+        const entries = await listPhrasebookEntries();
+        if (!cancelled) setCustomPhrases(entries);
+      } catch (error) {
+        if (!cancelled) {
+          setErrorMessage(
+            error instanceof Error ? error.message : "Could not load saved phrases.",
+          );
+        }
+      } finally {
+        if (!cancelled) setIsLoading(false);
+      }
+    };
+
+    void load();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const allPhrases = React.useMemo<
-    { phrase: CustomPhrase; customIndex?: number }[]
+    { phrase: { hungarian: string; english: string }; customId?: number }[]
   >(() => {
     const normalizedCustom = customPhrases
-      .map((phrase, customIndex) => ({
+      .map((phrase) => ({
         phrase: {
           hungarian: phrase.hungarian.trim(),
           english: phrase.english.trim(),
         },
-        customIndex,
+        customId: phrase.id,
       }))
       .filter(
         ({ phrase }) =>
           phrase.hungarian.length > 0 && phrase.english.length > 0,
       );
 
-    // Show newest custom phrases first, then the built-in list.
     return [
-      ...normalizedCustom.reverse(),
+      ...normalizedCustom,
       ...phrases.map((phrase) => ({ phrase })),
     ];
   }, [customPhrases]);
@@ -60,16 +95,27 @@ export const Phrasebook = () => {
       <div className="md:w-2xl w-full">
         <form
           className="mb-4 rounded-md border bg-card p-4"
-          onSubmit={(e) => {
+          onSubmit={async (e) => {
             e.preventDefault();
-            if (!canSubmit) return;
+            if (!canSubmit || isSaving) return;
 
-            setCustomPhrases([
-              ...customPhrases,
-              { hungarian: hungarian.trim(), english: english.trim() },
-            ]);
-            setHungarian("");
-            setEnglish("");
+            setIsSaving(true);
+            setErrorMessage(null);
+            try {
+              const entry = await createPhrasebookEntry(
+                hungarian.trim(),
+                english.trim(),
+              );
+              setCustomPhrases((current) => [entry, ...current]);
+              setHungarian("");
+              setEnglish("");
+            } catch (error) {
+              setErrorMessage(
+                error instanceof Error ? error.message : "Could not save the phrase.",
+              );
+            } finally {
+              setIsSaving(false);
+            }
           }}
         >
           <div className="grid gap-3 md:grid-cols-2">
@@ -99,11 +145,17 @@ export const Phrasebook = () => {
             </div>
           </div>
           <div className="mt-3 flex justify-end">
-            <Button type="submit" disabled={!canSubmit}>
-              Add phrase
+            <Button type="submit" disabled={!canSubmit || isSaving}>
+              {isSaving ? "Saving…" : "Add phrase"}
             </Button>
           </div>
         </form>
+
+        {errorMessage && (
+          <p role="alert" className="mb-4 text-sm text-destructive">
+            {errorMessage}
+          </p>
+        )}
 
         <div className="mb-4">
           <label className="sr-only" htmlFor="phrasebook-search">
@@ -125,7 +177,7 @@ export const Phrasebook = () => {
           />
         </div>
 
-        {customPhrases.length > 0 && (
+        {!isLoading && customPhrases.length > 0 && (
           <div className="mb-4 flex items-center justify-between gap-3">
             <p className="text-sm text-muted-foreground">
               {customPhrases.length} saved {customPhrases.length === 1 ? "phrase" : "phrases"}
@@ -146,7 +198,7 @@ export const Phrasebook = () => {
           </p>
         )}
 
-        {visiblePhrases.map(({ phrase, customIndex }, idx) => {
+        {visiblePhrases.map(({ phrase, customId }, idx) => {
           const isExact =
             filter.trim().length > 0 && phrase.hungarian === filter.trim();
           return (
@@ -158,40 +210,53 @@ export const Phrasebook = () => {
               )}
               onSubmit={(event) => {
                 event.preventDefault();
-                if (customIndex === undefined) return;
+                if (customId === undefined) return;
 
                 const formData = new FormData(event.currentTarget);
                 const nextHungarian = String(formData.get("hungarian") ?? "").trim();
                 const nextEnglish = String(formData.get("english") ?? "").trim();
                 if (!nextHungarian || !nextEnglish) return;
 
-                setCustomPhrases(
-                  customPhrases.map((customPhrase, index) =>
-                    index === customIndex
-                      ? { hungarian: nextHungarian, english: nextEnglish }
-                      : customPhrase,
-                  ),
-                );
+                setErrorMessage(null);
+                void updatePhrasebookEntry(
+                  customId,
+                  nextHungarian,
+                  nextEnglish,
+                )
+                  .then((updated) => {
+                    setCustomPhrases((current) =>
+                      current.map((entry) =>
+                        entry.id === updated.id ? updated : entry,
+                      ),
+                    );
+                  })
+                  .catch((error: unknown) => {
+                    setErrorMessage(
+                      error instanceof Error
+                        ? error.message
+                        : "Could not update the phrase.",
+                    );
+                  });
               }}
             >
-              {isEditing && customIndex !== undefined ? (
+              {isEditing && customId !== undefined ? (
                 <div className="grid w-full gap-3 md:grid-cols-[1fr_1fr_auto_auto] md:items-end">
                   <div className="grid gap-2">
-                    <label className="text-sm font-medium" htmlFor={`phrase-hungarian-${customIndex}`}>
+                    <label className="text-sm font-medium" htmlFor={`phrase-hungarian-${customId}`}>
                       Magyar
                     </label>
                     <Input
-                      id={`phrase-hungarian-${customIndex}`}
+                      id={`phrase-hungarian-${customId}`}
                       name="hungarian"
                       defaultValue={phrase.hungarian}
                     />
                   </div>
                   <div className="grid gap-2">
-                    <label className="text-sm font-medium" htmlFor={`phrase-english-${customIndex}`}>
+                    <label className="text-sm font-medium" htmlFor={`phrase-english-${customId}`}>
                       English
                     </label>
                     <Input
-                      id={`phrase-english-${customIndex}`}
+                      id={`phrase-english-${customId}`}
                       name="english"
                       defaultValue={phrase.english}
                     />
@@ -200,11 +265,22 @@ export const Phrasebook = () => {
                   <Button
                     type="button"
                     variant="destructive"
-                    onClick={() =>
-                      setCustomPhrases(
-                        customPhrases.filter((_, index) => index !== customIndex),
-                      )
-                    }
+                    onClick={() => {
+                      setErrorMessage(null);
+                      void deletePhrasebookEntry(customId)
+                        .then(() => {
+                          setCustomPhrases((current) =>
+                            current.filter((entry) => entry.id !== customId),
+                          );
+                        })
+                        .catch((error: unknown) => {
+                          setErrorMessage(
+                            error instanceof Error
+                              ? error.message
+                              : "Could not delete the phrase.",
+                          );
+                        });
+                    }}
                   >
                     Delete
                   </Button>
