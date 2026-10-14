@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
+import remarkBreaks from "remark-breaks";
 import remarkGfm from "remark-gfm";
 import { getPostBySlug, type StrapiPost } from "@/lib/strapi";
 import { blogMarkdownComponents } from "@/lib/blogMarkdown";
@@ -101,7 +102,7 @@ function BlogPostLoaded({ slug }: { slug: string }) {
       {post.body ? (
         <div className="w-full border-t border-border pt-6">
           <ReactMarkdown
-            remarkPlugins={[remarkGfm]}
+            remarkPlugins={[remarkGfm, remarkBreaks]}
             components={blogMarkdownComponents}
           >
             {post.body}
