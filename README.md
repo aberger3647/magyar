@@ -36,3 +36,5 @@ Anyone learning Hungarian who wants to:
 ## 🪄 License
 
 This project is licensed under the **MIT License**.
+
+The favicon and app icons use the 🇭🇺 flag from [Twemoji](https://github.com/jdecked/twemoji), licensed under [CC-BY 4.0](https://creativecommons.org/licenses/by/4.0/).
