@@ -24,7 +24,10 @@ import { setRandomWord } from "../lib/setRandomWord";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useLocalStorage } from "@/lib/useLocalStorage";
 import { AccentedLetters } from "./AccentedLetters";
-import { isConjugationAnswerCorrect } from "@/lib/conjugatorQuiz";
+import {
+  hasConjugationForm,
+  isConjugationAnswerCorrect,
+} from "@/lib/conjugatorQuiz";
 
 const COMPLETED_WORDS_SESSION_KEY = "completedQuizWords";
 const PRONOUN_KEYS = ["én", "te", "ő", "mi", "ti", "ők"] as const;
@@ -68,18 +71,29 @@ export const Conjugator = () => {
       return next;
     });
   };
+  const { tense, voice } = useParams<{
+    tense: TenseType;
+    voice: VoiceType;
+  }>();
+  const quizConjugations = useMemo(
+    () =>
+      conjugations.filter((conjugation) =>
+        hasConjugationForm(conjugation, tense ?? "present", voice ?? "indefinite")
+      ),
+    [tense, voice]
+  );
   const selectedConjugations = useMemo(() => {
     if (isRandomQuiz) {
-      return conjugations.filter(
+      return quizConjugations.filter(
         (conjugation) => conjugation.lemma === storedWord
       );
     }
-    if (selectedWords.length === 0) return conjugations;
+    if (selectedWords.length === 0) return quizConjugations;
     const selectedWordSet = new Set(selectedWords);
-    return conjugations.filter((conjugation) =>
+    return quizConjugations.filter((conjugation) =>
       selectedWordSet.has(conjugation.lemma)
     );
-  }, [isRandomQuiz, selectedWords, storedWord]);
+  }, [isRandomQuiz, quizConjugations, selectedWords, storedWord]);
   const completedWordSet = useMemo(
     () => new Set(completedWords),
     [completedWords]
@@ -103,10 +117,6 @@ export const Conjugator = () => {
   const [isHintDisabled, setIsHintDisabled] = useState(true);
   const [activeField, setActiveField] = useState<PronounKey>("én");
   const [readyToFinishQuiz, setReadyToFinishQuiz] = useState(false);
-  const { tense, voice } = useParams<{
-    tense: TenseType;
-    voice: VoiceType;
-  }>();
   const inputRefs = useRef<Record<string, HTMLInputElement | null>>({});
   // Keep showing the current word even after it's marked completed;
   // we only advance to a new word when the user clicks "Next Verb".
@@ -178,7 +188,7 @@ export const Conjugator = () => {
   };
   const chooseRandomWord = () => {
     setRandomWord({
-      words: isRandomQuiz ? conjugations : selectedConjugations,
+      words: isRandomQuiz ? quizConjugations : selectedConjugations,
       excludedWord: lemma,
       setStoredWord,
     });

@@ -1,4 +1,4 @@
-import { useForm } from "@tanstack/react-form";
+import { useForm, useStore } from "@tanstack/react-form";
 import { Checkbox } from "@/components/ui/checkbox";
 import conjugations from "../assets/conjugations.json";
 import { useLocalStorage } from "@/lib/useLocalStorage";
@@ -21,6 +21,7 @@ import {
 } from "./ui/card";
 import { PageTitle } from "./PageTitle";
 import { setRandomWord } from "@/lib/setRandomWord";
+import { hasConjugationForm } from "@/lib/conjugatorQuiz";
 import type { TenseType, VoiceType } from "@/types/types";
 
 type QuizPreferences = {
@@ -77,13 +78,33 @@ export const QuizPrefsForm = () => {
   });
 
   const FormField = form.Field;
+  const { tense: currentTense, voice: currentVoice } = useStore(
+    form.store,
+    (state) => state.values
+  );
+  const unavailableWords = new Set(
+    conjugations
+      .filter(
+        (conjugation) =>
+          !hasConjugationForm(conjugation, currentTense, currentVoice)
+      )
+      .map((conjugation) => conjugation.lemma)
+  );
+  const availableSelectedCount = selectedWords.filter(
+    (word) => !unavailableWords.has(word)
+  ).length;
   const startRandomQuiz = () => {
     const tense = form.getFieldValue("tense");
     const voice = form.getFieldValue("voice");
     if (!tense || !voice) return;
 
     sessionStorage.removeItem("completedQuizWords");
-    setRandomWord({ words: conjugations, setStoredWord });
+    setRandomWord({
+      words: conjugations.filter((conjugation) =>
+        hasConjugationForm(conjugation, tense, voice)
+      ),
+      setStoredWord,
+    });
     navigate(`/conjugator/${tense}/${voice}?mode=random`);
   };
 
@@ -276,7 +297,7 @@ export const QuizPrefsForm = () => {
               <FieldSet className="w-full">
                 <FieldLegend variant="label">Words</FieldLegend>
                 <div className="mb-2 flex items-center justify-between text-sm">
-                  <span>{selectedWords.length} selected</span>
+                  <span>{availableSelectedCount} selected</span>
                   <div className="flex gap-2">
                     <Button
                       type="button"
@@ -297,23 +318,37 @@ export const QuizPrefsForm = () => {
                   </div>
                 </div>
                 <div className="max-h-48 space-y-2 overflow-y-auto rounded-md border p-3">
-                  {allWords.map((word) => (
-                    <Field key={word} orientation="horizontal">
-                      <Checkbox
-                        id={`word-${word}`}
-                        checked={selectedWords.includes(word)}
-                        onCheckedChange={(checked) => toggleWord(word, !!checked)}
-                      />
-                      <FieldLabel htmlFor={`word-${word}`} className="font-normal">
-                        {word}
-                      </FieldLabel>
-                    </Field>
-                  ))}
+                  {allWords.map((word) => {
+                    const unavailable = unavailableWords.has(word);
+                    return (
+                      <Field
+                        key={word}
+                        orientation="horizontal"
+                        className={unavailable ? "opacity-50" : undefined}
+                      >
+                        <Checkbox
+                          id={`word-${word}`}
+                          checked={selectedWords.includes(word)}
+                          disabled={unavailable}
+                          onCheckedChange={(checked) =>
+                            toggleWord(word, !!checked)
+                          }
+                        />
+                        <FieldLabel
+                          htmlFor={`word-${word}`}
+                          className="font-normal"
+                        >
+                          {word}
+                          {unavailable && " (no definite form)"}
+                        </FieldLabel>
+                      </Field>
+                    );
+                  })}
                 </div>
               </FieldSet>
             </FieldGroup>
             <div className="mt-4 flex flex-wrap justify-center gap-3">
-              <Button disabled={selectedWords.length === 0}>
+              <Button disabled={availableSelectedCount === 0}>
                 Start Quiz
               </Button>
               <Button
