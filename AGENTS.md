@@ -1,5 +1,35 @@
 # AGENTS.md
 
+## Standing authorization
+
+The owner has pre-approved the whole delivery loop for this repository. In every thread,
+including one asked to change a single thing, carry the work through to production without
+pausing to ask for permission or confirmation:
+
+1. **Commit** all finished work, including changes earlier threads left uncommitted.
+2. **Land it on `main`.** Work on a branch or in a git or bb worktree is merged into `main`
+   (fetch first, resolve conflicts, rerun the checks). Remove the worktree and branch once
+   their commits are in `main`. Before finishing, check `git worktree list`, `git branch -a`,
+   and `git stash list` for stranded work, and either land it or confirm `main` already
+   contains it.
+3. **Push `main`.** Dokploy deploys pushes automatically. Afterwards confirm the live site
+   serves the change, for example by checking the built bundle or the page.
+4. **Apply pending migrations.** Compare `supabase/migrations/` with
+   `supabase_migrations.schema_migrations` and apply whatever is missing. Comparing first
+   keeps reruns safe.
+5. **Finish outstanding work** you come across instead of leaving it as a follow-up note.
+
+Run the checks from "Verification and completion" before pushing and fix what they find.
+The documented lint baseline is the one thing allowed to stay red.
+
+Limits that remain in force:
+
+- Touch only Magyar's own resources: this repository, the Dokploy application below, and
+  Magyar's migrations and tables. Other apps on the shared Supabase stack, including their
+  versions in `schema_migrations`, are off limits.
+- Before a migration drops or rewrites existing rows, dump the affected table with `pg_dump`.
+- Rebase or merge `origin/main` before pushing, and leave published history intact.
+
 ## Cursor Cloud specific instructions
 
 Magyar is a client-only React 19 + Vite + TypeScript SPA (Tailwind v4, shadcn/Radix UI). Its backend is the shared self-hosted **Supabase** stack on this server, accessed from the browser with the anon key. There is no auth.
@@ -12,7 +42,7 @@ Magyar is a client-only React 19 + Vite + TypeScript SPA (Tailwind v4, shadcn/Ra
 - The separate `supabase_*_stitchlog` containers and the stack exposed on localhost port `54321` belong to another project. They contain no Magyar tables. Do not migrate, restart, or delete them while working on Magyar.
 - This is not a Supabase Cloud project. Do not run `supabase login`, search for a `*.supabase.co` project, or ask for Supabase Cloud credentials. Inspect the self-hosted stack with `sudo docker` and use the repository migrations in `supabase/migrations/`.
 - `VITE_*` values are baked into the static bundle at build time. Dokploy already stores `VITE_SUPABASE_URL=https://supabase.csbod.com` and the matching anon/publishable keys. Verify the built bundle or public app after deployment rather than changing runtime container variables.
-- Database changes and production deployments are shared external mutations and still require explicit approval. When a migration is approved, apply it to the database container and record its version in `supabase_migrations.schema_migrations` as `supabase_admin`.
+- Apply migrations to the database container and record each version in `supabase_migrations.schema_migrations` as `supabase_admin`. Both this and deployment are covered by "Standing authorization" at the top of this file.
 
 ### Services / commands
 Single frontend service. Standard scripts live in `package.json`:
@@ -35,4 +65,6 @@ relevant build and lint scripts. Treat the documented pre-existing lint baseline
 do not add new findings. Shared Flash Card and Phrasebook data changes remain explicit operations.
 
 The task is done when the requested behavior is visible, the affected local or shared-data boundary
-is verified, relevant checks pass, and the final diff contains no unrelated changes.
+is verified, relevant checks pass, and the final diff contains no unrelated changes. Under
+"Standing authorization", done also means the work is committed, on `main`, pushed, and confirmed
+live.
