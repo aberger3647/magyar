@@ -994,20 +994,6 @@
     }
   },
   {
-    "translation": "to wait",
-    "lemma": "vár",
-    "infinitive": "várni",
-    "type": "back-vowel",
-    "present": {
-      "indefinite": { "én": "várok", "te": "vársz", "ő": "vár", "mi": "várunk", "ti": "vártok", "ők": "várnak" },
-      "definite": { "én": "várom", "te": "várod", "ő": "várja", "mi": "várjuk", "ti": "várjátok", "ők": "várják" }
-    },
-    "past": {
-      "indefinite": { "én": "vártam", "te": "vártál", "ő": "várt", "mi": "vártunk", "ti": "vártatok", "ők": "vártak" },
-      "definite": { "én": "vártam", "te": "vártad", "ő": "várta", "mi": "vártuk", "ti": "vártátok", "ők": "várták" }
-    }
-  },
-  {
     "translation": "to give",
     "lemma": "ad",
     "infinitive": "adni",

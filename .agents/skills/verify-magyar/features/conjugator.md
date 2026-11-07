@@ -42,6 +42,5 @@ Preconditions:
 - The selected verbs, tense/voice preferences, and current random verb persist in localStorage; completed verbs persist in sessionStorage. Clear only `quizWords`, `quizPreferences`, `randomWord`, and `completedQuizWords` on the verification origin during cleanup.
 - `Hint` stays disabled until a submitted answer is incomplete or wrong.
 - The quiz is random when several verbs are selected. Select only `lát` for deterministic proof.
-- The source data currently contains `vár` twice, which emits a duplicate React-key warning on the preferences page. Do not use `vár` for a deterministic smoke proof until that data issue is resolved.
 - Do not set storage or call quiz helpers to create the proved state; use the preferences UI.
 - `Finish Quiz` becomes the button label only after the final selected verb has all six correct answers.

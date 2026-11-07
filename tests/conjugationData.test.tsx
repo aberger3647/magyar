@@ -28,6 +28,13 @@ const pastDefiniteFromIndefinite = (indefinite: Forms): Record<Person, string | 
   ők: swapEnding(indefinite.ők, "ak", "ák") ?? swapEnding(indefinite.ők, "ek", "ék"),
 });
 
+test("every verb appears once, since the word picker keys rows by lemma", () => {
+  const lemmas = conjugations.map(({ lemma }) => lemma);
+  const duplicates = lemmas.filter((lemma, index) => lemmas.indexOf(lemma) !== index);
+
+  assert.deepEqual(duplicates, []);
+});
+
 test("past indefinite te, mi, ti and ők agree with the first-person form", () => {
   const problems: string[] = [];
 
