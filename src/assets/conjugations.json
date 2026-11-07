@@ -78,7 +78,7 @@
         "te": "dolgoztad",
         "ő": "dolgozta",
         "mi": "dolgoztuk",
-        "ti": "dolgozták",
+        "ti": "dolgoztátok",
         "ők": "dolgozták"
       }
     }
@@ -497,7 +497,7 @@
         "én": "kértem",
         "te": "kérted",
         "ő": "kérte",
-        "mi": "kérjük",
+        "mi": "kértük",
         "ti": "kértétek",
         "ők": "kérték"
       }
@@ -540,7 +540,7 @@
         "te": "gondoltad",
         "ő": "gondolta",
         "mi": "gondoltuk",
-        "ti": "gondoljátok",
+        "ti": "gondoltátok",
         "ők": "gondolták"
       }
     }
@@ -623,7 +623,7 @@
         "én": "írtam",
         "te": "írtad",
         "ő": "írta",
-        "mi": "írjuk",
+        "mi": "írtuk",
         "ti": "írtátok",
         "ők": "írták"
       }
@@ -640,7 +640,7 @@
         "te": "alszol",
         "ő": "alszik",
         "mi": "alszunk",
-        "ti": "alsztok",
+        "ti": "alszotok",
         "ők": "alusznak"
       },
       "definite": null
@@ -693,7 +693,7 @@
         "én": "vártam",
         "te": "vártad",
         "ő": "várta",
-        "mi": "várjuk",
+        "mi": "vártuk",
         "ti": "vártátok",
         "ők": "várták"
       }
@@ -836,7 +836,7 @@
     },
     "past": {
       "indefinite": { "én": "hívtam", "te": "hívtál", "ő": "hívott", "mi": "hívtunk", "ti": "hívtatok", "ők": "hívtak" },
-      "definite": { "én": "hívtam", "te": "hívtad", "ő": "hívta", "mi": "hívtuk", "ti": "hívtátok", "ők": "hívják" }
+      "definite": { "én": "hívtam", "te": "hívtad", "ő": "hívta", "mi": "hívtuk", "ti": "hívtátok", "ők": "hívták" }
     }
   },
   {
@@ -887,11 +887,11 @@
     "infinitive": "érezni",
     "type": "front-vowel",
     "present": {
-      "indefinite": { "én": "érezzek", "te": "érzel", "ő": "érez", "mi": "érzünk", "ti": "éreztek", "ők": "éreznek" },
-      "definite": { "én": "érezem", "te": "érezed", "ő": "érezi", "mi": "érezzük", "ti": "érezitek", "ők": "érezik" }
+      "indefinite": { "én": "érzek", "te": "érzel", "ő": "érez", "mi": "érzünk", "ti": "éreztek", "ők": "éreznek" },
+      "definite": { "én": "érzem", "te": "érzed", "ő": "érzi", "mi": "érezzük", "ti": "érzitek", "ők": "érzik" }
     },
     "past": {
-      "indefinite": { "én": "éreztem", "te": "érezte", "ő": "érezett", "mi": "éreztünk", "ti": "éreztetek", "ők": "éreztek" },
+      "indefinite": { "én": "éreztem", "te": "éreztél", "ő": "érzett", "mi": "éreztünk", "ti": "éreztetek", "ők": "éreztek" },
       "definite": { "én": "éreztem", "te": "érezted", "ő": "érezte", "mi": "éreztük", "ti": "éreztétek", "ők": "érezték" }
     }
   },
@@ -920,7 +920,7 @@
     },
     "past": {
       "indefinite": { "én": "használtam", "te": "használtál", "ő": "használt", "mi": "használtunk", "ti": "használtatok", "ők": "használtak" },
-      "definite": { "én": "használtam", "te": "használtad", "ő": "használta", "mi": "használjuk", "ti": "használtátok", "ők": "használták" }
+      "definite": { "én": "használtam", "te": "használtad", "ő": "használta", "mi": "használtuk", "ti": "használtátok", "ők": "használták" }
     }
   },
   {
@@ -948,7 +948,7 @@
     },
     "past": {
       "indefinite": { "én": "főztem", "te": "főztél", "ő": "főzött", "mi": "főztünk", "ti": "főztetek", "ők": "főztek" },
-      "definite": { "én": "főztem", "te": "főzted", "ő": "főzte", "mi": "főzzük", "ti": "főztétek", "ők": "főzték" }
+      "definite": { "én": "főztem", "te": "főzted", "ő": "főzte", "mi": "főztük", "ti": "főztétek", "ők": "főzték" }
     }
   },
   {
@@ -1004,7 +1004,7 @@
     },
     "past": {
       "indefinite": { "én": "vártam", "te": "vártál", "ő": "várt", "mi": "vártunk", "ti": "vártatok", "ők": "vártak" },
-      "definite": { "én": "vártam", "te": "vártad", "ő": "várta", "mi": "várjuk", "ti": "vártátok", "ők": "várják" }
+      "definite": { "én": "vártam", "te": "vártad", "ő": "várta", "mi": "vártuk", "ti": "vártátok", "ők": "várták" }
     }
   },
   {
@@ -1045,8 +1045,8 @@
       "definite": { "én": "kezdem", "te": "kezded", "ő": "kezdi", "mi": "kezdjük", "ti": "kezditek", "ők": "kezdik" }
     },
     "past": {
-      "indefinite": { "én": "kezdtem", "te": "kezdte", "ő": "kezdett", "mi": "kezdte", "ti": "kezdtetek", "ők": "kezdtek" },
-      "definite": { "én": "kezdtem", "te": "kezdted", "ő": "kezdte", "mi": "kezdjük", "ti": "kezdtétek", "ők": "kezdték" }
+      "indefinite": { "én": "kezdtem", "te": "kezdtél", "ő": "kezdett", "mi": "kezdtünk", "ti": "kezdtetek", "ők": "kezdtek" },
+      "definite": { "én": "kezdtem", "te": "kezdted", "ő": "kezdte", "mi": "kezdtük", "ti": "kezdtétek", "ők": "kezdték" }
     }
   },
   {
@@ -1055,8 +1055,8 @@
     "infinitive": "végezni",
     "type": "front-vowel",
     "present": {
-      "indefinite": { "én": "végezek", "te": "végezel", "ő": "végez", "mi": "végezünk", "ti": "végeztek", "ők": "végeznek" },
-      "definite": { "én": "végezem", "te": "végezed", "ő": "végezi", "mi": "végezzük", "ti": "végezitek", "ők": "végezik" }
+      "indefinite": { "én": "végzek", "te": "végzel", "ő": "végez", "mi": "végzünk", "ti": "végeztek", "ők": "végeznek" },
+      "definite": { "én": "végzem", "te": "végzed", "ő": "végzi", "mi": "végezzük", "ti": "végzitek", "ők": "végzik" }
     },
     "past": {
       "indefinite": { "én": "végeztem", "te": "végeztél", "ő": "végezett", "mi": "végeztünk", "ti": "végeztetek", "ők": "végeztek" },
@@ -1116,7 +1116,7 @@
     },
     "past": {
       "indefinite": { "én": "hoztam", "te": "hoztál", "ő": "hozott", "mi": "hoztunk", "ti": "hoztatok", "ők": "hoztak" },
-      "definite": { "én": "hoztam", "te": "hoztad", "ő": "hozta", "mi": "hozzuk", "ti": "hoztátok", "ők": "hozták" }
+      "definite": { "én": "hoztam", "te": "hoztad", "ő": "hozta", "mi": "hoztuk", "ti": "hoztátok", "ők": "hozták" }
     }
   },
   {
@@ -1144,7 +1144,7 @@
     },
     "past": {
       "indefinite": { "én": "zártam", "te": "zártál", "ő": "zárt", "mi": "zártunk", "ti": "zártatok", "ők": "zártak" },
-      "definite": { "én": "zártam", "te": "zártad", "ő": "zárta", "mi": "zárjuk", "ti": "zártátok", "ők": "zárták" }
+      "definite": { "én": "zártam", "te": "zártad", "ő": "zárta", "mi": "zártuk", "ti": "zártátok", "ők": "zárták" }
     }
   },
   {
@@ -1172,7 +1172,7 @@
     },
     "past": {
       "indefinite": { "én": "vágtam", "te": "vágtál", "ő": "vágott", "mi": "vágtunk", "ti": "vágtatok", "ők": "vágtak" },
-      "definite": { "én": "vágtam", "te": "vágtad", "ő": "vágta", "mi": "vágjuk", "ti": "vágjátok", "ők": "vágják" }
+      "definite": { "én": "vágtam", "te": "vágtad", "ő": "vágta", "mi": "vágtuk", "ti": "vágtátok", "ők": "vágták" }
     }
   },
   {
@@ -1186,7 +1186,7 @@
     },
     "past": {
       "indefinite": { "én": "dobtam", "te": "dobtál", "ő": "dobott", "mi": "dobtunk", "ti": "dobtatok", "ők": "dobtak" },
-      "definite": { "én": "dobtam", "te": "dobtad", "ő": "dobta", "mi": "dobjuk", "ti": "dobjátok", "ők": "dobják" }
+      "definite": { "én": "dobtam", "te": "dobtad", "ő": "dobta", "mi": "dobtuk", "ti": "dobtátok", "ők": "dobták" }
     }
   },
   {
@@ -1200,7 +1200,7 @@
     },
     "past": {
       "indefinite": { "én": "fogtam", "te": "fogtál", "ő": "fogott", "mi": "fogtunk", "ti": "fogtatok", "ők": "fogtak" },
-      "definite": { "én": "fogtam", "te": "fogtad", "ő": "fogta", "mi": "fogjuk", "ti": "fogjátok", "ők": "fogják" }
+      "definite": { "én": "fogtam", "te": "fogtad", "ő": "fogta", "mi": "fogtuk", "ti": "fogtátok", "ők": "fogták" }
     }
   },
   {
@@ -1214,7 +1214,7 @@
     },
     "past": {
       "indefinite": { "én": "viseltem", "te": "viseltél", "ő": "viselt", "mi": "viseltünk", "ti": "viseltetek", "ők": "viseltek" },
-      "definite": { "én": "viseltem", "te": "viselted", "ő": "viselte", "mi": "viseljük", "ti": "viseltétek", "ők": "viselték" }
+      "definite": { "én": "viseltem", "te": "viselted", "ő": "viselte", "mi": "viseltük", "ti": "viseltétek", "ők": "viselték" }
     }
   },
   {
@@ -1228,7 +1228,7 @@
     },
     "past": {
       "indefinite": { "én": "készítettem", "te": "készítettél", "ő": "készített", "mi": "készítettünk", "ti": "készítettetek", "ők": "készítettek" },
-      "definite": { "én": "készítettem", "te": "készítetted", "ő": "készítette", "mi": "készítjük", "ti": "készítettétek", "ők": "készítették" }
+      "definite": { "én": "készítettem", "te": "készítetted", "ő": "készítette", "mi": "készítettük", "ti": "készítettétek", "ők": "készítették" }
     }
   },
   {
@@ -1237,12 +1237,12 @@
     "infinitive": "javítani",
     "type": "back-vowel",
     "present": {
-      "indefinite": { "én": "javítok", "te": "javítasz", "ő": "javít", "mi": "javítunk", "ti": "javíttok", "ők": "javítanak" },
+      "indefinite": { "én": "javítok", "te": "javítasz", "ő": "javít", "mi": "javítunk", "ti": "javítotok", "ők": "javítanak" },
       "definite": { "én": "javítom", "te": "javítod", "ő": "javítja", "mi": "javítjuk", "ti": "javítjátok", "ők": "javítják" }
     },
     "past": {
       "indefinite": { "én": "javítottam", "te": "javítottál", "ő": "javított", "mi": "javítottunk", "ti": "javítottatok", "ők": "javítottak" },
-      "definite": { "én": "javítottam", "te": "javítottad", "ő": "javította", "mi": "javítjuk", "ti": "javítjátok", "ők": "javítják" }
+      "definite": { "én": "javítottam", "te": "javítottad", "ő": "javította", "mi": "javítottuk", "ti": "javítottátok", "ők": "javították" }
     }
   },
   {
@@ -1256,7 +1256,7 @@
     },
     "past": {
       "indefinite": { "én": "építettem", "te": "építettél", "ő": "épített", "mi": "építettünk", "ti": "építettetek", "ők": "építettek" },
-      "definite": { "én": "építettem", "te": "építetted", "ő": "építette", "mi": "építjük", "ti": "építettétek", "ők": "építették" }
+      "definite": { "én": "építettem", "te": "építetted", "ő": "építette", "mi": "építettük", "ti": "építettétek", "ők": "építették" }
     }
   },
   {
@@ -1283,7 +1283,7 @@
       "definite": null
     },
     "past": {
-      "indefinite": { "én": "születtem", "te": "születtél", "ő": "született", "mi": "születtünk", "ti": "születtek", "ők": "születtek" },
+      "indefinite": { "én": "születtem", "te": "születtél", "ő": "született", "mi": "születtünk", "ti": "születtetek", "ők": "születtek" },
       "definite": null
     }
   },
@@ -1340,7 +1340,7 @@
     },
     "past": {
       "indefinite": { "én": "hagytam", "te": "hagytál", "ő": "hagyott", "mi": "hagytunk", "ti": "hagytatok", "ők": "hagytak" },
-      "definite": { "én": "hagytam", "te": "hagytad", "ő": "hagyta", "mi": "hagyjuk", "ti": "hagyjátok", "ők": "hagyják" }
+      "definite": { "én": "hagytam", "te": "hagytad", "ő": "hagyta", "mi": "hagytuk", "ti": "hagytátok", "ők": "hagyták" }
     }
   },
   {
@@ -1368,7 +1368,7 @@
     },
     "past": {
       "indefinite": { "én": "küldtem", "te": "küldtél", "ő": "küldött", "mi": "küldtünk", "ti": "küldtetek", "ők": "küldtek" },
-      "definite": { "én": "küldtem", "te": "küldted", "ő": "küldte", "mi": "küldjük", "ti": "küldtétek", "ők": "küldték" }
+      "definite": { "én": "küldtem", "te": "küldted", "ő": "küldte", "mi": "küldtük", "ti": "küldtétek", "ők": "küldték" }
     }
   },
   {
@@ -1424,7 +1424,7 @@
     },
     "past": {
       "indefinite": { "én": "táncoltam", "te": "táncoltál", "ő": "táncolt", "mi": "táncoltunk", "ti": "táncoltatok", "ők": "táncoltak" },
-      "definite": { "én": "táncoltam", "te": "táncoltad", "ő": "táncolta", "mi": "táncoljuk", "ti": "táncoljátok", "ők": "táncolják" }
+      "definite": { "én": "táncoltam", "te": "táncoltad", "ő": "táncolta", "mi": "táncoltuk", "ti": "táncoltátok", "ők": "táncolták" }
     }
   },
   {
@@ -1466,7 +1466,7 @@
     },
     "past": {
       "indefinite": { "én": "húztam", "te": "húztál", "ő": "húzott", "mi": "húztunk", "ti": "húztatok", "ők": "húztak" },
-      "definite": { "én": "húztam", "te": "húztad", "ő": "húzta", "mi": "húzzuk", "ti": "húzzátok", "ők": "húzzák" }
+      "definite": { "én": "húztam", "te": "húztad", "ő": "húzta", "mi": "húztuk", "ti": "húztátok", "ők": "húzták" }
     }
   },
   {
@@ -1480,7 +1480,7 @@
     },
     "past": {
       "indefinite": { "én": "toltam", "te": "toltál", "ő": "tolt", "mi": "toltunk", "ti": "toltatok", "ők": "toltak" },
-      "definite": { "én": "toltam", "te": "toltad", "ő": "tolta", "mi": "toljuk", "ti": "toljátok", "ők": "tolják" }
+      "definite": { "én": "toltam", "te": "toltad", "ő": "tolta", "mi": "toltuk", "ti": "toltátok", "ők": "tolták" }
     }
   },
   {
@@ -1550,7 +1550,7 @@
     },
     "past": {
       "indefinite": { "én": "nyertem", "te": "nyertél", "ő": "nyert", "mi": "nyertünk", "ti": "nyertetek", "ők": "nyertek" },
-      "definite": { "én": "nyertem", "te": "nyerted", "ő": "nyerte", "mi": "nyerjük", "ti": "nyertétek", "ők": "nyerték" }
+      "definite": { "én": "nyertem", "te": "nyerted", "ő": "nyerte", "mi": "nyertük", "ti": "nyertétek", "ők": "nyerték" }
     }
   },
   {
@@ -1564,7 +1564,7 @@
     },
     "past": {
       "indefinite": { "én": "veszítettem", "te": "veszítettél", "ő": "veszített", "mi": "veszítettünk", "ti": "veszítettetek", "ők": "veszítettek" },
-      "definite": { "én": "veszítettem", "te": "veszítetted", "ő": "veszítette", "mi": "veszítjük", "ti": "veszítettétek", "ők": "veszítették" }
+      "definite": { "én": "veszítettem", "te": "veszítetted", "ő": "veszítette", "mi": "veszítettük", "ti": "veszítettétek", "ők": "veszítették" }
     }
   },
   {
@@ -1573,12 +1573,12 @@
     "infinitive": "elvárni",
     "type": "back-vowel",
     "present": {
-      "indefinite": { "én": "elvárók", "te": "elvársz", "ő": "elvár", "mi": "elvárünk", "ti": "elvártok", "ők": "elvárnak" },
+      "indefinite": { "én": "elvárok", "te": "elvársz", "ő": "elvár", "mi": "elvárunk", "ti": "elvártok", "ők": "elvárnak" },
       "definite": { "én": "elvárom", "te": "elvárod", "ő": "elvárja", "mi": "elvárjuk", "ti": "elvárjátok", "ők": "elvárják" }
     },
     "past": {
       "indefinite": { "én": "elvártam", "te": "elvártál", "ő": "elvárt", "mi": "elvártunk", "ti": "elvártatok", "ők": "elvártak" },
-      "definite": { "én": "elvártam", "te": "elvártad", "ő": "elvárta", "mi": "elvárjuk", "ti": "elvártátok", "ők": "elvárták" }
+      "definite": { "én": "elvártam", "te": "elvártad", "ő": "elvárta", "mi": "elvártuk", "ti": "elvártátok", "ők": "elvárták" }
     }
   }
 ]
