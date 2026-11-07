@@ -789,7 +789,7 @@
     "infinitive": "lakni",
     "type": "back-vowel-ik/intransitive",
     "present": {
-      "indefinite": { "én": "lakom", "te": "lakol", "ő": "lakik", "mi": "lakunk", "ti": "laktok", "ők": "laknak" },
+      "indefinite": { "én": "lakom", "te": "laksz", "ő": "lakik", "mi": "lakunk", "ti": "laktok", "ők": "laknak" },
       "definite": null
     },
     "past": {
@@ -989,7 +989,7 @@
       "definite": null
     },
     "past": {
-      "indefinite": { "én": "futtam", "te": "futtál", "ő": "futott", "mi": "futtunk", "ti": "futtatok", "ők": "futtak" },
+      "indefinite": { "én": "futottam", "te": "futottál", "ő": "futott", "mi": "futottunk", "ti": "futottatok", "ők": "futottak" },
       "definite": null
     }
   },
@@ -1045,7 +1045,7 @@
       "definite": { "én": "végzem", "te": "végzed", "ő": "végzi", "mi": "végezzük", "ti": "végzitek", "ők": "végzik" }
     },
     "past": {
-      "indefinite": { "én": "végeztem", "te": "végeztél", "ő": "végezett", "mi": "végeztünk", "ti": "végeztetek", "ők": "végeztek" },
+      "indefinite": { "én": "végeztem", "te": "végeztél", "ő": "végzett", "mi": "végeztünk", "ti": "végeztetek", "ők": "végeztek" },
       "definite": { "én": "végeztem", "te": "végezted", "ő": "végezte", "mi": "végeztük", "ti": "végeztétek", "ők": "végezték" }
     }
   },
@@ -1307,7 +1307,7 @@
     "infinitive": "nőni",
     "type": "irregular/intransitive",
     "present": {
-      "indefinite": { "én": "növök", "te": "nősz", "ő": "nő", "mi": "növünk", "ti": "nőttök", "ők": "nőnek" },
+      "indefinite": { "én": "növök", "te": "nősz", "ő": "nő", "mi": "növünk", "ti": "nőtök", "ők": "nőnek" },
       "definite": null
     },
     "past": {
