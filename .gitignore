@@ -28,3 +28,6 @@ supabase/.temp/
 
 # Local user-flow verification evidence
 .verification-evidence/
+
+# Pages downloaded by npm run check:conjugations
+.cache/

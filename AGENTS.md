@@ -64,6 +64,18 @@ each step. Start with the focused test or browser flow for the changed behavior,
 relevant build and lint scripts. Treat the documented pre-existing lint baseline separately, but
 do not add new findings. Shared Flash Card and Phrasebook data changes remain explicit operations.
 
+After adding a verb or editing a form in `src/assets/conjugations.json`, run
+`npm run check:conjugations` (add lemmas after `--` to check just those). It compares every
+present and past form with CoolJugator and English Wiktionary. Fetched pages are cached in
+`.cache/`, so only new verbs touch the network.
+
+- Exit 1 with `UNCONFIRMED` means no source lists our form. Fix the form, or if it is correct,
+  record why in `scripts/conjugation-reviewed.json`.
+- `DISPUTED` means one source contradicts another that confirms our form. Look at it, then fix
+  it or record why it stands in the same file.
+- Exit 2 means a page could not be fetched or read, so the run proves nothing. Rerun it
+  instead of treating it as a pass.
+
 The task is done when the requested behavior is visible, the affected local or shared-data boundary
 is verified, relevant checks pass, and the final diff contains no unrelated changes. Under
 "Standing authorization", done also means the work is committed, on `main`, pushed, and confirmed
