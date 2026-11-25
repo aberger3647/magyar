@@ -418,7 +418,7 @@ export function EmotionsWheel() {
   }, []);
 
   return (
-    <div className="flex w-full max-w-4xl flex-col items-center gap-6">
+    <div className="flex w-full max-w-4xl flex-col items-center gap-4">
       <div
         className="w-full"
         onPointerDown={(e) => {
@@ -428,7 +428,7 @@ export function EmotionsWheel() {
         <svg
           ref={svgRef}
           viewBox="0 0 1000 1000"
-          className="mx-auto h-auto w-full max-h-[min(90vh,800px)] cursor-grab touch-none overflow-hidden active:cursor-grabbing"
+          className="mx-auto h-auto w-full max-h-[min(64vh,640px)] cursor-grab touch-none overflow-hidden active:cursor-grabbing"
           role="group"
           aria-label="Emotions wheel — drag or use rotate buttons to turn"
           onMouseLeave={() => {
