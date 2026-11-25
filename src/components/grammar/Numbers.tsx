@@ -61,8 +61,8 @@ const kettoRows: BilingualRow[] = [
     hungarian: "Hány alma van? Kettő.",
   },
   {
-    english: "One, two, three...",
-    hungarian: "Egy, kettő, három...",
+    english: "One, two, three…",
+    hungarian: "Egy, kettő, három…",
   },
   {
     english: "I only want two [of them].",
@@ -161,7 +161,7 @@ const Numbers = () => {
                   <TableBody>
                     {allNumbers.map((row, index) => (
                       <TableRow key={row.numeral} className={index % 2 === 0 ? "bg-muted/40" : "bg-background"}>
-                        <TableCell className="w-1/2 py-2 pr-2 text-right font-semibold">{row.numeral}</TableCell>
+                        <TableCell className="w-1/2 py-2 pr-2 text-right font-semibold tabular-nums">{row.numeral}</TableCell>
                         <TableCell className="w-1/2 py-2 pl-2 text-left">{row.hungarian}</TableCell>
                       </TableRow>
                     ))}
@@ -178,9 +178,11 @@ const Numbers = () => {
             <CardContent className="space-y-6">
               <div className="rounded-lg border-l-4 border-primary bg-muted/40 p-4 text-sm">
                 <p>
-                  Use <strong>kettő</strong> when the noun is not there, or when you are counting "one, two,
-                  three...".
-                  </p><p>Use <strong>két</strong> before a noun.
+                  Use <strong>kettő</strong> when the noun is not there, or when you are counting “one, two,
+                  three…”.
+                </p>
+                <p>
+                  Use <strong>két</strong> before a noun.
                 </p>
               </div>
 
@@ -201,7 +203,7 @@ const Numbers = () => {
               <BilingualCardHeader english="How Often?" hungarian="Milyen gyakran?" />
               <CardDescription className="pt-2 text-xs sm:text-sm">
                 Use the suffixes <strong>-szer</strong>, <strong>-szor</strong>, and{" "}
-                <strong>-ször</strong> to express "times."
+                <strong>-ször</strong> to express “times.”
               </CardDescription>
             </CardHeader>
             <CardContent>

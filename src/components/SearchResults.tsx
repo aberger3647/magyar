@@ -39,6 +39,7 @@ type SearchResultsListProps = {
   activeId?: string | null;
   onSelect?: (result: RankedSearchResult) => void;
   compact?: boolean;
+  listbox?: boolean;
 };
 
 export function SearchResultsList({
@@ -47,6 +48,7 @@ export function SearchResultsList({
   activeId,
   onSelect,
   compact = false,
+  listbox = false,
 }: SearchResultsListProps) {
   if (groups.length === 0) {
     return (
@@ -64,7 +66,7 @@ export function SearchResultsList({
         return (
           <section key={group.category} className="flex flex-col gap-2">
             <h2 className="flex items-center gap-2 px-1 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
-              <Icon className="size-3.5" />
+              <Icon className="size-3.5" aria-hidden="true" />
               {group.label}
             </h2>
             <ul className="flex flex-col gap-1">
@@ -75,8 +77,8 @@ export function SearchResultsList({
                     <Link
                       to={result.href}
                       id={searchResultDomId(result.id)}
-                      role="option"
-                      aria-selected={isActive}
+                      role={listbox ? "option" : undefined}
+                      aria-selected={listbox ? isActive : undefined}
                       onClick={(event) => {
                         if (!onSelect) return;
                         event.preventDefault();

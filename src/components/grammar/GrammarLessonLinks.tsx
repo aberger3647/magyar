@@ -8,11 +8,11 @@ type GrammarLessonLinksProps = {
 };
 
 const baseLinkClass =
-  "rounded-md px-3 py-2 transition-colors hover:bg-muted";
+  "rounded-md px-3 py-2 transition-colors hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background focus-visible:outline-none";
 
 const selectClassName = cn(
   "border-input h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none md:text-sm",
-  "focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]",
+  "focus-visible:border-ring focus-visible:ring-ring focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-offset-background",
 );
 
 export const GrammarLessonLinks = ({
@@ -82,7 +82,7 @@ export const GrammarLessonLinks = ({
         <NavLink
           key={lesson.to}
           to={lesson.to}
-          className="rounded-lg border p-4 transition-colors hover:bg-muted/50"
+          className="rounded-lg border p-4 transition-colors hover:bg-muted/50 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background focus-visible:outline-none"
         >
           <h2 className="font-semibold">{lesson.title}</h2>
           <p className="text-sm text-muted-foreground">{lesson.description}</p>

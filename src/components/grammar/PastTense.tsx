@@ -142,7 +142,7 @@ const PastTense = () => {
                 <strong>indefinite</strong> past only — the same object rules as the{" "}
                 <Link
                   to="/grammar/present-tense"
-                  className="text-primary underline-offset-4 hover:underline"
+                  className="rounded-xs font-medium text-primary underline underline-offset-4 hover:text-primary/80 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
                 >
                   present tense
                 </Link>
@@ -152,13 +152,16 @@ const PastTense = () => {
             <CardContent className="space-y-4 text-sm leading-relaxed sm:text-base">
               <p>
                 Endings follow{" "}
-                <Link to="/grammar/vowel-harmony" className="text-primary underline-offset-4 hover:underline">
+                <Link
+                  to="/grammar/vowel-harmony"
+                  className="rounded-xs font-medium text-primary underline underline-offset-4 hover:text-primary/80 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+                >
                   vowel harmony
                 </Link>
                 . Practice with the{" "}
                 <Link
                   to="/conjugator/past/indefinite/"
-                  className="text-primary underline-offset-4 hover:underline"
+                  className="rounded-xs font-medium text-primary underline underline-offset-4 hover:text-primary/80 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
                 >
                   conjugator
                 </Link>
@@ -316,7 +319,7 @@ const PastTense = () => {
                     dolgoztam). See the{" "}
                     <Link
                       to="/grammar/ik-verbs"
-                      className="text-primary underline-offset-4 hover:underline"
+                      className="rounded-xs font-medium text-primary underline underline-offset-4 hover:text-primary/80 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
                     >
                       -ik verbs lesson
                     </Link>

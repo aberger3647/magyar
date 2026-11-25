@@ -3,6 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 import remarkBreaks from "remark-breaks";
 import remarkGfm from "remark-gfm";
+import { Button } from "@/components/ui/button";
 import { getPostBySlug, type StrapiPost } from "@/lib/strapi";
 import { blogMarkdownComponents } from "@/lib/blogMarkdown";
 import { PageTitle } from "./PageTitle";
@@ -21,6 +22,7 @@ function formatDate(iso: string | null) {
 function BlogPostLoaded({ slug }: { slug: string }) {
   const [post, setPost] = useState<StrapiPost | null | undefined>(undefined);
   const [error, setError] = useState<string | null>(null);
+  const [retryCount, setRetryCount] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
@@ -29,18 +31,21 @@ function BlogPostLoaded({ slug }: { slug: string }) {
         if (!cancelled) {
           setError(null);
           setPost(data);
+          if (data?.title) {
+            document.title = `${data.title} · Learn Magyar Language`;
+          }
         }
       })
       .catch(() => {
         if (!cancelled) {
-          setError("Could not load this post.");
+          setError("Could not load this post. Check your connection and try again.");
           setPost(null);
         }
       });
     return () => {
       cancelled = true;
     };
-  }, [slug]);
+  }, [slug, retryCount]);
 
   if (post === undefined && !error) {
     return (
@@ -52,14 +57,29 @@ function BlogPostLoaded({ slug }: { slug: string }) {
 
   if (error) {
     return (
-      <div className="flex w-full max-w-2xl flex-col gap-6">
+      <div className="flex w-full max-w-2xl flex-col items-center gap-6">
         <PageTitle title="Blog" />
-        <p className="text-center text-sm text-destructive" role="alert">
-          {error}
-        </p>
+        <div
+          role="alert"
+          className="flex flex-col items-center gap-3 rounded-lg border border-border bg-card p-6 text-center"
+        >
+          <p className="text-sm text-destructive">{error}</p>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => {
+              setError(null);
+              setPost(undefined);
+              setRetryCount((count) => count + 1);
+            }}
+          >
+            Retry
+          </Button>
+        </div>
         <Link
           to="/blog"
-          className="text-center text-sm text-primary underline underline-offset-4"
+          className="rounded-sm text-center text-sm text-primary underline underline-offset-4 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none"
         >
           Back to blog
         </Link>

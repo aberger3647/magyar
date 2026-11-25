@@ -1,5 +1,7 @@
 import * as React from "react";
+import { RotateCcw, RotateCw } from "lucide-react";
 import emotionsData from "@/assets/emotions.json";
+import { Button } from "@/components/ui/button";
 import {
   angleDegFromCenter,
   arcSpec,
@@ -52,7 +54,7 @@ const RING_MIX_T_LIGHT: Record<Ring, number> = {
  * near-black shade across every family. */
 const RING_MIX_T_DARK: Record<Ring, number> = {
   core: 0,
-  secondary: 0.35,
+  secondary: 0.4,
   tertiary: 0.65,
 };
 
@@ -290,8 +292,23 @@ export function EmotionsWheel() {
   const { resolved } = useTheme();
   const isDark = resolved === "dark";
   const [activeId, setActiveId] = React.useState<string | null>(null);
+  const [focusedId, setFocusedId] = React.useState<string | null>(null);
   const [rotationDeg, setRotationDeg] = React.useState(0);
+  const [prefersReducedMotion, setPrefersReducedMotion] = React.useState(() =>
+    typeof window !== "undefined"
+      ? window.matchMedia("(prefers-reduced-motion: reduce)").matches
+      : false,
+  );
   const svgRef = React.useRef<SVGSVGElement>(null);
+
+  React.useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const onChange = (event: MediaQueryListEvent) => {
+      setPrefersReducedMotion(event.matches);
+    };
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
   const dragRef = React.useRef<{
     pointerId: number;
     startAngleDeg: number;
@@ -308,8 +325,6 @@ export function EmotionsWheel() {
   const huDisplay = active
     ? displayHungarian(active.hu, active.en)
     : null;
-  const isFallback = active !== null && active.hu.trim() === "";
-
   const activeCoreId = active?.coreId ?? null;
 
   const renderOrder = React.useMemo(() => {
@@ -326,11 +341,11 @@ export function EmotionsWheel() {
   // up. The translate target is the rotation pivot, so this composes cleanly
   // with drag-rotation regardless of the current angle.
   const zoomTransform = React.useMemo(() => {
-    if (!active) return "translate(0px, 0px) scale(1)";
+    if (!active || prefersReducedMotion) return "translate(0px, 0px) scale(1)";
     const k = FAMILY_ZOOM_SCALE;
     const { x: px, y: py } = familyCentroid(active.coreIndex);
     return `translate(${WHEEL.cx - k * px}px, ${WHEEL.cy - k * py}px) scale(${k})`;
-  }, [active]);
+  }, [active, prefersReducedMotion]);
 
   const pointerAngleDeg = React.useCallback((clientX: number, clientY: number) => {
     const svg = svgRef.current;
@@ -414,10 +429,10 @@ export function EmotionsWheel() {
           ref={svgRef}
           viewBox="0 0 1000 1000"
           className="mx-auto h-auto w-full max-h-[min(90vh,800px)] cursor-grab touch-none overflow-hidden active:cursor-grabbing"
-          role="img"
-          aria-label="Emotions wheel — drag to rotate"
+          role="group"
+          aria-label="Emotions wheel — drag or use rotate buttons to turn"
           onMouseLeave={() => {
-            if (!isDraggingRef.current) setActiveId(null);
+            if (!isDraggingRef.current && !focusedId) setActiveId(null);
           }}
           onPointerDown={onWheelPointerDown}
           onPointerMove={onWheelPointerMove}
@@ -430,12 +445,15 @@ export function EmotionsWheel() {
                 transform: zoomTransform,
                 transformBox: "view-box",
                 transformOrigin: "0px 0px",
-                transition: "transform 320ms cubic-bezier(0.22, 1, 0.36, 1)",
-                willChange: "transform",
+                transition: prefersReducedMotion
+                  ? "none"
+                  : "transform 320ms cubic-bezier(0.22, 1, 0.36, 1)",
+                willChange: active && !prefersReducedMotion ? "transform" : undefined,
               }}
             >
               {renderOrder.map((segment) => {
                 const isActive = activeId === segment.id;
+                const isFocused = focusedId === segment.id;
                 const inActiveFamily =
                   activeCoreId != null && segment.coreId === activeCoreId;
                 const fill = isDark ? segment.fillDark : segment.fillLight;
@@ -446,36 +464,53 @@ export function EmotionsWheel() {
                       d={segment.path}
                       fill="transparent"
                       stroke="none"
-                      className="cursor-pointer outline-none focus:outline-none focus-visible:outline-none"
+                      className="cursor-pointer outline-none"
                       role="button"
                       tabIndex={0}
                       aria-label={`${segment.en} — ${displayHungarian(segment.hu, segment.en)}`}
                       onMouseEnter={() => {
                         if (!isDraggingRef.current) setActiveId(segment.id);
                       }}
-                      onFocus={() => selectSegment(segment.id)}
+                      onFocus={(e) => {
+                        if (e.currentTarget.matches(":focus-visible")) {
+                          setFocusedId(segment.id);
+                        }
+                        selectSegment(segment.id);
+                      }}
+                      onBlur={() => {
+                        setFocusedId((current) =>
+                          current === segment.id ? null : current,
+                        );
+                      }}
                       onClick={() => selectSegment(segment.id)}
                       onKeyDown={(e) => {
                         if (e.key === "Enter" || e.key === " ") {
                           e.preventDefault();
                           selectSegment(segment.id);
+                        } else if (e.key === "Escape") {
+                          setActiveId(null);
                         }
                       }}
                     />
                     <path
                       d={segment.path}
                       fill={fill}
-                      stroke={isDark ? "#e8e6e1" : "#000"}
-                      strokeOpacity={isDark ? 0.35 : 1}
-                      strokeWidth={isActive ? 1.5 : 0.5}
+                      stroke={
+                        isFocused
+                          ? isDark
+                            ? "#ffffff"
+                            : "#110e0c"
+                          : isDark
+                            ? "#e8e6e1"
+                            : "#000"
+                      }
+                      strokeOpacity={isFocused ? 1 : isDark ? 0.35 : 1}
+                      strokeWidth={isFocused ? 4 : isActive ? 1.75 : 0.5}
                       pointerEvents="none"
                       className={cn(
-                        "transition-[fill,filter,stroke,stroke-width] duration-150",
-                        isActive && "brightness-110",
+                        "transition-[fill,stroke,stroke-width] duration-150",
+                        isActive && "brightness-105",
                       )}
-                      style={
-                        isActive ? { filter: "brightness(1.08)" } : undefined
-                      }
                     />
                     <SegmentLabel
                       midAngle={segment.midAngle}
@@ -498,6 +533,43 @@ export function EmotionsWheel() {
       </div>
 
       <div
+        role="group"
+        aria-label="Rotate emotions wheel"
+        className="flex flex-wrap items-center justify-center gap-2"
+      >
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          onClick={() => setRotationDeg((deg) => deg - 60)}
+        >
+          <RotateCcw className="size-4" aria-hidden="true" />
+          Rotate left
+        </Button>
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          disabled={rotationDeg === 0 && activeId === null}
+          onClick={() => {
+            setRotationDeg(0);
+            setActiveId(null);
+          }}
+        >
+          Reset
+        </Button>
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          onClick={() => setRotationDeg((deg) => deg + 60)}
+        >
+          Rotate right
+          <RotateCw className="size-4" aria-hidden="true" />
+        </Button>
+      </div>
+
+      <div
         className="min-h-[5rem] w-full rounded-md border bg-card p-4 text-center"
         aria-live="polite"
       >
@@ -506,17 +578,12 @@ export function EmotionsWheel() {
             <p className="text-2xl font-bold tracking-wide">{active.en}</p>
             <p className="text-lg">
               <span className="text-muted-foreground">Magyar: </span>
-              {huDisplay}
+              <span lang="hu">{huDisplay}</span>
             </p>
-            {isFallback && (
-              <p className="text-xs text-muted-foreground">
-                (add Hungarian in emotions.json)
-              </p>
-            )}
           </div>
         ) : (
           <p className="text-muted-foreground">
-            Drag to rotate · hover or tap an emotion
+            Drag or rotate the wheel, then select an emotion.
           </p>
         )}
       </div>

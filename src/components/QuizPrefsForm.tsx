@@ -136,78 +136,39 @@ export const QuizPrefsForm = () => {
             <FieldGroup>
               <FieldSet>
                 <FieldLegend variant="label">Tense</FieldLegend>
-                <FieldGroup className="gap-3">
+                <FieldGroup className="gap-2">
                   <FormField
                     name="tense"
-                    children={(field) => {
-                      const isInvalid =
-                        field.state.meta.isTouched && !field.state.meta.isValid;
-
-                      return (
-                        <Field
-                          orientation="horizontal"
-                          data-invalid={isInvalid}
-                        >
-                          <Checkbox
-                            id="tense-present"
-                            name="tense"
-                            value="present"
-                            checked={field.state.value === "present"}
-                            onCheckedChange={(checked) => {
-                              if (!checked) return;
-                              field.handleChange("present");
-                              setStoredQuizPreferences({
-                                ...quizPreferences,
-                                tense: "present",
-                              });
-                            }}
-                            onBlur={field.handleBlur}
-                            aria-invalid={isInvalid}
-                          />
-                          <FieldLabel
-                            htmlFor="tense-present"
-                            className="font-normal"
-                            defaultChecked
-                          >
-                            Present
-                          </FieldLabel>
-                        </Field>
-                      );
-                    }}
-                  />
-                  <FormField
-                    name="tense"
-                    children={(field) => {
-                      const isInvalid =
-                        field.state.meta.isTouched && !field.state.meta.isValid;
-
-                      return (
-                        <Field orientation="horizontal">
-                          <Checkbox
-                            id="tense-past"
-                            name="tense"
-                            value="past"
-                            checked={field.state.value === "past"}
-                            onCheckedChange={(checked) => {
-                              if (!checked) return;
-                              field.handleChange("past");
-                              setStoredQuizPreferences({
-                                ...quizPreferences,
-                                tense: "past",
-                              });
-                            }}
-                            onBlur={field.handleBlur}
-                            aria-invalid={isInvalid}
-                          />
-                          <FieldLabel
-                            htmlFor="tense-past"
-                            className="font-normal"
-                          >
-                            Past
-                          </FieldLabel>
-                        </Field>
-                      );
-                    }}
+                    children={(field) => (
+                      <div className="flex flex-col gap-2">
+                        {(["present", "past"] as const).map((option) => (
+                          <Field key={option} orientation="horizontal" className="min-h-7">
+                            <input
+                              type="radio"
+                              id={`tense-${option}`}
+                              name="tense"
+                              value={option}
+                              checked={field.state.value === option}
+                              onChange={() => {
+                                field.handleChange(option);
+                                setStoredQuizPreferences({
+                                  ...quizPreferences,
+                                  tense: option,
+                                });
+                              }}
+                              onBlur={field.handleBlur}
+                              className="size-4 shrink-0 cursor-pointer accent-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+                            />
+                            <FieldLabel
+                              htmlFor={`tense-${option}`}
+                              className="cursor-pointer py-1 font-normal capitalize"
+                            >
+                              {option}
+                            </FieldLabel>
+                          </Field>
+                        ))}
+                      </div>
+                    )}
                   />
                 </FieldGroup>
               </FieldSet>
@@ -215,80 +176,39 @@ export const QuizPrefsForm = () => {
               <FieldGroup>
                 <FieldSet>
                   <FieldLegend variant="label">Voice</FieldLegend>
-                  <FieldGroup className="gap-3">
+                  <FieldGroup className="gap-2">
                     <FormField
                       name="voice"
-                      children={(field) => {
-                        const isInvalid =
-                          field.state.meta.isTouched &&
-                          !field.state.meta.isValid;
-
-                        return (
-                          <Field
-                            orientation="horizontal"
-                            data-invalid={isInvalid}
-                          >
-                            <Checkbox
-                              id="voice-indefinite"
-                              name="voice"
-                              value="indefinite"
-                              checked={field.state.value === "indefinite"}
-                              onCheckedChange={(checked) => {
-                                if (!checked) return;
-                                field.handleChange("indefinite");
-                                setStoredQuizPreferences({
-                                  ...quizPreferences,
-                                  voice: "indefinite",
-                                });
-                              }}
-                              onBlur={field.handleBlur}
-                              aria-invalid={isInvalid}
-                            />
-                            <FieldLabel
-                              htmlFor="voice-indefinite"
-                              className="font-normal"
-                              defaultChecked
-                            >
-                              Indefinite
-                            </FieldLabel>
-                          </Field>
-                        );
-                      }}
-                    />
-                    <FormField
-                      name="voice"
-                      children={(field) => {
-                        const isInvalid =
-                          field.state.meta.isTouched &&
-                          !field.state.meta.isValid;
-
-                        return (
-                          <Field orientation="horizontal">
-                            <Checkbox
-                              id="voice-definite"
-                              name="voice"
-                              value="definite"
-                              checked={field.state.value === "definite"}
-                              onCheckedChange={(checked) => {
-                                if (!checked) return;
-                                field.handleChange("definite");
-                                setStoredQuizPreferences({
-                                  ...quizPreferences,
-                                  voice: "definite",
-                                });
-                              }}
-                              onBlur={field.handleBlur}
-                              aria-invalid={isInvalid}
-                            />
-                            <FieldLabel
-                              htmlFor="voice-definite"
-                              className="font-normal"
-                            >
-                              Definite
-                            </FieldLabel>
-                          </Field>
-                        );
-                      }}
+                      children={(field) => (
+                        <div className="flex flex-col gap-2">
+                          {(["indefinite", "definite"] as const).map((option) => (
+                            <Field key={option} orientation="horizontal" className="min-h-7">
+                              <input
+                                type="radio"
+                                id={`voice-${option}`}
+                                name="voice"
+                                value={option}
+                                checked={field.state.value === option}
+                                onChange={() => {
+                                  field.handleChange(option);
+                                  setStoredQuizPreferences({
+                                    ...quizPreferences,
+                                    voice: option,
+                                  });
+                                }}
+                                onBlur={field.handleBlur}
+                                className="size-4 shrink-0 cursor-pointer accent-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+                              />
+                              <FieldLabel
+                                htmlFor={`voice-${option}`}
+                                className="cursor-pointer py-1 font-normal capitalize"
+                              >
+                                {option}
+                              </FieldLabel>
+                            </Field>
+                          ))}
+                        </div>
+                      )}
                     />
                   </FieldGroup>
                 </FieldSet>
@@ -297,7 +217,7 @@ export const QuizPrefsForm = () => {
               <FieldSet className="w-full">
                 <FieldLegend variant="label">Words</FieldLegend>
                 <div className="mb-2 flex items-center justify-between text-sm">
-                  <span>{availableSelectedCount} selected</span>
+                  <span className="tabular-nums">{availableSelectedCount} selected</span>
                   <div className="flex gap-2">
                     <Button
                       type="button"
@@ -317,14 +237,14 @@ export const QuizPrefsForm = () => {
                     </Button>
                   </div>
                 </div>
-                <div className="max-h-48 space-y-2 overflow-y-auto rounded-md border p-3">
+                <div className="max-h-48 space-y-1 overflow-y-auto overscroll-contain rounded-md border border-input p-3">
                   {allWords.map((word) => {
                     const unavailable = unavailableWords.has(word);
                     return (
                       <Field
                         key={word}
                         orientation="horizontal"
-                        className={unavailable ? "opacity-50" : undefined}
+                        className={unavailable ? "min-h-7 opacity-50" : "min-h-7"}
                       >
                         <Checkbox
                           id={`word-${word}`}
@@ -336,19 +256,29 @@ export const QuizPrefsForm = () => {
                         />
                         <FieldLabel
                           htmlFor={`word-${word}`}
-                          className="font-normal"
+                          className="cursor-pointer py-0.5 font-normal"
                         >
-                          {word}
+                          <span lang="hu">{word}</span>
                           {unavailable && " (no definite form)"}
                         </FieldLabel>
                       </Field>
                     );
                   })}
                 </div>
+                {availableSelectedCount === 0 && (
+                  <p id="quiz-words-help" className="mt-2 text-sm text-muted-foreground">
+                    Select at least one available word to start a quiz.
+                  </p>
+                )}
               </FieldSet>
             </FieldGroup>
             <div className="mt-4 flex flex-wrap justify-center gap-3">
-              <Button disabled={availableSelectedCount === 0}>
+              <Button
+                disabled={availableSelectedCount === 0}
+                aria-describedby={
+                  availableSelectedCount === 0 ? "quiz-words-help" : undefined
+                }
+              >
                 Start Quiz
               </Button>
               <Button

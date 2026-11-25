@@ -186,7 +186,10 @@ const PresentTense = () => {
               </p>
               <p>
                 Endings follow{" "}
-                <Link to="/grammar/vowel-harmony" className="text-primary underline-offset-4 hover:underline">
+                <Link
+                  to="/grammar/vowel-harmony"
+                  className="rounded-xs font-medium text-primary underline underline-offset-4 hover:text-primary/80 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+                >
                   vowel harmony
                 </Link>
                 : back vowels (a, á, o, ó, u, ú), front unrounded (e, é, i, í), and front rounded
@@ -204,7 +207,7 @@ const PresentTense = () => {
                 Practice with the{" "}
                 <Link
                   to="/conjugator/present/indefinite/"
-                  className="text-primary underline-offset-4 hover:underline"
+                  className="rounded-xs font-medium text-primary underline underline-offset-4 hover:text-primary/80 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
                 >
                   conjugator
                 </Link>
@@ -266,7 +269,7 @@ const PresentTense = () => {
                     -ik. See the{" "}
                     <Link
                       to="/grammar/ik-verbs"
-                      className="text-primary underline-offset-4 hover:underline"
+                      className="rounded-xs font-medium text-primary underline underline-offset-4 hover:text-primary/80 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
                     >
                       -ik verbs lesson
                     </Link>

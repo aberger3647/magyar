@@ -4,6 +4,7 @@ import { Search } from "lucide-react";
 import { PageTitle } from "./PageTitle";
 import { SearchResultsList } from "./SearchResults";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { listPosts } from "@/lib/strapi";
 import {
   SEARCH_CATEGORY_LABELS,
@@ -100,9 +101,13 @@ export function SearchPage() {
       <PageTitle title="Search" />
       <div className="flex flex-col gap-4">
         <div className="relative">
-          <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
+          <Search
+            className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground"
+            aria-hidden="true"
+          />
           <Input
             ref={inputRef}
+            type="search"
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             placeholder="Search verbs, phrases, grammar…"
@@ -111,21 +116,20 @@ export function SearchPage() {
             className="h-11 pl-9"
           />
         </div>
-        <div className="flex flex-wrap gap-2" role="tablist" aria-label="Filter results">
+        <div className="flex flex-wrap gap-2" role="group" aria-label="Filter results">
           {FILTERS.map((filter) => {
             const selected = category === filter.value;
             return (
               <button
                 key={filter.value}
                 type="button"
-                role="tab"
-                aria-selected={selected}
+                aria-pressed={selected}
                 onClick={() => setCategory(filter.value)}
                 className={cn(
-                  "rounded-full border px-3 py-1 text-sm transition-colors",
+                  "min-h-8 rounded-full border px-3 py-1 text-sm transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background focus-visible:outline-none",
                   selected
                     ? "border-primary bg-primary text-primary-foreground"
-                    : "border-border bg-background text-muted-foreground hover:bg-muted/70",
+                    : "border-input bg-background text-muted-foreground hover:bg-muted/70 hover:text-foreground",
                 )}
               >
                 {filter.label}
@@ -141,12 +145,24 @@ export function SearchPage() {
         </p>
       ) : (
         <div className="flex flex-col gap-3">
-          <p className="text-sm text-muted-foreground">
-            {results.length === 1
-              ? "1 result"
-              : `${results.length} results`}
-            {category !== "all" ? ` in ${SEARCH_CATEGORY_LABELS[category]}` : ""}
-          </p>
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <p className="text-sm tabular-nums text-muted-foreground" role="status">
+              {results.length === 1
+                ? "1 result"
+                : `${results.length} results`}
+              {category !== "all" ? ` in ${SEARCH_CATEGORY_LABELS[category]}` : ""}
+            </p>
+            {results.length === 0 && category !== "all" && (
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => setCategory("all")}
+              >
+                Show all categories
+              </Button>
+            )}
+          </div>
           <SearchResultsList groups={groups} query={trimmed} />
         </div>
       )}

@@ -34,11 +34,38 @@ function resolveTheme(theme: Theme): "light" | "dark" {
   return theme;
 }
 
-function applyTheme(resolved: "light" | "dark") {
+const THEME_COLORS: Record<"light" | "dark", string> = {
+  light: "#ffffff",
+  dark: "#181b23",
+};
+
+function syncThemeColorMeta(resolved: "light" | "dark") {
+  let meta = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]:not([media])');
+  if (!meta) {
+    meta = document.createElement("meta");
+    meta.name = "theme-color";
+    document.head.appendChild(meta);
+  }
+  meta.content = THEME_COLORS[resolved];
+}
+
+function applyTheme(resolved: "light" | "dark", suppressTransitions = false) {
   if (typeof document === "undefined") return;
   const root = document.documentElement;
+  if (suppressTransitions) {
+    root.classList.add("theme-switching");
+  }
   root.classList.remove("light", "dark");
   root.classList.add(resolved);
+  syncThemeColorMeta(resolved);
+  if (suppressTransitions) {
+    void window.getComputedStyle(root).color;
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        root.classList.remove("theme-switching");
+      });
+    });
+  }
 }
 
 const ThemeProviderContext = React.createContext<{
@@ -70,6 +97,7 @@ export function ThemeProvider({
     (theme: Theme) => {
       localStorage.setItem(storageKey, theme);
       const resolved = resolveTheme(theme);
+      applyTheme(resolved, true);
       setState({ theme, resolved });
     },
     [storageKey]

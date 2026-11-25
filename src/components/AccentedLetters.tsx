@@ -1,7 +1,4 @@
-"use client";
-
 import { Button } from "@/components/ui/button";
-import { ButtonGroup } from "@/components/ui/button-group";
 
 const chars = ["á", "é", "í", "ó", "ö", "ő", "ú", "ü", "ű"];
 
@@ -11,19 +8,24 @@ export const AccentedLetters = ({
   handleCharInsert: (char: string) => void;
 }) => {
   return (
-    <div className="mb-4 flex justify-center">
-      <ButtonGroup>
-        {chars.map((char) => (
-          <Button
-            variant="outline"
-            size="sm"
-            key={char}
-            onClick={() => handleCharInsert(char)}
-          >
-            {char}
-          </Button>
-        ))}
-      </ButtonGroup>
+    <div
+      role="group"
+      aria-label="Insert accented letters"
+      className="mb-4 flex flex-wrap justify-center gap-1.5"
+    >
+      {chars.map((char) => (
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          key={char}
+          lang="hu"
+          className="min-w-8 px-2"
+          onClick={() => handleCharInsert(char)}
+        >
+          {char}
+        </Button>
+      ))}
     </div>
   );
 };

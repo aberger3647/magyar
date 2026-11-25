@@ -9,7 +9,6 @@ import { Input } from "./ui/input";
 import {
   Card,
   CardHeader,
-  CardTitle,
   CardDescription,
   CardContent,
 } from "./ui/card";
@@ -23,6 +22,7 @@ import { CircleCheck, CircleX } from "lucide-react";
 import { setRandomWord } from "../lib/setRandomWord";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useLocalStorage } from "@/lib/useLocalStorage";
+import { useTheme } from "./theme-provider";
 import { AccentedLetters } from "./AccentedLetters";
 import {
   hasConjugationForm,
@@ -44,6 +44,7 @@ const formSchema = z.object({
 
 export const Conjugator = () => {
   const navigate = useNavigate();
+  const { resolved } = useTheme();
   const [searchParams] = useSearchParams();
   const isRandomQuiz = searchParams.get("mode") === "random";
   const [storedWord, setStoredWord] = useLocalStorage<string | null>(
@@ -163,9 +164,18 @@ export const Conjugator = () => {
           },
         }));
       });
-      toast.success("Form submitted successfully");
-      setIsHintDisabled(correctSubmissions.length === PRONOUN_KEYS.length);
-      if (correctSubmissions.length === PRONOUN_KEYS.length) {
+      const allCorrect = correctSubmissions.length === PRONOUN_KEYS.length;
+      if (allCorrect) {
+        toast.success("All 6 forms correct");
+      } else if (correctSubmissions.length === 0) {
+        toast.error("Check the highlighted fields and try again.");
+      } else {
+        toast.error(
+          `${correctSubmissions.length} of ${PRONOUN_KEYS.length} correct. Check the highlighted fields.`,
+        );
+      }
+      setIsHintDisabled(allCorrect);
+      if (allCorrect) {
         if (isLastQuizWord) {
           setReadyToFinishQuiz(true);
         }
@@ -212,7 +222,7 @@ export const Conjugator = () => {
       <>
         <Card className="w-full sm:max-w-md">
           <CardHeader>
-            <CardTitle>Session complete</CardTitle>
+            <h1 className="text-xl font-semibold tracking-tight">Session complete</h1>
             <CardDescription>
               You have completed all selected words for this session.
             </CardDescription>
@@ -227,7 +237,7 @@ export const Conjugator = () => {
             </Button>
           </CardHeader>
         </Card>
-        <Toaster />
+        <Toaster theme={resolved} />
       </>
     );
   }
@@ -293,28 +303,35 @@ export const Conjugator = () => {
     <>
       <Card className="w-full sm:max-w-md">
         <CardHeader>
-          <CardTitle>{lemma}</CardTitle>
+          <h1 className="text-2xl font-bold tracking-tight" lang="hu">
+            {lemma}
+          </h1>
           <CardDescription>
-            <div className="flex justify-between">
-              <p>{infinitive}</p>
+            <div className="flex justify-between gap-4">
+              <p lang="hu">{infinitive}</p>
               <p>{translation}</p>
             </div>
           </CardDescription>
-          <CardDescription>
-            <Badge variant="outline" className="mr-2">
-              {tense}
-            </Badge>
+          <CardDescription className="flex flex-wrap gap-2">
+            <Badge variant="outline">{tense}</Badge>
             <Badge variant="outline">{voice}</Badge>
           </CardDescription>
           <CardDescription>
             <div className="space-y-2">
-              <p>
+              <p className="tabular-nums">
                 Word {currentWordNumber} of {totalQuizWords}
               </p>
-              <div className="h-2 w-full rounded-full bg-muted">
+              <div
+                role="progressbar"
+                aria-label="Quiz progress"
+                aria-valuenow={completedQuizWordsCount}
+                aria-valuemin={0}
+                aria-valuemax={totalQuizWords}
+                className="h-2 w-full overflow-hidden rounded-full bg-muted"
+              >
                 <div
-                  className="h-full rounded-full bg-primary transition-all"
-                  style={{ width: `${progressPercent}%` }}
+                  className="h-full w-full origin-left rounded-full bg-primary transition-transform duration-200 ease-out"
+                  style={{ transform: `scaleX(${progressPercent / 100})` }}
                 />
               </div>
             </div>
@@ -323,7 +340,7 @@ export const Conjugator = () => {
         <CardContent>
           <AccentedLetters handleCharInsert={handleCharInsert} />
           <form
-            className="flex flex-col items-center justify-center w-full max-w-md gap-4"
+            className="flex w-full max-w-md flex-col items-center justify-center gap-4"
             onSubmit={(e) => {
               e.preventDefault();
               form.setErrorMap({
@@ -347,15 +364,18 @@ export const Conjugator = () => {
                       };
                       const isCorrect = !!meta.isCorrect;
                       const isInvalid = (meta.errors || []).length > 0;
+                      const statusId = `${field.name}-status`;
 
                       return (
                         <Field
                           data-invalid={isInvalid}
                           orientation="horizontal"
+                          className="[&>[data-slot=field-label]]:flex-none"
                         >
                           <FieldLabel
                             htmlFor={field.name}
-                            className="w-14 justify-center text-center"
+                            lang="hu"
+                            className="w-10 justify-end text-right"
                           >
                             {pronoun}
                           </FieldLabel>
@@ -370,20 +390,30 @@ export const Conjugator = () => {
                               if (el) inputRefs.current[field.name] = el;
                             }}
                             className={`${
-                              isCorrect ? "border-green-500" : ""
-                            } w-64 md:w-96`}
+                              isCorrect ? "border-success" : ""
+                            } min-w-0 flex-1`}
                             aria-invalid={isInvalid}
+                            aria-describedby={isCorrect || isInvalid ? statusId : undefined}
                             autoComplete="off"
                             autoCorrect="off"
                             autoCapitalize="none"
                             spellCheck={false}
                           />
-                          <span className="flex h-8 w-6 shrink-0 items-center justify-center">
+                          <span
+                            id={statusId}
+                            className="flex h-8 w-6 shrink-0 items-center justify-center"
+                          >
                             {isCorrect && (
-                              <CircleCheck className="h-8 w-6 text-green-500" />
+                              <>
+                                <CircleCheck className="size-5 text-success" aria-hidden="true" />
+                                <span className="sr-only">Correct</span>
+                              </>
                             )}
                             {isInvalid && (
-                              <CircleX className="h-8 w-6 text-red-500" />
+                              <>
+                                <CircleX className="size-5 text-destructive" aria-hidden="true" />
+                                <span className="sr-only">Incorrect</span>
+                              </>
                             )}
                           </span>
                         </Field>
@@ -394,9 +424,12 @@ export const Conjugator = () => {
               })}
             </FieldGroup>
             <div className="flex flex-wrap justify-center gap-3">
-              <Button type="submit">Submit</Button>
+              <Button type="submit" variant={isDisabled ? "default" : "outline"}>
+                Submit
+              </Button>
               <Button
                 type="button"
+                variant="outline"
                 disabled={isHintDisabled}
                 onClick={(e) => {
                   e.preventDefault();
@@ -417,6 +450,7 @@ export const Conjugator = () => {
               </Button>
               <Button
                 type="button"
+                variant={isDisabled ? "outline" : "default"}
                 disabled={isDisabled || availableConjugations.length === 0}
                 onClick={(e) => {
                   e.preventDefault();
@@ -442,7 +476,7 @@ export const Conjugator = () => {
           </form>
         </CardContent>
       </Card>
-      <Toaster />
+      <Toaster theme={resolved} />
     </>
   );
 };

@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import { ButtonGroup } from "./ui/button-group";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
@@ -120,6 +121,8 @@ const ConfiguredFlashCard = () => {
   const [queue, setQueue] = useState<MyCard[]>([]);
   const [nextDueDate, setNextDueDate] = useState<Date | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [retryCount, setRetryCount] = useState(0);
   const [lastRating, setLastRating] = useState<{
     prevCard: MyCard;
     logId: number;
@@ -131,22 +134,30 @@ const ConfiguredFlashCard = () => {
   }, [replacementImage]);
 
   useEffect(() => {
+    let cancelled = false;
     (async () => {
-      setIsLoading(true);
       try {
         const cards = await fetchDueCards();
+        if (cancelled) return;
+        setLoadError(null);
         setQueue(cards);
         if (cards.length === 0) {
           const nextDue = await fetchNextDueDate();
-          setNextDueDate(nextDue);
+          if (!cancelled) setNextDueDate(nextDue);
         }
       } catch (err) {
         console.error(err);
+        if (!cancelled) {
+          setLoadError("Could not load flash cards. Check your connection and try again.");
+        }
       } finally {
-        setIsLoading(false);
+        if (!cancelled) setIsLoading(false);
       }
     })();
-  }, []);
+    return () => {
+      cancelled = true;
+    };
+  }, [retryCount]);
 
   useEffect(() => {
     const nextCard = queue[1];
@@ -274,14 +285,23 @@ const ConfiguredFlashCard = () => {
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (isEditing) return;
-      if (e.ctrlKey && e.key === "z" && lastRating) {
+      if (
+        e.target instanceof HTMLElement &&
+        e.target.closest("input, textarea, select, [role='dialog']")
+      ) {
+        return;
+      }
+      if ((e.ctrlKey || e.metaKey) && e.key === "z" && lastRating) {
         e.preventDefault();
         handleUndo();
         return;
       }
       if (!currentCard) return;
       if (!isFlipped) {
-        if (e.key === " ") {
+        if (
+          e.key === " " &&
+          !(e.target instanceof HTMLElement && e.target.closest("button, a"))
+        ) {
           e.preventDefault();
           setIsFlipped(true);
         }
@@ -306,8 +326,34 @@ const ConfiguredFlashCard = () => {
     return (
       <>
         <PageTitle title="Flash Cards" />
-        <div className="w-full h-96 sm:max-w-md overflow-hidden rounded-lg border p-6 flex items-center justify-center">
+        <div className="flex min-h-96 w-full items-center justify-center rounded-lg border bg-card p-6 sm:max-w-md">
           <p className="text-muted-foreground">Loading…</p>
+        </div>
+      </>
+    );
+  }
+
+  if (loadError) {
+    return (
+      <>
+        <PageTitle title="Flash Cards" />
+        <div
+          role="alert"
+          className="flex min-h-96 w-full flex-col items-center justify-center gap-4 rounded-lg border bg-card p-6 text-center sm:max-w-md"
+        >
+          <p className="text-sm text-destructive">{loadError}</p>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => {
+              setIsLoading(true);
+              setLoadError(null);
+              setRetryCount((count) => count + 1);
+            }}
+          >
+            Retry
+          </Button>
         </div>
       </>
     );
@@ -318,7 +364,7 @@ const ConfiguredFlashCard = () => {
     return (
       <>
         <PageTitle title="Flash Cards" />
-        <div className="w-full h-96 sm:max-w-md overflow-hidden rounded-lg border p-6 flex flex-col items-center justify-center gap-2 text-center">
+        <div className="flex min-h-96 w-full flex-col items-center justify-center gap-3 rounded-lg border bg-card p-6 text-center sm:max-w-md">
           {hasMore ? (
             <>
               <p className="text-lg font-medium">All caught up!</p>
@@ -334,7 +380,15 @@ const ConfiguredFlashCard = () => {
               </p>
             </>
           ) : (
-            <p className="text-muted-foreground">No flashcards yet</p>
+            <>
+              <p className="text-lg font-medium">No flash cards yet</p>
+              <p className="text-sm text-muted-foreground">
+                Add a word and image to start reviewing.
+              </p>
+              <Button asChild className="mt-1">
+                <Link to="/flash-cards/create">Create a flash card</Link>
+              </Button>
+            </>
           )}
         </div>
       </>
@@ -463,15 +517,15 @@ const ConfiguredFlashCard = () => {
   return (
     <>
       <PageTitle title="Flash Cards" />
-      <div className="flex items-center gap-3 mb-2">
-        <p className="text-sm text-muted-foreground">
+      <div className="mb-2 flex items-center gap-3">
+        <p className="text-sm tabular-nums text-muted-foreground">
           {remaining} card{remaining !== 1 ? "s" : ""} remaining
         </p>
         {lastRating && (
           <Button
             variant="ghost"
             size="sm"
-            className="h-auto py-0.5 px-2 text-xs text-muted-foreground"
+            className="h-auto px-2 py-0.5 text-xs text-muted-foreground"
             onClick={handleUndo}
           >
             Undo
@@ -479,26 +533,31 @@ const ConfiguredFlashCard = () => {
         )}
       </div>
       <div
-        className="w-full h-96 sm:max-w-md overflow-hidden rounded-lg border p-6"
+        className="flex min-h-96 w-full flex-col rounded-lg border bg-card p-6 sm:max-w-md"
         data-testid="flashcard"
-        role="button"
-        aria-label={isFlipped ? currentCard.word : "Flip card"}
-        tabIndex={isFlipped ? -1 : 0}
+        role={isFlipped ? undefined : "button"}
+        aria-label={isFlipped ? undefined : "Flip card"}
+        tabIndex={isFlipped ? undefined : 0}
         onClick={!isFlipped ? () => setIsFlipped(true) : undefined}
         onKeyDown={
           !isFlipped
-            ? (e) => e.key === "Enter" && setIsFlipped(true)
+            ? (e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  setIsFlipped(true);
+                }
+              }
             : undefined
         }
       >
         {isFlipped ? (
-          <div className="relative flex flex-col items-center justify-between h-full gap-5">
-            <h2 className="text-3xl tracking-wide text-center text-slate-600">
+          <div className="relative flex flex-1 flex-col items-center justify-between gap-5">
+            <h2 lang="hu" className="text-center text-3xl font-semibold tracking-tight text-foreground">
               {currentCard.word}
             </h2>
-            <div className="flex-1 w-full min-h-0 flex items-center justify-center">
+            <div className="flex min-h-40 w-full flex-1 items-center justify-center">
               <img
-                className="max-w-full max-h-full object-contain rounded-lg shadow-sm"
+                className="max-h-60 max-w-full rounded-lg object-contain shadow-sm outline-1 -outline-offset-1 outline-black/10 dark:outline-white/10"
                 src={
                   isEditing && replacementPreviewUrl
                     ? replacementPreviewUrl
@@ -511,33 +570,37 @@ const ConfiguredFlashCard = () => {
             </div>
             {isEditing ? (
               <div
-                className="w-full flex flex-col items-center gap-2"
+                className="flex w-full flex-col items-center gap-2"
                 onClick={(e) => e.stopPropagation()}
               >
                 <Input
+                  aria-label="Word"
                   value={editWord}
                   onChange={(e) => setEditWord(e.target.value)}
-                  placeholder="Word"
+                  placeholder="kutya"
                 />
                 <Input
                   type="file"
+                  aria-label="Replacement image"
                   accept="image/*"
-                  className="text-xs text-slate-500 file:text-sm file:font-medium file:text-foreground"
+                  className="text-muted-foreground file:text-sm file:font-medium file:text-foreground"
                   onChange={(e) =>
                     setReplacementImage(e.target.files?.[0] ?? null)
                   }
                 />
                 {editErrMsg ? (
-                  <p className="text-xs text-red-500 text-center">{editErrMsg}</p>
+                  <p role="alert" className="text-center text-sm text-destructive">
+                    {editErrMsg}
+                  </p>
                 ) : null}
-                <div className="w-full flex flex-wrap justify-center gap-2">
+                <div className="flex w-full flex-wrap justify-center gap-2">
                   <Button variant="outline" size="sm" onClick={handleCancelEdit}>
                     Cancel
                   </Button>
-                  <Button variant="outline" size="sm" onClick={handleSaveEdit}>
+                  <Button variant="default" size="sm" onClick={handleSaveEdit}>
                     Save
                   </Button>
-                  <Button variant="outline" size="sm" onClick={handleDeleteCard}>
+                  <Button variant="destructive" size="sm" onClick={handleDeleteCard}>
                     Delete
                   </Button>
                 </div>
@@ -551,7 +614,7 @@ const ConfiguredFlashCard = () => {
                       size="sm"
                       key={grade}
                       data-testid={`rate-${Rating[grade].toLowerCase()}`}
-                      className="cursor-pointer flex flex-col h-auto py-1.5 px-3 gap-0.5"
+                      className="h-auto cursor-pointer flex-col gap-0.5 px-3 py-1.5"
                       onClick={(e) => {
                         e.stopPropagation();
                         handleRating(grade, currentCard.id);
@@ -559,11 +622,11 @@ const ConfiguredFlashCard = () => {
                     >
                       <span className="text-xs font-medium">{Rating[grade]}</span>
                       {schedulingPreviews?.get(grade) && (
-                        <span className="text-[10px] text-muted-foreground">
+                        <span className="text-xs tabular-nums text-muted-foreground">
                           {schedulingPreviews.get(grade)}
                         </span>
                       )}
-                      <span className="text-[9px] text-muted-foreground/50">
+                      <span className="text-xs tabular-nums text-muted-foreground">
                         [{i + 1}]
                       </span>
                     </Button>
@@ -571,23 +634,23 @@ const ConfiguredFlashCard = () => {
                 </ButtonGroup>
                 <Button
                   variant="ghost"
-                  size="sm"
-                  className="absolute bottom-0 left-0 text-slate-500 hover:text-slate-700"
+                  size="icon-sm"
+                  className="absolute bottom-0 left-0 text-muted-foreground hover:text-foreground"
                   aria-label="Edit card"
                   onClick={(e) => {
                     e.stopPropagation();
                     handleStartEdit();
                   }}
                 >
-                  <Pencil className="size-4" />
+                  <Pencil className="size-4" aria-hidden="true" />
                 </Button>
               </>
             )}
           </div>
         ) : (
-          <div className="flex h-full w-full items-center justify-center cursor-pointer">
+          <div className="flex flex-1 cursor-pointer items-center justify-center">
             <img
-              className="max-w-full max-h-full object-contain rounded-lg shadow-sm"
+              className="max-h-72 max-w-full rounded-lg object-contain shadow-sm outline-1 -outline-offset-1 outline-black/10 dark:outline-white/10"
               src={currentCard.img_url}
               alt={currentCard.word}
               decoding="async"

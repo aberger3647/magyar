@@ -5,6 +5,7 @@ import { useForm } from "@tanstack/react-form";
 import { Button } from "./ui/button";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { PageTitle } from "./PageTitle";
+import { useTheme } from "./theme-provider";
 import { getSupabaseClient, isSupabaseConfigured } from "@/lib/supabase";
 import { toast } from "sonner";
 import { Toaster } from "sonner";
@@ -28,9 +29,11 @@ const makeSafeStorageKey = (text: string) => {
 
 const ConfiguredCreateFlashCard = () => {
   const supabase = getSupabaseClient();
+  const { resolved } = useTheme();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [errMsg, setErrMsg] = useState<string | null>(null);
   const [isDraggingImage, setIsDraggingImage] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm({
     defaultValues: {
@@ -39,40 +42,44 @@ const ConfiguredCreateFlashCard = () => {
     onSubmit: async ({ value }) => {
       setErrMsg(null);
       if (!selectedFile) {
-        setErrMsg("Upload an image");
+        setErrMsg("Upload an image before creating a card.");
         return;
       }
       if (!value.word || value.word.trim() === "") {
-        setErrMsg("Enter a word");
+        setErrMsg("Enter a word before creating a card.");
         return;
       }
-      const uuid = crypto.randomUUID();
-      const extension = getExtensionForType(selectedFile.type);
-      const safeWord = makeSafeStorageKey(value.word);
-      const filePath = `${safeWord}-${uuid}.${extension}`;
-      const result = await supabase.storage
-        .from("cardimages")
-        .upload(filePath, selectedFile);
-      if (result.error) {
-        console.log(result.error);
-        setErrMsg(`Image upload failed: ${result.error.message}`);
-        return;
+      setIsSubmitting(true);
+      try {
+        const uuid = crypto.randomUUID();
+        const extension = getExtensionForType(selectedFile.type);
+        const safeWord = makeSafeStorageKey(value.word);
+        const filePath = `${safeWord}-${uuid}.${extension}`;
+        const result = await supabase.storage
+          .from("cardimages")
+          .upload(filePath, selectedFile);
+        if (result.error) {
+          console.error(result.error);
+          setErrMsg(`Image upload failed: ${result.error.message}`);
+          return;
+        }
+        const { data: { publicUrl } } = supabase.storage
+          .from("cardimages")
+          .getPublicUrl(filePath);
+        const { error } = await supabase
+          .from("flashcards")
+          .insert({ word: value.word.trim(), img_url: publicUrl });
+        if (error) {
+          setErrMsg(`Could not create card: ${error.message}`);
+          console.error(error);
+          return;
+        }
+        toast.success("Card created");
+        form.reset();
+        setSelectedFile(null);
+      } finally {
+        setIsSubmitting(false);
       }
-      const { data: { publicUrl } } = supabase.storage
-        .from("cardimages")
-        .getPublicUrl(filePath);
-      const { error } = await supabase
-        .from("flashcards")
-        .insert({ word: value.word, img_url: publicUrl });
-      if (error) {
-        setErrMsg(`Failed to create card: ${error}`);
-        console.log(error);
-        return;
-      } else {
-        toast.success("Card created successfully");
-      }
-      form.reset();
-      setSelectedFile(null);
     },
   });
 
@@ -84,7 +91,7 @@ const ConfiguredCreateFlashCard = () => {
 
   const handleSelectedImage = (file: File) => {
     if (!file.type.startsWith("image/")) {
-      setErrMsg("Please upload an image file");
+      setErrMsg("Choose an image file (PNG, JPG, or WebP).");
       return;
     }
     setSelectedFile(file);
@@ -132,28 +139,29 @@ const ConfiguredCreateFlashCard = () => {
     <>
       <PageTitle title="Create Flash Cards" />
 
-      <div className="w-full min-h-96 sm:max-w-md overflow-hidden rounded-lg border p-6 flex flex-col justify-between items-center gap-3">
+      <div className="flex min-h-96 w-full flex-col items-center justify-between gap-4 rounded-lg border bg-card p-6 sm:max-w-md">
         <div className="w-full">
           <form.Field
             name="word"
             children={(field) => (
               <FieldGroup className="gap-2">
-                <FieldLabel htmlFor={field.name} className="self-center text-md">
-                  Enter Word
+                <FieldLabel htmlFor={field.name} className="self-center text-sm font-medium">
+                  Word
                 </FieldLabel>
                 <Input
                   id={field.name}
                   name={field.name}
+                  lang="hu"
                   value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
                   placeholder="kutya"
-                  className="text-xl text-center border shadow-none focus-visible:ring-0 placeholder:text-slate-400 w-2/3 self-center"
+                  className="w-full max-w-xs self-center text-center text-xl shadow-none placeholder:text-muted-foreground"
                 />
-                {field.state.meta.errors ? (
-                  <em className="text-[10px] text-red-500">
-                    {field.state.meta.errors.join(",")}
-                  </em>
+                {field.state.meta.errors?.length ? (
+                  <p role="alert" className="text-center text-sm text-destructive">
+                    {field.state.meta.errors.join(", ")}
+                  </p>
                 ) : null}
               </FieldGroup>
             )}
@@ -161,9 +169,10 @@ const ConfiguredCreateFlashCard = () => {
         </div>
 
         <Button
-          className={`border-dashed border-black flex-1 m-8 w-56 p-0 overflow-hidden ${isDraggingImage ? "border-blue-500 bg-blue-50" : ""}`}
+          type="button"
+          aria-label={imageUrl ? "Change selected image" : "Upload card image"}
+          className={`m-4 min-h-44 w-full max-w-64 flex-1 overflow-hidden border-dashed border-input p-0 ${isDraggingImage ? "border-primary bg-primary/10" : ""}`}
           variant="outline"
-          size="icon-lg"
           onClick={handleBoxClick}
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
@@ -172,13 +181,13 @@ const ConfiguredCreateFlashCard = () => {
           {imageUrl ? (
             <img
               src={imageUrl}
-              alt="selected image"
-              className="w-full h-full object-cover"
+              alt="Card preview"
+              className="h-full w-full object-cover outline-1 -outline-offset-1 outline-black/10 dark:outline-white/10"
             />
           ) : (
-            <div className="flex flex-col items-center justify-center gap-2 text-sm text-slate-500">
-              <ImagePlus />
-              <span>Click or drag image here</span>
+            <div className="flex flex-col items-center justify-center gap-2 p-4 text-sm text-muted-foreground">
+              <ImagePlus aria-hidden="true" />
+              <span>Select or drag an image</span>
             </div>
           )}
         </Button>
@@ -190,10 +199,16 @@ const ConfiguredCreateFlashCard = () => {
           className="hidden"
           accept="image/*"
         />
-        <p className="text-xs">{errMsg}</p>
-        <Button onClick={() => form.handleSubmit()}>Create Card</Button>
+        {errMsg && (
+          <p role="alert" className="text-center text-sm text-destructive">
+            {errMsg}
+          </p>
+        )}
+        <Button type="button" disabled={isSubmitting} onClick={() => form.handleSubmit()}>
+          {isSubmitting ? "Creating…" : "Create Card"}
+        </Button>
       </div>
-      <Toaster />
+      <Toaster theme={resolved} />
     </>
   );
 };

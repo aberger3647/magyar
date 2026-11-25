@@ -12,6 +12,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { listPosts, type StrapiPost } from "@/lib/strapi";
 import { SearchTrigger } from "@/components/SearchDialog";
 
@@ -61,20 +62,34 @@ function formatDate(iso: string) {
 
 export const Home = () => {
   const [recentPosts, setRecentPosts] = useState<StrapiPost[] | null>(null);
+  const [postsError, setPostsError] = useState(false);
+  const [retryCount, setRetryCount] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
     listPosts()
       .then((data) => {
-        if (!cancelled) setRecentPosts(data.slice(0, 3));
+        if (!cancelled) {
+          setPostsError(false);
+          setRecentPosts(data.slice(0, 3));
+        }
       })
       .catch(() => {
-        if (!cancelled) setRecentPosts([]);
+        if (!cancelled) {
+          setPostsError(true);
+          setRecentPosts([]);
+        }
       });
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [retryCount]);
+
+  const handleRetryPosts = () => {
+    setPostsError(false);
+    setRecentPosts(null);
+    setRetryCount((count) => count + 1);
+  };
 
   return (
     <div className="flex w-full max-w-5xl flex-col gap-12 px-2 py-8 sm:py-12">
@@ -104,7 +119,7 @@ export const Home = () => {
               <CardHeader>
                 <div className="flex items-center gap-3">
                   <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                    <Icon className="h-5 w-5" />
+                    <Icon className="h-5 w-5" aria-hidden="true" />
                   </div>
                   <CardTitle className="text-lg">{title}</CardTitle>
                 </div>
@@ -122,15 +137,23 @@ export const Home = () => {
           <h2 className="text-2xl font-bold tracking-tight">From the blog</h2>
           <Link
             to="/blog"
-            className="text-sm font-medium text-primary underline-offset-4 hover:underline"
+            className="inline-flex min-h-8 items-center rounded-sm px-1 text-sm font-medium text-primary underline underline-offset-4 hover:text-primary/80 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none"
           >
             All posts →
           </Link>
         </div>
-        {recentPosts === null && (
+        {recentPosts === null && !postsError && (
           <p className="text-sm text-muted-foreground">Loading…</p>
         )}
-        {recentPosts && recentPosts.length === 0 && (
+        {postsError && (
+          <div role="alert" className="flex flex-wrap items-center gap-3 text-sm">
+            <p className="text-destructive">Could not load recent posts.</p>
+            <Button type="button" variant="outline" size="sm" onClick={handleRetryPosts}>
+              Retry
+            </Button>
+          </div>
+        )}
+        {recentPosts && recentPosts.length === 0 && !postsError && (
           <p className="text-sm text-muted-foreground">No posts yet.</p>
         )}
         {recentPosts && recentPosts.length > 0 && (

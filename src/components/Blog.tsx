@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 import { listPosts, type StrapiPost } from "@/lib/strapi";
 import { PageTitle } from "./PageTitle";
 
@@ -17,6 +18,7 @@ function formatDate(iso: string | null) {
 export const Blog = () => {
   const [posts, setPosts] = useState<StrapiPost[] | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [retryCount, setRetryCount] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
@@ -29,22 +31,37 @@ export const Blog = () => {
       })
       .catch(() => {
         if (!cancelled) {
-          setError("Could not load posts.");
+          setError("Could not load posts. Check your connection and try again.");
           setPosts([]);
         }
       });
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [retryCount]);
 
   return (
     <div className="flex w-full max-w-2xl flex-col gap-8">
       <PageTitle title="Blog" />
       {error && (
-        <p className="text-center text-sm text-destructive" role="alert">
-          {error}
-        </p>
+        <div
+          role="alert"
+          className="flex flex-col items-center gap-3 rounded-lg border border-border bg-card p-6 text-center"
+        >
+          <p className="text-sm text-destructive">{error}</p>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => {
+              setError(null);
+              setPosts(null);
+              setRetryCount((count) => count + 1);
+            }}
+          >
+            Retry
+          </Button>
+        </div>
       )}
       {posts === null && !error && (
         <p className="text-center text-muted-foreground">Loading…</p>
@@ -62,7 +79,7 @@ export const Blog = () => {
               <li key={post.documentId} className="flex flex-col gap-1">
                 <Link
                   to={`/blog/${post.slug}`}
-                  className="text-lg font-semibold text-foreground hover:text-primary"
+                  className="w-fit rounded-sm text-lg font-semibold text-foreground underline-offset-4 hover:text-primary hover:underline focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none"
                 >
                   {post.title}
                 </Link>

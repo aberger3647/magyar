@@ -23,8 +23,11 @@ export const Phrasebook = () => {
   const [hungarian, setHungarian] = React.useState("");
   const [english, setEnglish] = React.useState("");
   const [isEditing, setIsEditing] = React.useState(false);
+  const [confirmDeleteId, setConfirmDeleteId] = React.useState<number | null>(null);
   const [isLoading, setIsLoading] = React.useState(true);
   const [isSaving, setIsSaving] = React.useState(false);
+  const [loadFailed, setLoadFailed] = React.useState(false);
+  const [retryCount, setRetryCount] = React.useState(0);
   const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
 
   React.useEffect(() => {
@@ -32,7 +35,8 @@ export const Phrasebook = () => {
 
     const load = async () => {
       if (!isSupabaseConfigured()) {
-        setErrorMessage("Phrasebook sync is not configured.");
+        setErrorMessage("Phrasebook sync is not configured. Built-in phrases remain available.");
+        setLoadFailed(false);
         setIsLoading(false);
         return;
       }
@@ -40,9 +44,14 @@ export const Phrasebook = () => {
       try {
         await migrateLocalPhrasebookEntries();
         const entries = await listPhrasebookEntries();
-        if (!cancelled) setCustomPhrases(entries);
+        if (!cancelled) {
+          setCustomPhrases(entries);
+          setLoadFailed(false);
+          setErrorMessage(null);
+        }
       } catch (error) {
         if (!cancelled) {
+          setLoadFailed(true);
           setErrorMessage(
             error instanceof Error ? error.message : "Could not load saved phrases.",
           );
@@ -56,7 +65,7 @@ export const Phrasebook = () => {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [retryCount]);
 
   const allPhrases = React.useMemo<
     { phrase: { hungarian: string; english: string }; customId?: number }[]
@@ -127,7 +136,8 @@ export const Phrasebook = () => {
                 id="phrasebook-hungarian"
                 value={hungarian}
                 onChange={(e) => setHungarian(e.target.value)}
-                placeholder="Írd be a magyar mondatot…"
+                placeholder="Jó reggelt!"
+                lang="hu"
                 autoComplete="off"
               />
             </div>
@@ -139,7 +149,7 @@ export const Phrasebook = () => {
                 id="phrasebook-english"
                 value={english}
                 onChange={(e) => setEnglish(e.target.value)}
-                placeholder="Type the English translation…"
+                placeholder="Good morning!"
                 autoComplete="off"
               />
             </div>
@@ -152,9 +162,29 @@ export const Phrasebook = () => {
         </form>
 
         {errorMessage && (
-          <p role="alert" className="mb-4 text-sm text-destructive">
-            {errorMessage}
-          </p>
+          <div
+            role={loadFailed ? "alert" : "status"}
+            className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-md border border-border bg-muted/40 px-3 py-2 text-sm"
+          >
+            <p className={loadFailed ? "text-destructive" : "text-muted-foreground"}>
+              {errorMessage}
+            </p>
+            {loadFailed && (
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  setIsLoading(true);
+                  setLoadFailed(false);
+                  setErrorMessage(null);
+                  setRetryCount((count) => count + 1);
+                }}
+              >
+                Retry
+              </Button>
+            )}
+          </div>
         )}
 
         <div className="mb-4">
@@ -163,6 +193,7 @@ export const Phrasebook = () => {
           </label>
           <Input
             id="phrasebook-search"
+            type="search"
             value={filter}
             onChange={(e) => {
               const next = e.target.value;
@@ -179,13 +210,16 @@ export const Phrasebook = () => {
 
         {!isLoading && customPhrases.length > 0 && (
           <div className="mb-4 flex items-center justify-between gap-3">
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm tabular-nums text-muted-foreground">
               {customPhrases.length} saved {customPhrases.length === 1 ? "phrase" : "phrases"}
             </p>
             <Button
               type="button"
               variant={isEditing ? "secondary" : "outline"}
-              onClick={() => setIsEditing((editing) => !editing)}
+              onClick={() => {
+                setConfirmDeleteId(null);
+                setIsEditing((editing) => !editing);
+              }}
             >
               {isEditing ? "Done editing" : "Edit phrases"}
             </Button>
@@ -193,107 +227,151 @@ export const Phrasebook = () => {
         )}
 
         {visiblePhrases.length === 0 && (
-          <p className="mb-4 text-sm text-muted-foreground">
-            No phrases match “{filter}”.
-          </p>
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-md border border-border bg-card p-4 text-sm">
+            <p className="text-muted-foreground">
+              No phrases match “{filter}”.
+            </p>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => setSearchParams({}, { replace: true })}
+            >
+              Clear search
+            </Button>
+          </div>
         )}
 
-        {visiblePhrases.map(({ phrase, customId }, idx) => {
-          const isExact =
-            filter.trim().length > 0 && phrase.hungarian === filter.trim();
-          return (
-            <form
-              key={`${phrase.hungarian}__${phrase.english}__${idx}`}
-              className={cn(
-                "mb-2 flex flex-col justify-between rounded-md bg-accent p-4 md:flex-row",
-                isExact && "ring-2 ring-ring",
-              )}
-              onSubmit={(event) => {
-                event.preventDefault();
-                if (customId === undefined) return;
+        <ul className="space-y-2">
+          {visiblePhrases.map(({ phrase, customId }, idx) => {
+            const isExact =
+              filter.trim().length > 0 && phrase.hungarian === filter.trim();
+            const rowClass = cn(
+              "flex flex-col justify-between gap-1 rounded-md bg-accent p-4 md:flex-row md:gap-4",
+              isExact && "ring-2 ring-ring",
+            );
 
-                const formData = new FormData(event.currentTarget);
-                const nextHungarian = String(formData.get("hungarian") ?? "").trim();
-                const nextEnglish = String(formData.get("english") ?? "").trim();
-                if (!nextHungarian || !nextEnglish) return;
+            if (isEditing && customId !== undefined) {
+              const isConfirmingDelete = confirmDeleteId === customId;
+              return (
+                <li key={customId}>
+                  <form
+                    className={rowClass}
+                    onSubmit={(event) => {
+                      event.preventDefault();
+                      const formData = new FormData(event.currentTarget);
+                      const nextHungarian = String(formData.get("hungarian") ?? "").trim();
+                      const nextEnglish = String(formData.get("english") ?? "").trim();
+                      if (!nextHungarian || !nextEnglish) return;
 
-                setErrorMessage(null);
-                void updatePhrasebookEntry(
-                  customId,
-                  nextHungarian,
-                  nextEnglish,
-                )
-                  .then((updated) => {
-                    setCustomPhrases((current) =>
-                      current.map((entry) =>
-                        entry.id === updated.id ? updated : entry,
-                      ),
-                    );
-                  })
-                  .catch((error: unknown) => {
-                    setErrorMessage(
-                      error instanceof Error
-                        ? error.message
-                        : "Could not update the phrase.",
-                    );
-                  });
-              }}
-            >
-              {isEditing && customId !== undefined ? (
-                <div className="grid w-full gap-3 md:grid-cols-[1fr_1fr_auto_auto] md:items-end">
-                  <div className="grid gap-2">
-                    <label className="text-sm font-medium" htmlFor={`phrase-hungarian-${customId}`}>
-                      Magyar
-                    </label>
-                    <Input
-                      id={`phrase-hungarian-${customId}`}
-                      name="hungarian"
-                      defaultValue={phrase.hungarian}
-                    />
-                  </div>
-                  <div className="grid gap-2">
-                    <label className="text-sm font-medium" htmlFor={`phrase-english-${customId}`}>
-                      English
-                    </label>
-                    <Input
-                      id={`phrase-english-${customId}`}
-                      name="english"
-                      defaultValue={phrase.english}
-                    />
-                  </div>
-                  <Button type="submit">Save</Button>
-                  <Button
-                    type="button"
-                    variant="destructive"
-                    onClick={() => {
                       setErrorMessage(null);
-                      void deletePhrasebookEntry(customId)
-                        .then(() => {
+                      void updatePhrasebookEntry(
+                        customId,
+                        nextHungarian,
+                        nextEnglish,
+                      )
+                        .then((updated) => {
                           setCustomPhrases((current) =>
-                            current.filter((entry) => entry.id !== customId),
+                            current.map((entry) =>
+                              entry.id === updated.id ? updated : entry,
+                            ),
                           );
                         })
                         .catch((error: unknown) => {
+                          setLoadFailed(false);
                           setErrorMessage(
                             error instanceof Error
                               ? error.message
-                              : "Could not delete the phrase.",
+                              : "Could not update the phrase.",
                           );
                         });
                     }}
                   >
-                    Delete
-                  </Button>
-                </div>
-              ) : (
-                <>
-                  <p className="font-bold">{phrase.hungarian}</p>
-                  <p>{phrase.english}</p>
-                </>
-              )}
-            </form>
-          );
-        })}
+                    <div className="grid w-full gap-3 md:grid-cols-[1fr_1fr_auto_auto] md:items-end">
+                      <div className="grid gap-2">
+                        <label className="text-sm font-medium" htmlFor={`phrase-hungarian-${customId}`}>
+                          Magyar
+                        </label>
+                        <Input
+                          id={`phrase-hungarian-${customId}`}
+                          name="hungarian"
+                          lang="hu"
+                          defaultValue={phrase.hungarian}
+                        />
+                      </div>
+                      <div className="grid gap-2">
+                        <label className="text-sm font-medium" htmlFor={`phrase-english-${customId}`}>
+                          English
+                        </label>
+                        <Input
+                          id={`phrase-english-${customId}`}
+                          name="english"
+                          defaultValue={phrase.english}
+                        />
+                      </div>
+                      {isConfirmingDelete ? (
+                        <>
+                          <Button
+                            type="button"
+                            variant="destructive"
+                            onClick={() => {
+                              setErrorMessage(null);
+                              setConfirmDeleteId(null);
+                              void deletePhrasebookEntry(customId)
+                                .then(() => {
+                                  setCustomPhrases((current) =>
+                                    current.filter((entry) => entry.id !== customId),
+                                  );
+                                })
+                                .catch((error: unknown) => {
+                                  setLoadFailed(false);
+                                  setErrorMessage(
+                                    error instanceof Error
+                                      ? error.message
+                                      : "Could not delete the phrase.",
+                                  );
+                                });
+                            }}
+                          >
+                            Confirm delete
+                          </Button>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            onClick={() => setConfirmDeleteId(null)}
+                          >
+                            Cancel
+                          </Button>
+                        </>
+                      ) : (
+                        <>
+                          <Button type="submit">Save</Button>
+                          <Button
+                            type="button"
+                            variant="destructive"
+                            onClick={() => setConfirmDeleteId(customId)}
+                          >
+                            Delete
+                          </Button>
+                        </>
+                      )}
+                    </div>
+                  </form>
+                </li>
+              );
+            }
+
+            return (
+              <li
+                key={`${phrase.hungarian}__${phrase.english}__${idx}`}
+                className={rowClass}
+              >
+                <p lang="hu" className="font-bold">{phrase.hungarian}</p>
+                <p>{phrase.english}</p>
+              </li>
+            );
+          })}
+        </ul>
       </div>
     </>
   );

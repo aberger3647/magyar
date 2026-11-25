@@ -132,7 +132,18 @@ export function relativeLuminance(hex: string): number {
   return 0.2126 * r + 0.7152 * g + 0.0722 * b;
 }
 
-/** Best-contrast label color (near-black or near-white) for a wedge fill. */
+/** WCAG contrast ratio between two hex colors. */
+export function contrastRatio(hexA: string, hexB: string): number {
+  const la = relativeLuminance(hexA);
+  const lb = relativeLuminance(hexB);
+  return (Math.max(la, lb) + 0.05) / (Math.min(la, lb) + 0.05);
+}
+
+/** Best-contrast label color (near-black or white) for a wedge fill. */
 export function contrastTextColor(hex: string): string {
-  return relativeLuminance(hex) > 0.42 ? "#171310" : "#f5f2ec";
+  const darkInk = "#110e0c";
+  const lightInk = "#ffffff";
+  return contrastRatio(darkInk, hex) >= contrastRatio(lightInk, hex)
+    ? darkInk
+    : lightInk;
 }

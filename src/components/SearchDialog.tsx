@@ -187,8 +187,8 @@ function SearchDialog() {
           Search verbs, phrases, grammar lessons, and pages. Use arrow keys to
           move and Enter to open a result.
         </DialogDescription>
-        <div className="flex items-center gap-2 border-b px-3">
-          <Search className="size-4 shrink-0 text-muted-foreground" />
+        <div className="flex items-center gap-2 border-b px-3 focus-within:bg-muted/20">
+          <Search className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
           <Input
             ref={inputRef}
             value={query}
@@ -201,14 +201,14 @@ function SearchDialog() {
               activeId ? searchResultDomId(activeId) : undefined
             }
             autoComplete="off"
-            className="h-12 border-0 bg-transparent shadow-none focus-visible:ring-0"
+            className="h-12 border-0 bg-transparent shadow-none focus-visible:ring-0 focus-visible:ring-offset-0"
           />
         </div>
         <div
           id="site-search-results"
           role="listbox"
           aria-label="Search results"
-          className="max-h-[min(24rem,60vh)] overflow-y-auto p-3"
+          className="max-h-[min(24rem,60vh)] overflow-y-auto overscroll-contain p-3"
         >
           {query.trim().length === 0 ? (
             <p className="px-1 py-6 text-center text-sm text-muted-foreground">
@@ -221,13 +221,14 @@ function SearchDialog() {
               activeId={activeId}
               onSelect={selectResult}
               compact
+              listbox
             />
           )}
         </div>
         {query.trim().length > 0 && (
           <button
             type="button"
-            className="w-full border-t px-4 py-2.5 text-left text-sm text-muted-foreground hover:bg-muted/50"
+            className="w-full border-t px-4 py-2.5 text-left text-sm text-muted-foreground transition-colors hover:bg-muted/50 focus-visible:bg-muted/50 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring focus-visible:outline-none"
             onClick={() => go(`/search?q=${encodeURIComponent(query.trim())}`)}
           >
             View all results for “{query.trim()}”
@@ -255,14 +256,14 @@ export function SearchTrigger({
         type="button"
         onClick={() => setOpen(true)}
         className={cn(
-          "flex h-12 w-full max-w-xl items-center gap-3 rounded-xl border bg-background px-4 text-left text-base text-muted-foreground shadow-xs transition-colors hover:bg-muted/40",
-          "focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] focus-visible:outline-none",
+          "flex h-12 w-full max-w-xl items-center gap-3 rounded-xl border border-input bg-background px-4 text-left text-base text-muted-foreground shadow-xs transition-colors hover:bg-muted/40",
+          "focus-visible:border-ring focus-visible:ring-ring focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-background focus-visible:outline-none",
           className,
         )}
       >
-        <Search className="size-5 shrink-0" />
+        <Search className="size-5 shrink-0" aria-hidden="true" />
         <span className="flex-1">Search verbs, phrases, grammar…</span>
-        <kbd className="hidden h-6 select-none items-center rounded-md border bg-muted px-2 font-mono text-[11px] font-medium sm:inline-flex">
+        <kbd className="hidden h-6 select-none items-center rounded-md border bg-muted px-2 font-mono text-xs font-medium text-muted-foreground sm:inline-flex">
           {shortcut}
         </kbd>
       </button>
@@ -276,13 +277,13 @@ export function SearchTrigger({
       onClick={() => setOpen(true)}
       aria-label={`Search (${shortcut})`}
       className={cn(
-        "h-9 w-9 p-0 md:h-9 md:w-auto md:px-3 md:font-normal",
+        "h-9 w-9 p-0 xl:h-9 xl:w-auto xl:px-3 xl:font-normal",
         className,
       )}
     >
-      <Search className="size-4" />
-      <span className="hidden text-muted-foreground md:inline">Search…</span>
-      <kbd className="pointer-events-none ml-auto hidden h-5 select-none items-center rounded border bg-muted px-1.5 font-mono text-[10px] font-medium md:inline-flex">
+      <Search className="size-4" aria-hidden="true" />
+      <span className="hidden text-muted-foreground xl:inline">Search…</span>
+      <kbd className="pointer-events-none ml-auto hidden h-5 select-none items-center rounded border bg-muted px-1.5 font-mono text-xs font-medium text-muted-foreground xl:inline-flex">
         {shortcut}
       </kbd>
     </Button>

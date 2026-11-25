@@ -31,12 +31,12 @@ const BilingualCardHeader = ({ english, hungarian }: { english: string; hungaria
 
 const Phonetics = () => {
   return (
-    <div className="mx-auto w-full max-w-6xl overflow-x-hidden px-4 py-6 sm:px-6 wrap-break-word">
-      <div className="space-y-8 md:grid md:grid-cols-[220px_1fr] md:items-start md:gap-8 md:space-y-0">
+    <div className="mx-auto w-full max-w-6xl px-4 py-6 sm:px-6 wrap-break-word">
+      <div className="space-y-8 md:grid md:grid-cols-[220px_minmax(0,1fr)] md:items-start md:gap-8 md:space-y-0">
         <aside className="md:sticky md:top-6">
           <GrammarLessonLinks compact vertical />
         </aside>
-        <div className="space-y-8 sm:space-y-12">
+        <div className="min-w-0 space-y-8 sm:space-y-12">
           {/* HEADER SECTION */}
           <div className="space-y-2">
             <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
@@ -81,11 +81,11 @@ const Phonetics = () => {
                   <h3 className="text-lg font-bold uppercase tracking-widest text-muted-foreground wrap-break-word">Front Vowels (Magas)</h3>
                   <div className="space-y-6">
                     <div>
-                      <p className="text-xs font-semibold mb-2 opacity-70">Unrounded:</p>
+                      <p className="mb-2 text-xs font-semibold text-muted-foreground">Unrounded</p>
                       <VowelChips vowels={["e", "é", "i", "í"]} />
                     </div>
                     <div>
-                      <p className="text-xs font-semibold mb-2 opacity-70">Rounded:</p>
+                      <p className="mb-2 text-xs font-semibold text-muted-foreground">Rounded</p>
                       <VowelChips vowels={["ö", "ő", "ü", "ű"]} />
                     </div>
                   </div>
@@ -97,7 +97,7 @@ const Phonetics = () => {
 
               {/* Neutral Rule Explanation */}
               <div className="space-y-4">
-                <h3 className="text-xl font-semibold">The Neutral "i" and "í"</h3>
+                <h3 className="text-xl font-semibold">The Neutral “i” and “í”</h3>
                 <div className="grid grid-cols-1 gap-6 leading-relaxed lg:grid-cols-2">
                   <div className="p-4 border rounded-lg bg-muted/30">
                     <p className="font-bold mb-2">Rule: Back Vowels Win</p>
